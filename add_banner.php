@@ -1,5 +1,5 @@
 <?php 
-// by Dev Jariwala
+
 include "header.php";
 if(isset($_COOKIE['edit_id'])) {
 	$mode = 'edit';

@@ -112,8 +112,7 @@ if (!isset($_SESSION["userlogin"])) {
                         <a class="main-logo flex shrink-0 items-center justify-center">
                             <img class="w-8 ml-[5px] flex-none" src="assets/images/polygon_logo.png" alt="image" />
                             <span
-                                class="text-2xl ltr:ml-1.5 rtl:mr-1.5 font-semibold align-middle lg:inline dark:text-white-light">PDS
-                                INDIA</span>
+                                class="text-2xl ltr:ml-1.5 rtl:mr-1.5 font-semibold align-middle lg:inline dark:text-white-light">JUSTPING</span>
                         </a>
                         <a href="javascript:;"
                             class="collapse-icon flex h-8 w-8 items-center rounded-full transition duration-300 hover:bg-gray-500/10 rtl:rotate-180 dark:text-white-light dark:hover:bg-dark-light/10"

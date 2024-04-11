@@ -29,7 +29,7 @@ header("location:banner.php");
 	<h1 class="dark:text-white-dar  pb-8 text-3xl font-bold">Banner Images</h1>
 	<div class="panel mt-6 flex items-center  justify-between relative">
 
-		<button type="button" class="p-2 btn btn-primary m-1 add-btn" onclick="javascript:add_data()">
+		<button type="button" class="p-2 btn btn-primary m-1 add-btn" onclick="location.href='add_banner.php'">
 			<i class="ri-add-line mr-1"></i> Add Banner Images</button>
 
 			<table id="myTable" class="table-hover whitespace-nowrap w-full"></table>
@@ -63,10 +63,10 @@ header("location:banner.php");
                 init() {
                     this.datatable = new simpleDatatables.DataTable('#myTable', {
                         data: {
-                            headings: ['Sr.No.','Title','Image','status', 'Action'],
+                            headings: ['Sr.No.','Name','Image','status', 'Action'],
                             data: [
                                 <?php
-                                $stmt = $obj->con1->prepare("SELECT * FROM `banner` ORDER BY `b_id` DESC ");
+                                $stmt = $obj->con1->prepare("SELECT * FROM `banner` ORDER BY `srno` DESC ");
                                 $stmt->execute();
                                 $Resp = $stmt->get_result();
                                 $i = 1;
