@@ -1,0 +1,10 @@
+.logo{
+    width: 130px;
+}
+
+.error-elem{
+    color: red;
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 16px;
+}
