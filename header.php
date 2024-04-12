@@ -258,8 +258,8 @@ if (!isset($_SESSION["userlogin"])) {
                             </a>
                         </li>
                         <li class="menu nav-item">
-                            <a href="news.php"
-                                class="nav-link group <?php echo basename($_SERVER["PHP_SELF"]) == "news.php" ? "active" : "" ?>">
+                            <a href="faq.php"
+                                class="nav-link group <?php echo basename($_SERVER["PHP_SELF"]) == "faq.php" ? "active" : "" ?>">
                                 <div class="flex items-center">
                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" class="w-6 h-6">
@@ -277,7 +277,7 @@ if (!isset($_SESSION["userlogin"])) {
                                             stroke="currentColor" stroke-width="1.5"></path>
                                     </svg>
                                     <span
-                                        class="text-black ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">News
+                                        class="text-black ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">FAQ
                                     </span>
                                 </div>
                             </a>
