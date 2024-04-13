@@ -29,7 +29,7 @@ if(isset($_REQUEST['update'])){
     $city_name = $_REQUEST['city_name'];
     $status = isset($_REQUEST["status"])?'Enable':'Disable';
 
-    $stmt = $obj->con1->prepare("UPDATE `city` SET city_name=?, state_id=?, stats=? WHERE id=?");
+    $stmt = $obj->con1->prepare("UPDATE `city` SET city_name=?, state_id=?, status=? WHERE id=?");
     $stmt->bind_param("sisi", $city_name, $state_id, $status, $editId);
     $Res = $stmt->execute();
     $stmt->close();
@@ -48,9 +48,9 @@ if (isset($_REQUEST["save"])) {
     $state_name = $_REQUEST["state_id"];
     $status = isset($_REQUEST["status"])?'Enable':'Disable';
     try {
-        echo "INSERT INTO `city`(`city_name`,`state_id`,`stats`) VALUES ('".$city_name."', '".$state_name."', '".$status."')";
+        // echo "INSERT INTO `city`(`city_name`,`state_id`,`status`) VALUES ('".$city_name."', '".$state_name."', '".$status."')";
         $stmt = $obj->con1->prepare(
-            "INSERT INTO `city`(`city_name`,`state_id`,`stats`) VALUES (?,?,?)"
+            "INSERT INTO `city`(`city_name`,`state_id`,`status`) VALUES (?,?,?)"
         );
         $stmt->bind_param("sis", $city_name, $state_name, $status);
         $Resp = $stmt->execute();
@@ -124,7 +124,7 @@ if (isset($_REQUEST["save"])) {
                     <label class="w-12 h-6 relative">
                         <input type="checkbox"
                             class="custom_switch absolute w-full h-full opacity-0 z-10 cursor-pointer peer" id="status"
-                            <?php echo isset($mode) && $data['stats'] == 'Enable' ? 'checked' : '' ?>
+                            <?php echo isset($mode) && $data['status'] == 'Enable' ? 'checked' : '' ?>
                             <?php echo (isset($mode) && $mode == 'view') ? 'Disabled' : '' ?> name="status" required>
                         <span
                             class="bg-[#ebedf2] dark:bg-dark block h-full rounded-full before:absolute before:left-1 before:bg-white dark:before:bg-white-dark dark:peer-checked:before:bg-white before:bottom-1 before:w-4 before:h-4 before:rounded-full peer-checked:before:left-7 peer-checked:bg-primary before:transition-all before:duration-300"></span>
