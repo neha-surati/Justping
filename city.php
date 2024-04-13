@@ -1,5 +1,31 @@
 <?php
-include "header.php"
+include "header.php";
+
+setcookie("editId", "", time() - 3600);
+setcookie("viewId", "", time() - 3600);
+
+if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
+    try {
+        $stmt_del = $obj->con1->prepare(
+            "delete from city where id='" . $_REQUEST["id"] . "'"
+        );
+        $Resp = $stmt_del->execute();
+        if (!$Resp) {
+            if (strtok($obj->con1->error, ":") == "Cannot delete or update a parent row") {
+                throw new Exception("City is already in use!");
+            }
+        }
+        $stmt_del->close();
+    } catch (\Exception $e) {
+        setcookie("sql_error", urlencode($e->getMessage()), time() + 3600, "/");
+        setcookie("msg", "cant_delete", time() + 3600, "/");
+    }
+
+    if ($Resp) {
+        setcookie("msg", "data_del", time() + 3600, "/");
+    }
+    header("location:city.php");
+}
 ?>
 <div class='p-6 animate__animated' x-data='pagination'>
 	<h1 class="dark:text-white-dar  pb-8 text-3xl font-bold">City</h1>
@@ -13,13 +39,10 @@ include "header.php"
         </div>
         <script type="text/javascript">
           checkCookies();
+          eraseCookie("editId");
+          eraseCookie("viewId");
           function getActions(id) {
             return `<ul class="flex items-center gap-4">
-            <li>
-                <a href="javascript:add_subimages(`+id+`);" class='text-xl' x-tooltip="Add">
-                <i class="ri-add-line text text-success"></i>
-                </a>
-            </li>
             <li>
             <a href="javascript:viewdata(`+id+`);" class='text-xl' x-tooltip="View">
             <i class="ri-eye-line text-primary"></i>
@@ -28,6 +51,11 @@ include "header.php"
             <li>
             <a href="javascript:editdata(`+id+`);" class='text-xl' x-tooltip="Edit">
             <i class="ri-pencil-line text text-success"></i>
+            </a>
+            </li>
+            <li>
+            <a href="javascript:showAlert(`+id+`);" class='text-xl' x-tooltip="Delete">
+            <i class="ri-delete-bin-line text-danger"></i>
             </a>
             </li>
             </ul>`
@@ -95,17 +123,17 @@ include "header.php"
             }));
 })
 function add_data(){
-    eraseCookie("edit_id");
-    eraseCookie("view_id");
+    eraseCookie("editId");
+    eraseCookie("viewId");
     window.location = "add_city.php";
 }
 function editdata(id){
-    createCookie("edit_id",id,1);
+    createCookie("editId",id,1);
     window.location = "add_city.php";
 }
 
 function viewdata(id){
-    createCookie("view_id",id,1);
+    createCookie("viewId",id,1);
     window.location = "add_city.php";
 }
 
