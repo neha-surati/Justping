@@ -2,10 +2,10 @@
 // by Dev Jariwala
 if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
 	$banner_id = $_REQUEST['banner_id'];
-    $banner_img =$_REQUEST['banner_img'];
+    $banner_img = $_REQUEST['banner_img'];
 
     try {
-        $stmt_del = $obj->con1->prepare("delete from banner where b_id=?");
+        $stmt_del = $obj->con1->prepare("delete from banner where srno=?");
         $stmt_del->bind_param("i",$banner_id);
         $Resp = $stmt_del->execute();
         if (!$Resp) {
@@ -63,7 +63,7 @@ header("location:banner.php");
                 init() {
                     this.datatable = new simpleDatatables.DataTable('#myTable', {
                         data: {
-                            headings: ['Sr.No.','Name','Image','status', 'Action'],
+                            headings: ['Sr.No.','Name','Image','Status', 'Action'],
                             data: [
                                 <?php
                                 $stmt = $obj->con1->prepare("SELECT * FROM `banner` ORDER BY `srno` DESC ");
@@ -87,7 +87,7 @@ header("location:banner.php");
                                         ?>
                                             <video src="images/banner_image/<?php echo addslashes($row["filename"]);?>" height="200" width="200" style="display:<?php (in_array($extn, $vd_array))?'block':'none' ?>" class="object-cover shadow rounded" controls></video>
                                         <?php } ?>`,
-                                        '<span class="badge whitespace-nowrap" :class="{\'badge-outline-success\': \'<?php echo $row["status"]; ?>\' === \'enable\', \'badge-outline-danger\': \'<?php echo $row["status"]; ?>\' === \'disable\'}"><?php echo $row["status"]; ?></span>',
+                                        '<span class="badge whitespace-nowrap" :class="{\'badge-outline-success\': \'<?php echo $row["status"]; ?>\' === \'Enable\', \'badge-outline-danger\': \'<?php echo $row["status"]; ?>\' === \'Disable\'}"><?php echo $row["status"]; ?></span>',
                                         getActions(<?php echo $row["srno"];?>,'<?php echo addslashes($row["filename"]);?>')
                                         ],
                                     <?php $i++;}
