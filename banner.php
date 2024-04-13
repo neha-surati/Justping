@@ -2,10 +2,10 @@
 // by Dev Jariwala
 if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
 	$banner_id = $_REQUEST['banner_id'];
-    $banner_img =$_REQUEST['banner_img'];
+    $banner_img = $_REQUEST['banner_img'];
 
     try {
-        $stmt_del = $obj->con1->prepare("delete from banner where b_id=?");
+        $stmt_del = $obj->con1->prepare("delete from banner where srno=?");
         $stmt_del->bind_param("i",$banner_id);
         $Resp = $stmt_del->execute();
         if (!$Resp) {
@@ -63,7 +63,7 @@ header("location:banner.php");
                 init() {
                     this.datatable = new simpleDatatables.DataTable('#myTable', {
                         data: {
-                            headings: ['Sr.No.','Name','Image','status', 'Action'],
+                            headings: ['Sr.No.','Name','Image','Status', 'Action'],
                             data: [
                                 <?php
                                 $stmt = $obj->con1->prepare("SELECT * FROM `banner` ORDER BY `srno` DESC ");
