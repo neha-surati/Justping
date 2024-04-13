@@ -32,7 +32,7 @@ header("location:team_member.php");
 	<div class="panel mt-6 flex items-center  justify-between relative">
 
 		<button type="button" class="p-2 btn btn-primary m-1 add-btn" onclick="javascript:insertdata()">
-			<i class="ri-add-line mr-1"></i> Add Team Member</button>
+			<i class="ri-add-line mr-1"></i> Add FAQ</button>
 
 			<table id="myTable" class="table-hover whitespace-nowrap w-full"></table>
 		</div>
@@ -137,17 +137,17 @@ header("location:team_member.php");
 function insertdata(id){
     eraseCookie("edit_id");
     eraseCookie("view_id");
-    window.location = "add_team_member.php";
+    window.location = "add_faq.php";
 }
 
 function editdata(id){
     createCookie("edit_id",id,1);
-    window.location = "add_team_member.php";
+    window.location = "add_faq.php";
 }
 
 function viewdata(id){
     createCookie("view_id",id,1);
-    window.location = "add_team_member.php";
+    window.location = "add_faq.php";
 }
 
 async function showAlert(id,member_img) {
@@ -159,7 +159,7 @@ async function showAlert(id,member_img) {
     padding: '2em',
 }).then((result) => {
     if (result.isConfirmed) {
-       var loc = "team_member.php?flg=del&member_id=" +id+"&member_img="+member_img;
+       var loc = "faq.php?flg=del&member_id=" +id+"&member_img="+member_img;
        window.location = loc;
    }
 });
