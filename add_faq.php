@@ -132,7 +132,7 @@ if(isset($_REQUEST["btn_update"])){
                 <i class="ri-arrow-left-line"></i>
             </a>
         </span>
-			<h1 class="dark:text-white-dar text-2xl font-bold">Team  Member - <?php echo (isset($mode)) ? (($mode=='view')?'View':'Edit') : 'Add' ?></h1>
+			<h1 class="dark:text-white-dar text-2xl font-bold">FAQ - <?php echo (isset($mode)) ? (($mode=='view')?'View':'Edit') : 'Add' ?></h1>
 		</div>
 		<div class="panel mt-6">
 			<div class="mb-5">

@@ -28,7 +28,7 @@ header("location:team_member.php");
 }
 ?>
 <div class='p-6 animate__animated' x-data='pagination'>
-	<h1 class="dark:text-white-dar  pb-8 text-3xl font-bold">Team Members</h1>
+	<h1 class="dark:text-white-dar  pb-8 text-3xl font-bold">FAQ</h1>
 	<div class="panel mt-6 flex items-center  justify-between relative">
 
 		<button type="button" class="p-2 btn btn-primary m-1 add-btn" onclick="javascript:insertdata()">
