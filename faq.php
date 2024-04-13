@@ -3,12 +3,12 @@
     include "header.php";
 
 	if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
-	$member_id = $_REQUEST['member_id'];
-    $member_img =$_REQUEST['member_img'];
+	$faq_id = $_REQUEST['faq_id'];
+    
 
     try {
-        $stmt_del = $obj->con1->prepare("DELETE FROM `team_members` WHERE m_id=?");
-        $stmt_del->bind_param("i",$member_id);
+        $stmt_del = $obj->con1->prepare("DELETE FROM `faq` WHERE id=?");
+        $stmt_del->bind_param("i",$faq_id);
         $Resp = $stmt_del->execute();
         if (!$Resp) {
            throw new Exception("Problem in deleting! ". strtok($obj->con1-> error,  '('));
@@ -24,7 +24,7 @@
   }
   setcookie("msg", "data_del", time() + 3600, "/");
 }
-header("location:team_member.php");
+header("location:faq.php");
 }
 ?>
 <div class='p-6 animate__animated' x-data='pagination'>
@@ -40,7 +40,7 @@ header("location:team_member.php");
 	</div>
 		<script type="text/javascript">
 		checkCookies();
-        function getActions(id,member_img) {
+        function getActions(id) {
             return `<ul class="flex items-center gap-4">
         <li>
             <a href="javascript:viewdata(`+id+`);" class='text-xl' x-tooltip="View">
@@ -53,7 +53,7 @@ header("location:team_member.php");
             </a>
         </li>
         <li>
-            <a href="javascript:showAlert(`+id+`,\'`+member_img+`\');" class='text-xl' x-tooltip="Delete">
+            <a href="javascript:showAlert(`+id+`);" class='text-xl' x-tooltip="Delete">
                 <i class="ri-delete-bin-line text-danger"></i>
             </a>
         </li>
@@ -150,7 +150,7 @@ function viewdata(id){
     window.location = "add_faq.php";
 }
 
-async function showAlert(id,member_img) {
+async function showAlert(id) {
  new window.Swal({
     title: 'Are you sure?',
     text: "You won't be able to revert this!",
@@ -159,7 +159,7 @@ async function showAlert(id,member_img) {
     padding: '2em',
 }).then((result) => {
     if (result.isConfirmed) {
-       var loc = "faq.php?flg=del&member_id=" +id+"&member_img="+member_img;
+       var loc = "faq.php?flg=del&faq_id=" +id;
        window.location = loc;
    }
 });
