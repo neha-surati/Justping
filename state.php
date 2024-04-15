@@ -1,84 +1,84 @@
-<?php 
-//Created by Dev Jariwala
-    include "header.php";
+<?php
+include "header.php";
 
-	if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
-	$member_id = $_REQUEST['member_id'];
-    $member_img =$_REQUEST['member_img'];
+setcookie("editId", "", time() - 3600);
+setcookie("viewId", "", time() - 3600);
 
+if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
     try {
-        $stmt_del = $obj->con1->prepare("DELETE FROM `team_members` WHERE m_id=?");
-        $stmt_del->bind_param("i",$member_id);
+        $stmt_del = $obj->con1->prepare(
+            "delete from state where id='" . $_REQUEST["id"] . "'"
+        );
         $Resp = $stmt_del->execute();
         if (!$Resp) {
-           throw new Exception("Problem in deleting! ". strtok($obj->con1-> error,  '('));
-       }
-       $stmt_del->close();
-   } catch (\Exception $e) {
-      setcookie("sql_error", urlencode($e->getMessage()), time() + 3600, "/");
-  }
+            if (strtok($obj->con1->error, ":") == "Cannot delete or update a parent row") {
+                throw new Exception("State is already in use!");
+            }
+        }
+        $stmt_del->close();
+    } catch (\Exception $e) {
+        setcookie("sql_error", urlencode($e->getMessage()), time() + 3600, "/");
+        setcookie("msg", "cant_delete", time() + 3600, "/");
+    }
 
-  if ($Resp) {
-    if(file_exists("images/member_image/".$member_img)){
-      unlink("images/member_image/".$member_img);
-  }
-  setcookie("msg", "data_del", time() + 3600, "/");
-}
-header("location:team_member.php");
+    if ($Resp) {
+        setcookie("msg", "data_del", time() + 3600, "/");
+    }
+    header("location:state.php");
 }
 ?>
 <div class='p-6 animate__animated' x-data='pagination'>
-	<h1 class="dark:text-white-dar  pb-8 text-3xl font-bold">Team Members</h1>
+	<h1 class="dark:text-white-dar  pb-8 text-3xl font-bold">State</h1>
 	<div class="panel mt-6 flex items-center  justify-between relative">
 
-		<button type="button" class="p-2 btn btn-primary m-1 add-btn" onclick="javascript:insertdata()">
-			<i class="ri-add-line mr-1"></i> Add Team Member</button>
+		<button type="button" class="p-2 btn btn-primary m-1 add-btn" onclick="javascript:add_data()">
+			<i class="ri-add-line mr-1"></i> Add State</button>
 
-			<table id="myTable" class="table-hover whitespace-nowrap w-full"></table>
-		</div>
+			<table id="myTable" class="table-hover whitespace-nowrap w-full"></table> </div>
 
-	</div>
-		<script type="text/javascript">
-		checkCookies();
-        function getActions(id,member_img) {
+        </div>
+        <script type="text/javascript">
+          checkCookies();
+          eraseCookie("editId");
+          eraseCookie("viewId");
+          function getActions(id) {
             return `<ul class="flex items-center gap-4">
-        <li>
+            <li>
             <a href="javascript:viewdata(`+id+`);" class='text-xl' x-tooltip="View">
-                <i class="ri-eye-line text-primary"></i>
+            <i class="ri-eye-line text-primary"></i>
             </a>
-        </li>
-        <li>
+            </li>
+            <li>
             <a href="javascript:editdata(`+id+`);" class='text-xl' x-tooltip="Edit">
-                <i class="ri-pencil-line text text-success"></i>
+            <i class="ri-pencil-line text text-success"></i>
             </a>
-        </li>
-        <li>
-            <a href="javascript:showAlert(`+id+`,\'`+member_img+`\');" class='text-xl' x-tooltip="Delete">
-                <i class="ri-delete-bin-line text-danger"></i>
+            </li>
+            <li>
+            <a href="javascript:showAlert(`+id+`);" class='text-xl' x-tooltip="Delete">
+            <i class="ri-delete-bin-line text-danger"></i>
             </a>
-        </li>
-    </ul>`
+            </li>
+            </ul>`
         }
         document.addEventListener('alpine:init', () => {
             Alpine.data('pagination', () => ({
                 datatable: null,
                 init() {
-                    this.datatable = new simpleDatatables.DataTable('#myTable', {
+                    this.datatable = new simpleDatatables.DataTable('#myTable',{
                         data: {
-                            headings: ['Sr.No.','Image','Name','Designation', 'Action'],
+                            headings: ['Sr.No.','State Name','Status', 'Action'],
                             data: [
                                 <?php
-                                $stmt = $obj->con1->prepare("SELECT * FROM `team_members` order by m_id desc");
+                                $stmt = $obj->con1->prepare("SELECT * FROM `state` order by id desc");
                                 $stmt->execute();
                                 $Resp = $stmt->get_result();
                                 $i = 1;
                                 while ($row = mysqli_fetch_array($Resp)) { ?>
                                     [
                                         <?php echo $i; ?>, 
-                                        '<img src="images/member_image/<?php echo addslashes($row["m_image"]);?>" height="200" width="200" class="object-cover shadow rounded">',
-                                        '<?php echo addslashes($row["m_name"]); ?>',
-                                        '<?php echo addslashes($row["m_designation"]);?>', 
-                                        getActions(<?php echo $row["m_id"];?>,'<?php echo addslashes($row["m_image"]);?>')
+                                        '<?php echo $row["state_name"]; ?>',
+                                        '<span class="badge whitespace-nowrap" :class="{\'badge-outline-success\': \'<?php echo $row["stats"]; ?>\' === \'Enable\', \'badge-outline-danger\': \'<?php echo $row["stats"]; ?>\' === \'Disable\'}"><?php echo $row["stats"]; ?></span>',
+                                        getActions(<?php echo $row["id"];?>)
                                         ],
                                     <?php $i++;}
                                     ?>
@@ -105,20 +105,6 @@ header("location:team_member.php");
                     });
                 },
 
-        // exportTable(eType) {
-        //     var data = {
-        //         type: eType,
-        //         filename: 'table',
-        //         download: true,
-        //     };
-
-        //     if (data.type === 'csv') {
-        //         data.lineDelimiter = '\n';
-        //         data.columnDelimiter = ';';
-        //     }
-        //     this.datatable.export(data);
-        // },
-
                 printTable() {
                     this.datatable.print();
                 },
@@ -135,25 +121,24 @@ header("location:team_member.php");
                 },
             }));
 })
-
-function insertdata(id){
-    eraseCookie("edit_id");
-    eraseCookie("view_id");
-    window.location = "add_team_member.php";
+function add_data(){
+    eraseCookie("editId");
+    eraseCookie("viewId");
+    window.location = "add_state.php";
 }
-
 function editdata(id){
-    createCookie("edit_id",id,1);
-    window.location = "add_team_member.php";
+    createCookie("editId",id,1);
+    window.location = "add_state.php";
 }
 
 function viewdata(id){
-    createCookie("view_id",id,1);
-    window.location = "add_team_member.php";
+    createCookie("viewId",id,1);
+    window.location = "add_state.php";
 }
 
-async function showAlert(id,member_img) {
- new window.Swal({
+
+async function showAlert(id) {
+   new window.Swal({
     title: 'Are you sure?',
     text: "You won't be able to revert this!",
     showCancelButton: true,
@@ -161,12 +146,13 @@ async function showAlert(id,member_img) {
     padding: '2em',
 }).then((result) => {
     if (result.isConfirmed) {
-       var loc = "team_member.php?flg=del&member_id=" +id+"&member_img="+member_img;
-       window.location = loc;
-   }
+     var loc = "state.php?flg=del&id=" +id;
+     window.location = loc;
+ }
 });
 }
 </script>
+
 <?php
-	include "footer.php";
+include "footer.php"
 ?>

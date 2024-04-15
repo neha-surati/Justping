@@ -78,7 +78,7 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
                                         <?php echo $i; ?>, 
                                         '<?php echo $row["city_name"]; ?>',
                                         '<?php echo $row["state_name"]; ?>',
-                                        '<span class="badge whitespace-nowrap" :class="{\'badge-outline-success\': \'<?php echo $row["status"]; ?>\' === \'Enable\', \'badge-outline-danger\': \'<?php echo $row["status"]; ?>\' === \'Disable\'}"><?php echo $row["status"]; ?></span>',
+                                        '<span class="badge whitespace-nowrap" :class="{\'badge-outline-success\': \'<?php echo $row["stats"]; ?>\' === \'Enable\', \'badge-outline-danger\': \'<?php echo $row["stats"]; ?>\' === \'Disable\'}"><?php echo $row["stats"]; ?></span>',
                                         getActions(<?php echo $row["id"];?>)
                                         ],
                                     <?php $i++;}
