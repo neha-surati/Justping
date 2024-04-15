@@ -92,9 +92,9 @@ if (isset($_REQUEST["btn_update"])) {
 		} else {
 			$PicFileName = $banner_img;
 		}
-		echo($old_img);
+		echo ($old_img);
 		unlink("images/banner_image/" . $old_img);
-		
+
 		move_uploaded_file($banner_img_path, "images/banner_image/" . $PicFileName);
 	} else {
 		$PicFileName = $old_img;
@@ -157,25 +157,25 @@ function is_image($filename)
 				</div>
 
 				<div>
-                            <label for="groupFname">Vendor Name</label>
-                            <select class="form-select text-black" name="v_id" id="v_id" <?php echo isset($mode) && $mode == 'view' ? 'disabled' : '' ?> required>
-                                <option value="">Select Vendor</option>
-                                <?php
-                                $stmt = $obj->con1->prepare("SELECT * FROM `vendor_reg`");
-                                $stmt->execute();
-                                $Resp = $stmt->get_result();
-                                $stmt->close();
+					<label for="groupFname">Vendor Name</label>
+					<select class="form-select text-black" name="v_id" id="v_id" <?php echo isset($mode) && $mode == 'view' ? 'disabled' : '' ?> required>
+						<option value="">Select Vendor</option>
+						<?php
+						$stmt = $obj->con1->prepare("SELECT * FROM `vendor_reg`");
+						$stmt->execute();
+						$Resp = $stmt->get_result();
+						$stmt->close();
 
-                                while ($result = mysqli_fetch_array($Resp)) {
-                                ?>
-                                    <option value="<?php echo $result["id"]; ?>" <?php echo (isset($mode) && $data["v_id"] == $result["id"]) ? "selected" : ""; ?>>
-                                        <?php echo $result["name"]; ?>
-                                    </option>
-                                <?php
-                                }
-                                ?>
-                            </select>
-                        </div>
+						while ($result = mysqli_fetch_array($Resp)) {
+						?>
+							<option value="<?php echo $result["id"]; ?>" <?php echo (isset($mode) && $data["v_id"] == $result["id"]) ? "selected" : ""; ?>>
+								<?php echo $result["name"]; ?>
+							</option>
+						<?php
+						}
+						?>
+					</select>
+				</div>
 
 				<div <?php echo (isset($mode) && $mode == 'view') ? 'hidden' : '' ?>>
 					<label for="image">Image</label>
@@ -184,7 +184,7 @@ function is_image($filename)
 				<div>
 					<h4 class="font-bold text-primary mt-2 mb-3" style="display:<?php echo (isset($mode)) ? 'block' : 'none' ?>" id="preview_lable">Preview</h4>
 					<div id="mediaPreviewContainer" style="display:<?php echo (isset($mode)) ? 'block' : 'none' ?>">
-						<img src = "<?php echo (isset($mode) && is_image($data["filename"])) ? 'images/banner_image/' . $data["filename"] : '' ?>" name="PreviewMedia" id="PreviewMedia" width="400" height="400" style="display:<?php echo (isset($mode) && is_image($data["filename"])) ? 'block' : 'none' ?>" class="object-cover shadow rounded">
+						<img src="<?php echo (isset($mode) && is_image($data["filename"])) ? 'images/banner_image/' . $data["filename"] : '' ?>" name="PreviewMedia" id="PreviewMedia" width="400" height="400" style="display:<?php echo (isset($mode) && is_image($data["filename"])) ? 'block' : 'none' ?>" class="object-cover shadow rounded">
 						<!-- <video src = "<?php echo (isset($mode) && !is_image($data["filename"])) ? 'images/banner_image/' . $data["filename"] : '' ?>" name="PreviewVideo" id="PreviewVideo" width="400" height="400" style="display:<?php echo (isset($mode) && !is_image($data["filename"])) ? 'block' : 'none' ?>" class="object-cover shadow rounded" controls></video> -->
 						<div id="imgdiv" style="color:red"></div>
 						<input type="hidden" name="old_img" id="old_img" value="<?php echo (isset($mode) && $mode == 'edit') ? $data["filename"] : '' ?>" />
@@ -202,7 +202,7 @@ function is_image($filename)
 					<button type="submit" name="<?php echo isset($mode) && $mode == 'edit' ? 'btn_update' : 'btnsubmit' ?>" id="save" class="btn btn-success <?php echo isset($mode) && $mode == 'view' ? 'hidden' : '' ?>">
 						<?php echo isset($mode) && $mode == 'edit' ? 'Update' : 'Save' ?>
 					</button>
-					<button type="button" class="btn btn-danger"  onclick="location.href='banner.php'">Close</button>
+					<button type="button" class="btn btn-danger" onclick="location.href='banner.php'">Close</button>
 				</div>
 			</form>
 		</div>
