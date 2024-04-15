@@ -7,12 +7,12 @@ setcookie("viewId", "", time() - 3600);
 if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
     try {
         $stmt_del = $obj->con1->prepare(
-            "delete from city where id='" . $_REQUEST["id"] . "'"
+            "delete from state where id='" . $_REQUEST["id"] . "'"
         );
         $Resp = $stmt_del->execute();
         if (!$Resp) {
             if (strtok($obj->con1->error, ":") == "Cannot delete or update a parent row") {
-                throw new Exception("City is already in use!");
+                throw new Exception("State is already in use!");
             }
         }
         $stmt_del->close();
@@ -24,15 +24,15 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
     if ($Resp) {
         setcookie("msg", "data_del", time() + 3600, "/");
     }
-    header("location:city.php");
+    header("location:state.php");
 }
 ?>
 <div class='p-6 animate__animated' x-data='pagination'>
-	<h1 class="dark:text-white-dar  pb-8 text-3xl font-bold">City</h1>
+	<h1 class="dark:text-white-dar  pb-8 text-3xl font-bold">State</h1>
 	<div class="panel mt-6 flex items-center  justify-between relative">
 
 		<button type="button" class="p-2 btn btn-primary m-1 add-btn" onclick="javascript:add_data()">
-			<i class="ri-add-line mr-1"></i> Add City</button>
+			<i class="ri-add-line mr-1"></i> Add State</button>
 
 			<table id="myTable" class="table-hover whitespace-nowrap w-full"></table> </div>
 
@@ -66,17 +66,16 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
                 init() {
                     this.datatable = new simpleDatatables.DataTable('#myTable',{
                         data: {
-                            headings: ['Sr.No.','City Name','State Name','Status', 'Action'],
+                            headings: ['Sr.No.','State Name','Status', 'Action'],
                             data: [
                                 <?php
-                                $stmt = $obj->con1->prepare("SELECT c1.*, s1.state_name FROM `city` c1, `state` s1 WHERE c1.state_id=s1.id;");
+                                $stmt = $obj->con1->prepare("SELECT * FROM `state` order by id desc");
                                 $stmt->execute();
                                 $Resp = $stmt->get_result();
                                 $i = 1;
                                 while ($row = mysqli_fetch_array($Resp)) { ?>
                                     [
                                         <?php echo $i; ?>, 
-                                        '<?php echo $row["city_name"]; ?>',
                                         '<?php echo $row["state_name"]; ?>',
                                         '<span class="badge whitespace-nowrap" :class="{\'badge-outline-success\': \'<?php echo $row["stats"]; ?>\' === \'Enable\', \'badge-outline-danger\': \'<?php echo $row["stats"]; ?>\' === \'Disable\'}"><?php echo $row["stats"]; ?></span>',
                                         getActions(<?php echo $row["id"];?>)
@@ -125,20 +124,20 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
 function add_data(){
     eraseCookie("editId");
     eraseCookie("viewId");
-    window.location = "add_city.php";
+    window.location = "add_state.php";
 }
 function editdata(id){
     createCookie("editId",id,1);
-    window.location = "add_city.php";
+    window.location = "add_state.php";
 }
 
 function viewdata(id){
     createCookie("viewId",id,1);
-    window.location = "add_city.php";
+    window.location = "add_state.php";
 }
 
 
-async function showAlert(id,blog_img) {
+async function showAlert(id) {
    new window.Swal({
     title: 'Are you sure?',
     text: "You won't be able to revert this!",
@@ -147,7 +146,7 @@ async function showAlert(id,blog_img) {
     padding: '2em',
 }).then((result) => {
     if (result.isConfirmed) {
-     var loc = "city.php?flg=del&id=" +id;
+     var loc = "state.php?flg=del&id=" +id;
      window.location = loc;
  }
 });
