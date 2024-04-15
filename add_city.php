@@ -74,7 +74,7 @@ if (isset($_REQUEST["save"])) {
 }
 ?>
 <div class='p-6'>
-    <div class='flex items-center mb-3'>
+    <div class='flex items-center mb-3 gap-6'>
         <span class="cursor-pointer">
             <a href="javascript:go_back()" class="text-3xl text-black dark:text-white">
                 <i class="ri-arrow-left-line"></i>
@@ -138,7 +138,7 @@ if (isset($_REQUEST["save"])) {
                         <?php echo isset($mode) && $mode == 'edit' ? 'Update' : 'Save' ?>
                     </button>
                     <button type="button" class="btn btn-danger"
-                        onclick="<?php echo (isset($mode)) ? 'javascript:go_back()' : 'window.location.reload()' ?>">Close</button>
+                    onclick="location.href='city.php'">Close</button>
                 </div>
             </form>
         </div>

@@ -202,7 +202,7 @@ function is_image($filename)
 					<button type="submit" name="<?php echo isset($mode) && $mode == 'edit' ? 'btn_update' : 'btnsubmit' ?>" id="save" class="btn btn-success <?php echo isset($mode) && $mode == 'view' ? 'hidden' : '' ?>">
 						<?php echo isset($mode) && $mode == 'edit' ? 'Update' : 'Save' ?>
 					</button>
-					<button type="button" class="btn btn-danger" onclick="<?php echo (isset($mode)) ? 'javascript:go_back()' : 'window.location.reload()' ?>">Close</button>
+					<button type="button" class="btn btn-danger"  onclick="location.href='banner.php'">Close</button>
 				</div>
 			</form>
 		</div>
