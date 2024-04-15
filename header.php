@@ -182,8 +182,8 @@ if (!isset($_SESSION["userlogin"])) {
                             </a>
                         </li>
                         <li class="menu nav-item">
-                            <a href="category.php"
-                                class="nav-link group <?php echo basename($_SERVER["PHP_SELF"]) == "category.php" ? "active" : "" ?>">
+                            <a href="product_category_details.php"
+                                class="nav-link group <?php echo basename($_SERVER["PHP_SELF"]) == "product_category_details.php" ? "active" : "" ?>">
                                 <div class="flex items-center">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" class="w-6 h-6">
@@ -195,7 +195,7 @@ if (!isset($_SESSION["userlogin"])) {
                                             stroke-linecap="round"></path>
                                     </svg>
                                     <span
-                                        class="text-black ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Category
+                                        class="text-black ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Poduct Category
                                     </span>
                                 </div>
                             </a>
