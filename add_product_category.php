@@ -1,5 +1,4 @@
 <?php
-//registration of tribal welfare by harsh - 26/02/2024
 include "header.php";
 
 if (isset($_COOKIE["view_id"])) {
@@ -112,11 +111,11 @@ if (isset($_REQUEST["update"])) {
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10">
                     <div>
                         <label for="name">Name</label>
-                        <input id="name" name="name" type="text" class="form-input" placeholder="Enter your first name" value="<?php echo (isset($mode)) ? $data['name'] : '' ?>" required <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
+                        <input id="name" name="name" type="text" class="form-input" placeholder="Enter name" value="<?php echo (isset($mode)) ? $data['name'] : '' ?>" required <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
                     </div>
                     <div>
                         <label for="details">Details</label>
-                        <input id="details" name="details" type="text" class="form-input" placeholder="Enter your last name" value="<?php echo (isset($mode)) ? $data['details'] : '' ?>" required <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
+                        <input id="details" name="details" type="text" class="form-input" placeholder="Enter detail" value="<?php echo (isset($mode)) ? $data['details'] : '' ?>" required <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
                     </div>
                 </div>
                 <div>
