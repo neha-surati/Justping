@@ -185,7 +185,7 @@ if (isset($_REQUEST["update"])) {
                 <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-10">
                     <div>
                         <div>
-                            <label for="groupFname">State Name</label>
+                            <label for="groupFname">Address</label>
                             <select class="form-select text-black" name="state" id="state"
                                 <?php echo isset($mode) && $mode == 'view' ? 'disabled' : '' ?> required
                                 onchange="fillCity(this.value)">
@@ -234,7 +234,7 @@ if (isset($_REQUEST["update"])) {
                         </select>
                     </div>
                     <div>
-                        <label for="pincode">Pincode</label>
+                        <label for="pincode">Area</label>
                         <input id="pincode" name="pincode" type="tel" class="form-input" placeholder="Enter Pincode"
                             onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                             value="<?php echo (isset($mode)) ? $data['pincode'] : '' ?>" required
@@ -242,35 +242,7 @@ if (isset($_REQUEST["update"])) {
                     </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-10">
-                    <div>
-                        <label for="occupation">Occupation</label>
-                        <input id="occupation" name="occupation" type="text" min="0" class="form-input"
-                            placeholder="Enter Occupation"
-                            value="<?php echo (isset($mode)) ? $data['occupation'] : '' ?>" required
-                            <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
-                    </div>
-
-                    <div>
-                        <label for="blood_g">Blood Group</label>
-                        <select class="form-select" id="blood_g" name="blood_g" required>
-                            <option value="" selected>Select Blood Group</option>
-                            <option value="A+"
-                                <?php echo isset($data) && $data['blood_group'] == "A+" ? "selected" : "" ?>>A+</option>
-                            <option value="A-"
-                                <?php echo isset($data) && $data['blood_group'] == "A-" ? "selected" : "" ?>>A-</option>
-                            <option value="B+"
-                                <?php echo isset($data) && $data['blood_group'] == "B+" ? "selected" : "" ?>>B+</option>
-                            <option value="B-"
-                                <?php echo isset($data) && $data['blood_group'] == "B-" ? "selected" : "" ?>>B-</option>
-                            <option value="O+"
-                                <?php echo isset($data) && $data['blood_group'] == "O+" ? "selected" : "" ?>>O+</option>
-                            <option value="O-"
-                                <?php echo isset($data) && $data['blood_group'] == "O-" ? "selected" : "" ?>>O-</option>
-                            <option value="AB+"
-                                <?php echo isset($data) && $data['blood_group'] == "AB+" ? "selected" : "" ?>>AB+
-                            </option>
-                        </select>
-                    </div>
+                   
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10">
                     <div>
