@@ -64,10 +64,10 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
             init() {
                 this.datatable = new simpleDatatables.DataTable('#myTable', {
                     data: {
-                        headings: ['Sr.No.', 'Name', 'Image', 'Vendor', 'Status', 'Action'],
+                        headings: ['Sr.No.', 'Name', 'Image',  'Status', 'Action'],
                         data: [
                             <?php
-                            $stmt = $obj->con1->prepare("SELECT b1.* , v1.name FROM `banner` b1, `vendor_reg` v1 where b1.v_id=v1.id ORDER BY `srno` DESC ");
+                            $stmt = $obj->con1->prepare("SELECT * FROM `banner`");
                             $stmt->execute();
                             $Resp = $stmt->get_result();
                             $i = 1;
@@ -89,8 +89,6 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
                                         ?>
                                             <video src="images/banner_image/<?php echo addslashes($row["filename"]); ?>" height="200" width="200" style="display:<?php (in_array($extn, $vd_array)) ? 'block' : 'none' ?>" class="object-cover shadow rounded" controls></video>
                                         <?php } ?>`,
-
-                                    '<?php echo $row["name"]; ?>',
 
                                     '<span class="badge whitespace-nowrap" :class="{\'badge-outline-success\': \'<?php echo $row["status"]; ?>\' === \'Enable\', \'badge-outline-danger\': \'<?php echo $row["status"]; ?>\' === \'Disable\'}"><?php echo $row["status"]; ?></span>',
 
