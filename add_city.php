@@ -31,8 +31,9 @@ if(isset($_REQUEST['update'])){
     $user_id = $_SESSION['id'];
     $operation = "Updated";
 
-    $stmt = $obj->con1->prepare("UPDATE `city` SET city_name=?, state_id=?, stats=?,added_by=?,operation=? WHERE id=?");
-    $stmt->bind_param("sisiis", $city_name, $state_id, $status, $editId , $user_id, $operation);
+    // echo "UPDATE `city` SET city_name= $city_name, state_id=$state_id, status=$status,added_by= $user_id,operation= $operation";
+    $stmt = $obj->con1->prepare("UPDATE `city` SET city_name=?, state_id=?, status=?,added_by=?,operation=? WHERE id=?");
+    $stmt->bind_param("sisisi", $city_name, $state_id, $status,  $user_id, $operation ,$editId);
     $Res = $stmt->execute();
     $stmt->close();
 
@@ -52,9 +53,9 @@ if (isset($_REQUEST["save"])) {
     $user_id = $_SESSION['id'];
     $operation = "Added";
     try {
-        // echo "INSERT INTO `city`(`city_name`,`state_id`,`stats`) VALUES ('".$city_name."', '".$state_name."', '".$status."')";
+        // echo "INSERT INTO `city`(`city_name`,`state_id`,`status`) VALUES ('".$city_name."', '".$state_name."', '".$status."')";
         $stmt = $obj->con1->prepare(
-            "INSERT INTO `city`(`city_name`,`state_id`,`stats`,`added_by`,`operation`) VALUES (?,?,?,?,?)"
+            "INSERT INTO `city`(`city_name`,`state_id`,`status`,`added_by`,`operation`) VALUES (?,?,?,?,?)"
         );
         $stmt->bind_param("sisis", $city_name, $state_name, $status, $user_id, $operation);
         $Resp = $stmt->execute();
@@ -128,7 +129,7 @@ if (isset($_REQUEST["save"])) {
                     <label class="w-12 h-6 relative">
                         <input type="checkbox"
                             class="custom_switch absolute w-full h-full opacity-0 z-10 cursor-pointer peer" id="status"
-                            <?php echo isset($mode) && $data['stats'] == 'Enable' ? 'checked' : '' ?>
+                            <?php echo isset($mode) && $data['status'] == 'Enable' ? 'checked' : '' ?>
                             <?php echo (isset($mode) && $mode == 'view') ? 'Disabled' : '' ?> name="status" required>
                         <span
                             class="bg-[#ebedf2] dark:bg-dark block h-full rounded-full before:absolute before:left-1 before:bg-white dark:before:bg-white-dark dark:peer-checked:before:bg-white before:bottom-1 before:w-4 before:h-4 before:rounded-full peer-checked:before:left-7 peer-checked:bg-primary before:transition-all before:duration-300"></span>

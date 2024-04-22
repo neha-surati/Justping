@@ -4,7 +4,7 @@ include "header.php";
 if (isset($_COOKIE['viewId'])) {
     $mode = 'view';
     $viewId = $_COOKIE['viewId'];
-    $stmt = $obj->con1->prepare("SELECT a1.*, c1.city_name AS city FROM `area` a1, `state` s1, `city` c1 WHERE a1.srno=? AND a1.city=c1.id;");
+    $stmt = $obj->con1->prepare("SELECT a1.*, c1.city_name FROM `area` a1, `state` s1, `city` c1 WHERE a1.srno=? AND a1.city=c1.id;");
     $stmt->bind_param("i", $viewId);
     $stmt->execute();
     $Resp = $stmt->get_result();
@@ -15,12 +15,13 @@ if (isset($_COOKIE['viewId'])) {
 if(isset($_COOKIE['editId'])){
     $mode = 'edit';
     $editId = $_COOKIE['editId'];
-    $stmt = $obj->con1->prepare("SELECT a1.*, c1.city_name AS city FROM `area` a1, `state` s1, `city` c1 WHERE a1.srno=? AND a1.city=c1.id;");
+    $stmt = $obj->con1->prepare("SELECT a1.*, c1.city_name FROM `area` a1, `state` s1, `city` c1 WHERE a1.srno=? AND a1.city=c1.id;");
     $stmt->bind_param("i", $editId);
     $stmt->execute();
     $Resp = $stmt->get_result();
     $data = $Resp->fetch_assoc();
     $stmt->close();
+    echo $data["city"];
 }
 
 if(isset($_REQUEST['update'])){
@@ -32,7 +33,7 @@ if(isset($_REQUEST['update'])){
     $user_id = $_SESSION['id'];
     $operation = "Updated";
 
-    $stmt = $obj->con1->prepare("UPDATE `area` SET city=?, area_name=?, id=?, stats=?, added_by=?, operation=? WHERE srno=?");
+    $stmt = $obj->con1->prepare("UPDATE `area` SET city=?, area_name=?, pincode=?, stats=?, added_by=?, operation=? WHERE srno=?");
     $stmt->bind_param("isssisi", $city_id, $area_name, $pincode, $status, $user_id, $operation, $editId );
     $Res = $stmt->execute();
     $stmt->close();
@@ -54,9 +55,9 @@ if (isset($_REQUEST["save"])) {
     $user_id = $_SESSION['id'];
     $operation = "Added";
     try {
-        // echo "INSERT INTO `area`(`city`,`area_name`,`id`,`stats`,`added_by`,`operation`) VALUES ('".$city_id."', '".$area_name."','".$pincode."', '".$status."', '".$user_id."', '".$operation."')";
+        // echo "INSERT INTO `area`(`city`,`area_name`,`pincode`,`stats`,`added_by`,`operation`) VALUES ('".$city_id."', '".$area_name."','".$pincode."', '".$status."', '".$user_id."', '".$operation."')";
         $stmt = $obj->con1->prepare(
-            "INSERT INTO `area`(`city`,`area_name`,`id`,`stats`,`added_by`,`operation`) VALUES (?,?,?,?,?,?)"
+            "INSERT INTO `area`(`city`,`area_name`,`pincode`,`stats`,`added_by`,`operation`) VALUES (?,?,?,?,?,?)"
         );
         $stmt->bind_param("isssis", $city_id, $area_name, $pincode, $status, $user_id, $operation);
         $Resp = $stmt->execute();
@@ -96,7 +97,6 @@ if (isset($_REQUEST["save"])) {
             <div>
                     <label for="groupFname">City Name</label>
                     <select class="form-select text-gray-500" name="city_id" id="city_id"
-                    onblur="checkCity(this, <?php echo isset($mode) ? $data['id'] : -1 ?>)"
                     <?php echo isset($mode) && $mode == 'view' ? 'disabled' : ''?> required>
                         <option value="">Choose City</option>
                         <?php
@@ -108,7 +108,7 @@ if (isset($_REQUEST["save"])) {
                             while ($result = mysqli_fetch_array($Resp)) { 
                         ?>
                             <option value="<?php echo $result["id"]; ?>"
-                                <?php echo isset($mode) && $data["id"] == $result["city"] ? "selected" : ""; ?> 
+                                <?php echo isset($mode) && $data["city"] == $result["id"] ? "selected" : ""; ?> 
                             >
                                 <?php echo $result["city_name"]; ?>
                             </option>
@@ -120,8 +120,6 @@ if (isset($_REQUEST["save"])) {
                 <div>
                     <label for="area_name">Area Name </label>
                     <input id="area_name" name="area_name" type="text" class="form-input" 
-                    onblur="checkCity(this, <?php echo isset($mode) ? $data['id'] : -1 ?>)"
-
                     value="<?php echo isset($mode) ? $data["area_name"] : ""; ?>" pattern="^\s*\S.*$" <?php echo isset($mode) && $mode == 'view' ? 'readonly' : ''?>
                     required />
                     <p class="mt-3 text-danger text-base font-bold" id="demo"></p>
@@ -129,9 +127,9 @@ if (isset($_REQUEST["save"])) {
 
                 <div>
                     <label for="pincode"> Pincode </label>
-                    <input id="pincode" name="pincode" type="text" class="form-input"onblur="checkName(this,<?php echo isset($mode) ? $data['id'] : 0 ?>)" 
+                    <input id="pincode" name="pincode" type="text" class="form-input"
                      pattern="^[1-9][0-9]{5}$"title="enter valid pincode" maxlength="6"
-                        onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 13" <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> value="<?php echo isset($mode) ? $data['id'] : '' ?>"
+                        onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 13" <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> value="<?php echo isset($mode) ? $data['pincode'] : '' ?>"
                         required />
                     <p class="mt-3 text-danger text-base font-bold" id="demo"></p>
                 </div>
@@ -222,7 +220,7 @@ if (isset($mode) && $mode == 'edit') {
     echo "
             <script>
                 const stid = document.getElementById('stateId').value;
-                const ctid =" . json_encode($data['city_id']) . ";
+                const ctid =" . json_encode($data['city']) . ";
                 loadCities(stid, ctid);
             </script>
         ";

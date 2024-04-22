@@ -69,7 +69,7 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
                             headings: ['Sr.No.','City Name','Area Name','Pincode','Status', 'Action'],
                             data: [
                                 <?php
-                                $stmt = $obj->con1->prepare("SELECT a1.*, c1.city_name FROM `area` a1, `city` c1 WHERE a1.city=c1.id;");
+                                $stmt = $obj->con1->prepare("SELECT a1.*, c1.city_name FROM `area` a1, `city` c1 WHERE a1.city=c1.id order by a1.srno desc");
                                 $stmt->execute();
                                 $Resp = $stmt->get_result();
                                 $i = 1;
@@ -78,7 +78,7 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
                                         <?php echo $i; ?>, 
                                         '<?php echo $row["city_name"]; ?>',
                                         '<?php echo $row["area_name"]; ?>',
-                                        '<?php echo $row["id"]; ?>',
+                                        '<?php echo $row["pincode"]; ?>',
                                         '<span class="badge whitespace-nowrap" :class="{\'badge-outline-success\': \'<?php echo $row["stats"]; ?>\' === \'Enable\', \'badge-outline-danger\': \'<?php echo $row["stats"]; ?>\' === \'Disable\'}"><?php echo $row["stats"]; ?></span>',
                                         getActions(<?php echo $row["srno"];?>)
                                         ],
