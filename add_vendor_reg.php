@@ -4,7 +4,7 @@ include "header.php";
 if (isset($_COOKIE["view_id"])) {
     $mode = 'view';
     $viewId = $_COOKIE["view_id"];
-    $stmt = $obj->con1->prepare("SELECT * FROM `registration` where id=?");
+    $stmt = $obj->con1->prepare("SELECT * FROM `vendor_reg`where id=?");
     $stmt->bind_param('i', $viewId);
     $stmt->execute();
     $Resp = $stmt->get_result();
@@ -14,8 +14,8 @@ if (isset($_COOKIE["view_id"])) {
 
 if (isset($_COOKIE["edit_id"])) {
     $mode = 'edit';
-    $editId = $_COOKIE["edit_id"];
-    $stmt = $obj->con1->prepare("SELECT * FROM `registration` where id=?");
+    echo "edit id = ".$editId = $_COOKIE["edit_id"];
+    $stmt = $obj->con1->prepare("SELECT * FROM `vendor_reg` where id=?");
     $stmt->bind_param('i', $editId);
     $stmt->execute();
     $Resp = $stmt->get_result();
@@ -24,27 +24,32 @@ if (isset($_COOKIE["edit_id"])) {
 }
 
 if (isset($_REQUEST["save"])) {
-    $firstname = $_REQUEST["firstname"];
-    $lastname = $_REQUEST["lastname"];
-    $dob = $_REQUEST["dob"];
-    $gender = $_REQUEST["gender"];
-    $phone_no = $_REQUEST["phone_no"];
-    $email = $_REQUEST["email"];
-    $marital_s = $_REQUEST["marital_s"];
-    $state = $_REQUEST["state"];
-    $city = $_REQUEST["city"];
-    $pincode = $_REQUEST["pincode"];
-    $occupation = $_REQUEST["occupation"];
-    $blood_g = $_REQUEST["blood_g"];
+    $firstname = $_REQUEST["name"];
+    $lastname = $_REQUEST["lname"];
+    $user_id= $_REQUEST["uid"];
     $password = $_REQUEST["password"];
-    $confirm_password = $_REQUEST["confirm_password"];
+    $email = $_REQUEST["email"];
+    $business_name = $_REQUEST["business_name"];
+    $city= $_REQUEST["city"];
+    $area = $_REQUEST["area"];
+    $address = $_REQUEST["address"];
+    $contact_person = $_REQUEST["contact_person"];
+    $contact= $_REQUEST["contact"];
+    $rating="0";
+    $status = isset($_REQUEST["status"])?'Enable':'Disable';
+    $id = $_SESSION['id'];
+    // $percentage="0";
+    $operation = "Added";
+    $user_type="admin";
+    $isopen="open";
 
-    if ($password == $confirm_password) {
+//   echo "INSERT INTO  `vendor_reg`(`name`, `lname`, `username`, `password`, `email`, `business_name`, `city`, `area`, `address`,`contact_person`, `contact`, `rating`,`stats`,`added_by`,`operation`,`user_type`,`isopen`) VALUES ( '".$firstname."', '".$lastname."',  '".$user_id."', '".$password."' , '".$email."',  '".$business_name."', '".$city."',  '".$area."',  '".$address."',  '".$contact_person."' ,  '".$contact."', '".$rating."', '".$status."','".$id."', '".$operation."', '".$user_type."','".$isopen."')";
+    
         try {
             $stmt = $obj->con1->prepare(
-                "INSERT INTO `registration`(`firstname`, `lastname`, `dob`, `gender`, `phone_no`, `email`, `marital_status`, `state`, `city`, `pincode`, `occupation`, `blood_group`,`password`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)"
+                "INSERT INTO  `vendor_reg`(`name`, `lname`, `username`, `password`, `email`, `business_name`, `city`, `area`, `address`,`contact_person`, `contact`, `rating`,`stats`,`added_by`,`operation`,`user_type`,`isopen`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
             );
-            $stmt->bind_param("ssssisssissss", $firstname, $lastname, $dob, $gender, $phone_no, $email, $marital_s, $state, $city, $pincode, $occupation, $blood_g, $password);
+            $stmt->bind_param("ssssssiisssdsssss", $firstname, $lastname,  $user_id, $password , $email,  $business_name, $city,  $area,  $address,  $contact_person ,  $contact, $rating, $status,$id, $operation, $user_type,$isopen);
             $Resp = $stmt->execute();
             if (!$Resp) {
                 throw new Exception(
@@ -58,39 +63,41 @@ if (isset($_REQUEST["save"])) {
 
         if ($Resp) {
             setcookie("msg", "data", time() + 3600, "/");
-            header("location:user_details.php");
+             header("location:vendor_reg.php");
         } else {
             setcookie("msg", "fail", time() + 3600, "/");
-            header("location:user_details.php");
+             header("location:vendor_reg.php");
         }
-    } else {
-        setcookie("msg", "fail", time() + 3600, "/");
-        header("location:tribal_registration.php");
-    }
+  
 }
 
 if (isset($_REQUEST["update"])) {
-    $firstname = $_REQUEST["firstname"];
-    $lastname = $_REQUEST["lastname"];
-    $dob = $_REQUEST["dob"];
-    $gender = $_REQUEST["gender"];
-    $phone_no = $_REQUEST["phone_no"];
-    $email = $_REQUEST["email"];
-    $marital_s = $_REQUEST["marital_s"];
-    $state = $_REQUEST["state"];
-    $city = $_REQUEST["city"];
-    $pincode = $_REQUEST["pincode"];
-    $occupation = $_REQUEST["occupation"];
-    $blood_g = $_REQUEST["blood_g"];
+    $firstname = $_REQUEST["name"];
+    $lastname = $_REQUEST["lname"];
+    $user_id= $_REQUEST["uid"];
     $password = $_REQUEST["password"];
+    $email = $_REQUEST["email"];
+    $business_name = $_REQUEST["business_name"];
+    $city= $_REQUEST["city"];
+    $area = $_REQUEST["area"];
+    $address = $_REQUEST["address"];
+    $contact_person = $_REQUEST["contact_person"];
+    $contact= $_REQUEST["contact"];
+    $rating="0";
+    $status = isset($_REQUEST["status"])?'Enable':'Disable';
+    $id = $_SESSION['id'];
+    // $percentage="0";
+    $operation = "Added";
+    $user_type="admin";
+    $isopen="open";
     $editId = $_COOKIE["edit_id"];
 
     try {
         $stmt = $obj->con1->prepare(
-            "UPDATE `registration` SET `firstname`=?,`lastname`=?,`dob`=?,`gender`=?,`phone_no`=?,`email`=?,`marital_status`=?,`state`=?,`city`=?,`pincode`=?,`occupation`=?,`blood_group`=?,`password`=? WHERE `id`=?"
+            "UPDATE  `vendor_reg` SET`name`=?, `lname`=?, `username`=?, `password`=?, `email`=?, `business_name`=?, `city`=?, `area`=?, `address`=?,`contact_person`=?, `contact`=?, `rating`=?,`stats`=?,`added_by`=?,`operation`=?,`user_type`=?,`isopen`=? WHERE `id`=?"
         );
-        //echo "UPDATE `registration` SET `firstname`=$firstname,`lastname`=$lastname,`dob`=$dob,`gender`=$gender,`phone_no`=$phone_no,`email`=$email,`marital_status`=$marital_s,`state`=$state,`city`=$city,`pincode`=$pincode,`occupation`=$occupation,`blood_group`=$blood_g,`password`=$password WHERE `id`=$editId";
-        $stmt->bind_param("ssssisssissssi", $firstname, $lastname, $dob, $gender, $phone_no, $email, $marital_s, $state, $city, $pincode, $occupation, $blood_g, $password, $editId);
+        // echo  "UPDATE  `vendor_reg` SET`name`= '".$firstname."', `lname`='".$lastname."', `username`=  '".$user_id."', `password`= '".$password."', `email`='".$email."', `business_name`= '".$business_name."', `city`='".$city."', `area`='".$area."', `address`='".$address."',`contact_person`= '".$contact_person."', `contact`= '".$contact."', `rating`='".$rating."',`stats`= '".$status."',`added_by`='".$id."',`operation`='".$operation."',`user_type`='".$user_type."',`isopen`='".$isopen."' WHERE `id`='".$editId."'";
+        // $stmt->bind_param("ssssssiisssdsssssi", $firstname, $lastname,  $user_id, $password , $email,  $business_name, $city,  $area,  $address,  $contact_person ,  $contact, $rating, $status,$id, $operation, $user_type,$isopen,$editId);
 
         $Resp = $stmt->execute();
         if (!$Resp) {
@@ -105,10 +112,10 @@ if (isset($_REQUEST["update"])) {
 
     if ($Resp) {
         setcookie("msg", "update", time() + 3600, "/");
-        header("location:user_details.php");
+        header("location:vendor_reg.php");
     } else {
         setcookie("msg", "fail", time() + 3600, "/");
-        header("location:user_details.php");
+        header("location:vendor_reg.php");
     }
 }
 
@@ -130,25 +137,25 @@ if (isset($_REQUEST["update"])) {
             <form class="space-y-5" method="post">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10">
                     <div>
-                        <label for="firstname">First Name</label>
-                        <input id="firstname" name="firstname" type="text" class="form-input"
+                        <label for="name">First Name</label>
+                        <input id="name" name="name" type="text" class="form-input"
                             placeholder="Enter your first name"
-                            value="<?php echo (isset($mode)) ? $data['firstname'] : '' ?>" required
+                            value="<?php echo (isset($mode)) ? $data['name'] : '' ?>" required
                             <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
                     </div>
                     <div>
-                        <label for="lastname">Last Name</label>
-                        <input id="lastname" name="lastname" type="text" class="form-input"
+                        <label for="lname">Last Name</label>
+                        <input id="lname" name="lname" type="text" class="form-input"
                             placeholder="Enter your last name"
-                            value="<?php echo (isset($mode)) ? $data['lastname'] : '' ?>" required
+                            value="<?php echo (isset($mode)) ? $data['lname'] : '' ?>" required
                             <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
                     </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10">
                     <div>
-                        <label for="gridUID">Userid</label>
-                        <input type="text" placeholder="" name="userid" class="form-input"
-                            value="<?php echo (isset($mode)) ? $data['userid'] : '' ?>" required
+                        <label for="gridUID">User Name</label>
+                        <input type="text" placeholder="Enter your Userid" name="uid" id="uid" class="form-input"
+                            value="<?php echo (isset($mode)) ? $data['username'] : '' ?>" required
                             <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
                     </div>
                     <div>
@@ -161,18 +168,13 @@ if (isset($_REQUEST["update"])) {
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10">
                     <div>
-                        <label for="phone_no">Phone Number</label>
+                        <label for="business_name">Business Name</label>
                         <div>
-                            <div class="flex">
-                                <div
-                                    class="bg-[#eee] flex justify-center items-center ltr:rounded-l-md rtl:rounded-r-md px-3 font-semibold border ltr:border-r-0 rtl:border-l-0 border-[#e0e6ed] dark:border-[#17263c] dark:bg-[#1b2e4b]">
-                                    +91</div>
-                                <input id="phone_no" name="phone_no" type="text" placeholder="Enter  Phone Number"
-                                    class="form-input ltr:rounded-l-none rtl:rounded-r-none"
-                                    onkeypress="return event.charCode >= 48 && event.charCode <= 57" maxlength="10"
-                                    value="<?php echo (isset($mode)) ? $data['phone_no'] : '' ?>" required
-                                    <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
-                            </div>
+                            <input id="business_name" name="business_name" type="text"
+                                placeholder="Enter  Phone Business Name"
+                                class="form-input ltr:rounded-l-none rtl:rounded-r-none"
+                                value="<?php echo (isset($mode)) ? $data['business_name'] : '' ?>" required
+                                <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
                         </div>
                     </div>
                     <div>
@@ -182,84 +184,84 @@ if (isset($_REQUEST["update"])) {
                             <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
                     </div>
                 </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10">
+                    <div>
+                        <label for="contact_person">Contact Person</label>
+                        <input id="contact_person" name="contact_person" type="text" class="form-input"
+                            placeholder="Enter Contact Person"
+                            value="<?php echo (isset($mode)) ? $data['contact_person'] : '' ?>" required
+                            <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
+                    </div>
+                    <div>
+                        <label for="phone_no">Phone Number</label>
+                        <div>
+                            <div class="flex">
+                                <div
+                                    class="bg-[#eee] flex justify-center items-center ltr:rounded-l-md rtl:rounded-r-md px-3 font-semibold border ltr:border-r-0 rtl:border-l-0 border-[#e0e6ed] dark:border-[#17263c] dark:bg-[#1b2e4b]">
+                                    +91</div>
+                                <input id="contact" name="contact" type="text" placeholder="Enter  Phone Number"
+                                    class="form-input ltr:rounded-l-none rtl:rounded-r-none"
+                                    onkeypress="return event.charCode >= 48 && event.charCode <= 57" maxlength="10"
+                                    value="<?php echo (isset($mode)) ? $data['contact'] : '' ?>" required
+                                    <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-10">
                     <div>
                         <div>
-                            <label for="groupFname">Address</label>
-                            <select class="form-select text-black" name="state" id="state"
-                                <?php echo isset($mode) && $mode == 'view' ? 'disabled' : '' ?> required
-                                onchange="fillCity(this.value)">
-                                <option value="">Select State</option>
-                                <?php
-                                $stmt = $obj->con1->prepare("SELECT * FROM state");
-                                $stmt->execute();
-                                $Resp = $stmt->get_result();
-                                $stmt->close();
-
-                                while ($result = mysqli_fetch_array($Resp)) {
-                                ?>
-                                <option value="<?php echo $result["id"]; ?>"
-                                    <?php echo (isset($mode) && $data["state"] == $result["id"]) ? "selected" : ""; ?>>
-                                    <?php echo $result["name"]; ?>
-                                </option>
-                                <?php
-                                }
-                                ?>
-                            </select>
+                            <label for="address">Address </label>
+                            <textarea autocomplete="on" name="address" id="address" class="form-textarea" rows="1"
+                                value="" required
+                                <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?>><?php echo isset($mode) ? $data['address'] : '' ?></textarea>
                         </div>
                     </div>
                     <div>
-                        <label for="city">City</label>
-                        <select class="form-select text-black" name="city" id="city"
-                            <?php echo isset($mode) && $mode == 'view' ? 'disabled' : '' ?> required>
+                    <label for="groupFname">City Name</label>
+                    <select class="form-select text-gray-500" name="city" id="city"
+                    <?php echo isset($mode) && $mode == 'view' ? 'disabled' : ''?> required>
+                        <option value="">Choose City</option>
+                        <?php
+                            $stmt = $obj->con1->prepare("SELECT * FROM `city` WHERE city_name!='no city'");
+                            $stmt->execute();
+                            $Resp = $stmt->get_result();
+                            $stmt->close();
 
-                            <?php
-                            if (isset($mode)) {
-                                $s = $data["state"];
-                                $stmt = $obj->con1->prepare("select * from city WHERE state_id=?");
-                                $stmt->bind_param("i", $s);
-                                $stmt->execute();
-                                $res = $stmt->get_result();
-                                $stmt->close();
-                                while ($result = mysqli_fetch_array($res)) {
-                            ?>
+                            while ($result = mysqli_fetch_array($Resp)) { 
+                        ?>
                             <option value="<?php echo $result["id"]; ?>"
-                                <?php echo (isset($mode) && $data["city"] == $result["id"]) ? "selected" : ""; ?>>
-                                <?php echo $result["city_nm"]; ?>
+                                <?php echo isset($mode) && $data["city"] == $result["id"] ? "selected" : ""; ?> 
+                            >
+                                <?php echo $result["city_name"]; ?>
                             </option>
-                            <?php
-                                }
+                        <?php 
                             }
-                            ?>
-                        </select>
-                    </div>
+                        ?>
+                    </select>
+                </div>
                     <div>
-                        <label for="pincode">Area</label>
-                        <input id="pincode" name="pincode" type="tel" class="form-input" placeholder="Enter Pincode"
+                        <label for="area">Area</label>
+                        <input id="area" name="area" type="tel" class="form-input" placeholder="Enter Pincode"
                             onkeypress="return event.charCode >= 48 && event.charCode <= 57"
-                            value="<?php echo (isset($mode)) ? $data['pincode'] : '' ?>" required
+                            value="<?php echo (isset($mode)) ? $data['area'] : '' ?>" required
                             <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
                     </div>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-10">
-                   
+                <div class="mb-4">
+                    <label for="custom_switch_checkbox1">Status</label>
+                    <label class="w-12 h-6 relative">
+                        <input type="checkbox"
+                            class="custom_switch absolute w-full h-full opacity-0 z-10 cursor-pointer peer" id="status"
+                            <?php echo isset($mode) && $data['stats'] == 'Enable' ? 'checked' : '' ?>
+                            <?php echo (isset($mode) && $mode == 'view') ? 'Disabled' : '' ?> name="status" required>
+                        <span
+                            class="bg-[#ebedf2] dark:bg-dark block h-full rounded-full before:absolute before:left-1 before:bg-white dark:before:bg-white-dark dark:peer-checked:before:bg-white before:bottom-1 before:w-4 before:h-4 before:rounded-full peer-checked:before:left-7 peer-checked:bg-primary before:transition-all before:duration-300"></span>
+                    </label>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10">
-                    <div>
-                        <label for="password">Create Password</label>
-                        <input id="password" name="password" type="password" min="0" class="form-input"
-                            placeholder="Create your new Password"
-                            value="<?php echo (isset($mode)) ? $data['password'] : '' ?>" required
-                            <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
-                    </div>
-                    <div>
-                        <label for="password">Confirm Password</label>
-                        <input id="confirm_password" name="confirm_password" type="password" min="0" class="form-input"
-                            placeholder="Confirm your new Password"
-                            value="<?php echo (isset($mode)) ? $data['password'] : '' ?>" required
-                            <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
-                    </div>
-                </div>
+
+
                 <div class="relative inline-flex align-middle gap-3 mt-4 ">
                     <button type="submit" name="<?php echo isset($mode) && $mode == 'edit' ? 'update' : 'save' ?>"
                         id="save" class="btn btn-success <?php echo isset($mode) && $mode == 'view' ? 'hidden' : '' ?>"
@@ -274,11 +276,11 @@ if (isset($_REQUEST["update"])) {
 </div>
 
 <script type="text/javascript">
-$(document).ready(function() {
-    eraseCookie("edit_id");
-    eraseCookie("view_id");
-});
-checkCookies();
+// $(document).ready(function() {
+//     eraseCookie("edit_id");
+//     eraseCookie("view_id");
+// });
+// checkCookies();
 
 function go_back() {
     eraseCookie("edit_id");

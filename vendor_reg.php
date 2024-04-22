@@ -3,7 +3,7 @@
     include "header.php";
 
 	if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
-	$vendor_id = $_REQUEST['vendor_id'];
+	$vendor_id = $_REQUEST['id'];
    
 
     try {
@@ -166,7 +166,7 @@ async function showAlert(id) {
         padding: '2em',
     }).then((result) => {
         if (result.isConfirmed) {
-            var loc = "add_vendor_reg.php?flg=del&member_id=" + id + "&member_img=" + member_img;
+            var loc = "vendor_reg.php?flg=del&id=" + id ;
             window.location = loc;
         }
     });
