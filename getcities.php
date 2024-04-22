@@ -14,8 +14,8 @@
 <?php 
 while ($row = mysqli_fetch_assoc($result)) { 
 ?>
-	<option value="<?php echo $row["srno"]; ?>" <?php echo isset($ctid) && $ctid == $row['srno'] ? 'selected' : '' ?> >
-		<?php echo $row["ctnm"]; ?>
+	<option value="<?php echo $row["id"]; ?>" <?php echo isset($ctid) && $ctid == $row['id'] ? 'selected' : '' ?> >
+		<?php echo $row["city_name"]; ?>
 	</option>
 <?php
 }
