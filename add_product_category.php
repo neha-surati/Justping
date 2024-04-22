@@ -25,18 +25,19 @@ if (isset($_COOKIE["edit_id"])) {
 
 if (isset($_REQUEST["save"])) {
     $name = $_REQUEST["name"];
-    $v_id = $_REQUEST["v_id"];
     $details = $_REQUEST["details"];
 	$status = (isset($_REQUEST["status"]) && $_REQUEST["status"] == 'on') ? 'Enable' : 'Disable';
     $added_by = $_SESSION["id"];
     $operation = "Added";
+    $sort_order="1";
+    $user_type="admin";
 
 
     try {
         $stmt = $obj->con1->prepare(
-            "INSERT INTO `product_category`(`v_id`,`name`, `details`, `stats`, `added_by`, `operation`) VALUES (?,?,?,?,?,?)"
+            "INSERT INTO `product_category`(`name`, `details`, `stats`, `added_by`, `operation`,`sort_order`,`user_type`) VALUES (?,?,?,?,?,?,?)"
         );
-        $stmt->bind_param("isssis",$v_id,$name,$details ,$status,$added_by,$operation);
+        $stmt->bind_param("sssisis",$name,$details ,$status,$added_by,$operation,$sort_order,$user_type);
         $Resp = $stmt->execute();
         if (!$Resp) {
             throw new Exception(
@@ -50,16 +51,15 @@ if (isset($_REQUEST["save"])) {
 
     if ($Resp) {
         setcookie("msg", "data", time() + 3600, "/");
-        header("location:product_category_details.php");
+         header("location:product_category_details.php");
     } else {
         setcookie("msg", "fail", time() + 3600, "/");
-        header("location:product_category_details.php");
+         header("location:product_category_details.php");
     }
 }
 
 if (isset($_REQUEST["update"])) {
     $name = $_REQUEST["name"];
-    $v_id = $_REQUEST["v_id"];
     $details = $_REQUEST["details"];
 	$status = (isset($_REQUEST["status"]) && $_REQUEST["status"] == 'on') ? 'Enable' : 'Disable';
     $added_by = $_SESSION["id"];
@@ -69,9 +69,9 @@ if (isset($_REQUEST["update"])) {
 
     try {
         $stmt = $obj->con1->prepare(
-            "UPDATE `product_category` SET `v_id`=?,`name`=?,`details`=?,`stats`=?,`added_by`=?,`operation`=? WHERE `id`=?"
+            "UPDATE `product_category` SET `name`=?,`details`=?,`stats`=?,`added_by`=?,`operation`=? WHERE `id`=?"
         );
-        $stmt->bind_param("isssisi", $v_id, $name, $details , $status, $added_by, $operation, $editId);
+        $stmt->bind_param("sssisi", $name, $details , $status, $added_by, $operation, $editId);
 
         $Resp = $stmt->execute();
         if (!$Resp) {
@@ -108,7 +108,7 @@ if (isset($_REQUEST["update"])) {
     <div class="panel mt-6">
         <div class="mb-5">
             <form class="space-y-5" method="post">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10">
+                
                     <div>
                         <label for="name">Name</label>
                         <input id="name" name="name" type="text" class="form-input" placeholder="Enter name" value="<?php echo (isset($mode)) ? $data['name'] : '' ?>" required <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
@@ -117,27 +117,8 @@ if (isset($_REQUEST["update"])) {
                         <label for="details">Details</label>
                         <input id="details" name="details" type="text" class="form-input" placeholder="Enter detail" value="<?php echo (isset($mode)) ? $data['details'] : '' ?>" required <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
                     </div>
-                </div>
-                <div>
-                    <label for="groupFname">Vendor Name</label>
-                    <select class="form-select text-black" name="v_id" id="v_id" <?php echo isset($mode) && $mode == 'view' ? 'disabled' : '' ?> required>
-                        <option value="">Select Vendor</option>
-                        <?php
-                        $stmt = $obj->con1->prepare("SELECT * FROM `vendor_reg`");
-                        $stmt->execute();
-                        $Resp = $stmt->get_result();
-                        $stmt->close();
-
-                        while ($result = mysqli_fetch_array($Resp)) {
-                        ?>
-                            <option value="<?php echo $result["id"]; ?>" <?php echo (isset($mode) && $data["v_id"] == $result["id"]) ? "selected" : ""; ?>>
-                                <?php echo $result["name"]; ?>
-                            </option>
-                        <?php
-                        }
-                        ?>
-                    </select>
-                </div>
+              
+                
                 <div class="mb-4">
                     <label for="custom_switch_checkbox1">Status</label>
                     <label class="w-12 h-6 relative">

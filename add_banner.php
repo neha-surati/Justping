@@ -20,7 +20,6 @@ if (isset($_COOKIE['view_id'])) {
 }
 if (isset($_REQUEST["btnsubmit"])) {
 	$banner_title = $_REQUEST["banner_title"];
-	$v_id = $_REQUEST["v_id"];
 	$status = isset($_REQUEST["status"]) ? "Enable" : "Disable";
 	$banner_img = $_FILES['banner_img']['name'];
 	$banner_img = str_replace(' ', '_', $banner_img);
@@ -42,8 +41,8 @@ if (isset($_REQUEST["btnsubmit"])) {
 		}
 	}
 	try {
-		$stmt = $obj->con1->prepare("INSERT INTO `banner`(`name`, `v_id`,`filename`, `status`) VALUES (?,?,?,?)");
-		$stmt->bind_param("siss", $banner_title, $v_id, $PicFileName, $status);
+		$stmt = $obj->con1->prepare("INSERT INTO `banner`(`name`,`filename`, `status`) VALUES (?,?,?)");
+		$stmt->bind_param("sss", $banner_title,  $PicFileName, $status);
 		$Resp = $stmt->execute();
 		if (!$Resp) {
 			throw new Exception(
@@ -65,7 +64,6 @@ if (isset($_REQUEST["btnsubmit"])) {
 }
 if (isset($_REQUEST["btn_update"])) {
 	$id = $_COOKIE['edit_id'];
-	$v_id = $_REQUEST["v_id"];
 	$banner_title = $_REQUEST["banner_title"];
 	$status = (isset($_REQUEST["status"]) && $_REQUEST["status"] == 'on') ? 'Enable' : 'Disable';
 	$banner_img = $_FILES['banner_img']['name'];
@@ -97,8 +95,8 @@ if (isset($_REQUEST["btn_update"])) {
 	}
 	//echo $PicFileName;
 	try {
-		$stmt = $obj->con1->prepare("UPDATE `banner` SET `name`=?, `v_id`=?, `filename`=?,`status`=? WHERE `srno`=?");
-		$stmt->bind_param("sissi", $banner_title, $v_id, $PicFileName, $status, $id);
+		$stmt = $obj->con1->prepare("UPDATE `banner` SET `name`=?,  `filename`=?,`status`=? WHERE `srno`=?");
+		$stmt->bind_param("sssi", $banner_title,  $PicFileName, $status, $id);
 		$Resp = $stmt->execute();
 		if (!$Resp) {
 			throw new Exception(
@@ -148,27 +146,6 @@ function is_image($filename)
 					<label class="w-12 h-6 relative">
 						<input type="checkbox" class="custom_switch absolute w-full h-full opacity-0 z-10 cursor-pointer peer" id="status" name="status" <?php echo (isset($mode) && $data['status'] == 'Enable') ? 'checked' : '' ?> <?php echo (isset($mode) && $mode == 'view') ? 'disabled' : '' ?>><span class="bg-[#ebedf2] dark:bg-dark block h-full rounded-full before:absolute before:left-1 before:bg-white dark:before:bg-white-dark dark:peer-checked:before:bg-white before:bottom-1 before:w-4 before:h-4 before:rounded-full peer-checked:before:left-7 peer-checked:bg-primary before:transition-all before:duration-300"></span>
 					</label>
-				</div>
-
-				<div>
-					<label for="groupFname">Vendor Name</label>
-					<select class="form-select text-black" name="v_id" id="v_id" <?php echo isset($mode) && $mode == 'view' ? 'disabled' : '' ?> required>
-						<option value="">Select Vendor</option>
-						<?php
-						$stmt = $obj->con1->prepare("SELECT * FROM `vendor_reg`");
-						$stmt->execute();
-						$Resp = $stmt->get_result();
-						$stmt->close();
-
-						while ($result = mysqli_fetch_array($Resp)) {
-						?>
-							<option value="<?php echo $result["id"]; ?>" <?php echo (isset($mode) && $data["v_id"] == $result["id"]) ? "selected" : ""; ?>>
-								<?php echo $result["name"]; ?>
-							</option>
-						<?php
-						}
-						?>
-					</select>
 				</div>
 
 				<div <?php echo (isset($mode) && $mode == 'view') ? 'hidden' : '' ?>>
