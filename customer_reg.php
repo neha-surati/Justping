@@ -18,9 +18,6 @@
   }
 
   if ($Resp) {
-    if(file_exists("images/member_image/".$member_img)){
-      unlink("images/member_image/".$member_img);
-  }
   setcookie("msg", "data_del", time() + 3600, "/");
 }
 header("location:customer_reg.php");
