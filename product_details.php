@@ -72,31 +72,30 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
                             $Resp = $stmt->get_result();
                             $i = 1;
                             while ($row = mysqli_fetch_array($Resp)) {
-                                ?>
-                                [
-                                <?php echo $i; ?>,
+                            ?>[
+                                    <?php echo $i; ?>,
 
-                                '<?php echo addslashes($row["name"]); ?>',
+                                    '<?php echo addslashes($row["name"]); ?>',
 
-                                `<?php
-                                $img_array = array("jpg", "jpeg", "png", "bmp");
-                                $vd_array = array("mp4", "webm", "ogg", "mkv");
-                                $extn = strtolower(pathinfo($row["image"], PATHINFO_EXTENSION));
-                                if (in_array($extn, $img_array)) {
-                                    ?>
+                                    `<?php
+                                        $img_array = array("jpg", "jpeg", "png", "bmp");
+                                        $vd_array = array("mp4", "webm", "ogg", "mkv");
+                                        $extn = strtolower(pathinfo($row["image"], PATHINFO_EXTENSION));
+                                        if (in_array($extn, $img_array)) {
+                                        ?>
                                                     <img src="images/product_images/<?php echo addslashes($row["image"]); ?>" width="200" height="200" style="display:<?php (in_array($extn, $img_array)) ? 'block' : 'none' ?>" class="object-cover shadow rounded">
                                                 <?php
-                                }
-                                if (in_array($extn, $vd_array)) {
-                                    ?>
+                                            }
+                                            if (in_array($extn, $vd_array)) {
+                                                ?>
                                                     <video src="images/product_images/<?php echo addslashes($row["image"]); ?>" height="200" width="200" style="display:<?php (in_array($extn, $vd_array)) ? 'block' : 'none' ?>" class="object-cover shadow rounded" controls></video>
                                             <?php } ?>`,
 
-                                '<span class="badge whitespace-nowrap" :class="{\'badge-outline-success\': \'<?php echo $row["status"]; ?>\' === \'Enable\', \'badge-outline-danger\': \'<?php echo $row["status"]; ?>\' === \'Disable\'}"><?php echo $row["status"]; ?></span>',
+                                    '<span class="badge whitespace-nowrap" :class="{\'badge-outline-success\': \'<?php echo $row["stats"]; ?>\' === \'Enable\', \'badge-outline-danger\': \'<?php echo $row["stats"]; ?>\' === \'Disable\'}"><?php echo $row["stats"]; ?></span>',
 
-                                getActions(<?php echo $row["id"]; ?>, '<?php echo addslashes($row["image"]); ?>')
+                                    getActions(<?php echo $row["id"]; ?>, '<?php echo addslashes($row["image"]); ?>')
                                 ],
-                                <?php $i++;
+                            <?php $i++;
                             }
                             ?>
                         ],
@@ -106,7 +105,7 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
                     columns: [{
                         select: 0,
                         sort: 'asc',
-                    },],
+                    }, ],
                     firstLast: true,
                     firstText: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M13 19L7 12L13 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path opacity="0.5" d="M16.9998 19L10.9998 12L16.9998 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
                     lastText: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M11 19L17 12L11 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path opacity="0.5" d="M6.99976 19L12.9998 12L6.99976 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',

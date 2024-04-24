@@ -23,6 +23,10 @@ if (isset($_REQUEST["btnsubmit"])) {
 	$v_id = $_REQUEST["v_id"];
 	$details = $_REQUEST["details"];
 	$status = isset($_REQUEST["status"]) ? "Enable" : "Disable";
+	$price = $_REQUEST["price"];
+	$discount = $_REQUEST["discount"];
+	$finalPrice = $_REQUEST["finalPrice"];
+	$operation = "Added";
 	$product_img = $_FILES['product_img']['name'];
 	$product_img = str_replace(' ', '_', $product_img);
 	$product_img_path = $_FILES['product_img']['tmp_name'];
@@ -43,8 +47,8 @@ if (isset($_REQUEST["btnsubmit"])) {
 		}
 	}
 	try {
-		$stmt = $obj->con1->prepare("INSERT INTO `product`(`name`, `detail`, `v_id`,`image`, `stats`) VALUES (?,?,?,?,?)");
-		$stmt->bind_param("ssiss", $name, $details, $v_id, $PicFileName, $status);
+		$stmt = $obj->con1->prepare("INSERT INTO `product`(`name`, `detail`, `v_id`,`image`, `stats`, `main_price`, `discount_per`, `discount_price`, `operation`) VALUES (?,?,?,?,?,?,?,?,?)");
+		$stmt->bind_param("ssissiiis", $name, $details, $v_id, $PicFileName, $status, $price, $discount, $finalPrice, $operation);
 		$Resp = $stmt->execute();
 		if (!$Resp) {
 			throw new Exception(
@@ -70,6 +74,10 @@ if (isset($_REQUEST["btn_update"])) {
 	$name = $_REQUEST["name"];
 	$details = $_REQUEST["details"];
 	$status = (isset($_REQUEST["status"]) && $_REQUEST["status"] == 'on') ? 'Enable' : 'Disable';
+	$price = $_REQUEST["price"];
+	$discount = $_REQUEST["discount"];
+	$finalPrice = $_REQUEST["finalPrice"];
+	$operation = "Updated";
 	$product_img = $_FILES['product_img']['name'];
 	$product_img = str_replace(' ', '_', $product_img);
 	$product_img_path = $_FILES['product_img']['tmp_name'];
@@ -97,8 +105,8 @@ if (isset($_REQUEST["btn_update"])) {
 	}
 	//echo $PicFileName;
 	try {
-		$stmt = $obj->con1->prepare("UPDATE `product` SET `name`=?, `detail`=?, `v_id`=?, `image`=?,`status`=? WHERE `id`=?");
-		$stmt->bind_param("ssissi", $name, $details, $v_id, $PicFileName, $status, $id);
+		$stmt = $obj->con1->prepare("UPDATE `product` SET `name`=?, `detail`=?, `v_id`=?, `image`=?,`stats`=?, `main_price`=?, `discount_per`=?, `discount_price`=?,`operation`=? WHERE `id`=?");
+		$stmt->bind_param("ssissiiisi", $name, $details, $v_id, $PicFileName, $status, $price, $discount, $finalPrice, $operation, $id);
 		$Resp = $stmt->execute();
 		if (!$Resp) {
 			throw new Exception(
@@ -150,21 +158,9 @@ function is_image($filename)
 						<label for="details">Details</label>
 						<input id="details" name="details" type="text" class="form-input"
 							placeholder="Enter detail"
-							value="<?php echo (isset($mode)) ? $data['details'] : '' ?>" required <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
+							value="<?php echo (isset($mode)) ? $data['detail'] : '' ?>" required <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
 					</div>
 				</div>
-
-				<div class="mb-4">
-					<label for="custom_switch_checkbox1">Status</label>
-					<label class="w-12 h-6 relative">
-						<input type="checkbox"
-							class="custom_switch absolute w-full h-full opacity-0 z-10 cursor-pointer peer" id="status"
-							name="status" <?php echo (isset($mode) && $data['status'] == 'Enable') ? 'checked' : '' ?>
-							<?php echo (isset($mode) && $mode == 'view') ? 'disabled' : '' ?>><span
-							class="bg-[#ebedf2] dark:bg-dark block h-full rounded-full before:absolute before:left-1 before:bg-white dark:before:bg-white-dark dark:peer-checked:before:bg-white before:bottom-1 before:w-4 before:h-4 before:rounded-full peer-checked:before:left-7 peer-checked:bg-primary before:transition-all before:duration-300"></span>
-					</label>
-				</div>
-
 				<div>
 					<label for="groupFname">Vendor Name</label>
 					<select class="form-select text-black" name="v_id" id="v_id" <?php echo isset($mode) && $mode == 'view' ? 'disabled' : '' ?> required>
@@ -185,7 +181,35 @@ function is_image($filename)
 						?>
 					</select>
 				</div>
+				<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-10">
+					<div>
+						<label for="price">Price</label>
+						<input id="price" name="price" type="text" class="form-input" required
+							value="<?php echo (isset($mode)) ? $data['main_price'] : '' ?>" placeholder="Enter price" <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
+					</div>
+					<div>
+						<label for="discount">Discount (%)</label>
+						<input id="discount" name="discount" type="text" class="form-input"
+							placeholder="Enter discount percentage" onchange="calculateFinalPrice();"
+							value="<?php echo (isset($mode)) ? $data['discount_per'] : '' ?>" required <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
+					</div>
+					<div>
+						<label for="finalPrice">Final Price</label>
+						<input id="finalPrice" name="finalPrice" type="text" class="form-input" required
+							value="<?php echo (isset($mode)) ? $data['discount_price'] : '' ?>" placeholder="Final price" <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
+					</div>
+				</div>
 
+				<div class="mb-4">
+					<label for="custom_switch_checkbox1">Status</label>
+					<label class="w-12 h-6 relative">
+						<input type="checkbox"
+							class="custom_switch absolute w-full h-full opacity-0 z-10 cursor-pointer peer" id="status"
+							name="status" <?php echo (isset($mode) && $data['stats'] == 'Enable') ? 'checked' : '' ?>
+							<?php echo (isset($mode) && $mode == 'view') ? 'disabled' : '' ?>><span
+							class="bg-[#ebedf2] dark:bg-dark block h-full rounded-full before:absolute before:left-1 before:bg-white dark:before:bg-white-dark dark:peer-checked:before:bg-white before:bottom-1 before:w-4 before:h-4 before:rounded-full peer-checked:before:left-7 peer-checked:bg-primary before:transition-all before:duration-300"></span>
+					</label>
+				</div>
 				<div <?php echo (isset($mode) && $mode == 'view') ? 'hidden' : '' ?>>
 					<label for="image">Image</label>
 					<input id="product_img" name="product_img" class="demo1" type="file" data_btn_text="Browse"
@@ -207,6 +231,7 @@ function is_image($filename)
 							value="<?php echo (isset($mode) && $mode == 'edit') ? $data["image"] : '' ?>" />
 					</div>
 				</div>
+				
 				<!-- <div class="relative inline-flex align-middle gap-3 mt-4 <?php echo isset($mode) && $mode == 'view' ? 'hidden' : '' ?>">
 
 					<button type="submit" name="<?php echo isset($mode) && $mode == 'edit' ? 'btn_update' : 'btnsubmit' ?>" id="save" class="btn btn-success" hidden>Save</button>
@@ -315,6 +340,19 @@ function is_image($filename)
 			$('#imgdiv').html("");
 			document.getElementById('save').disabled = false;
 		}
+
+		function calculateFinalPrice() {
+            // Get the values from the text fields
+            var price = parseFloat(document.getElementById("price").value);
+            var discountPercentage = parseFloat(document.getElementById("discount").value);
+
+            // Calculate the final amount after applying the discount
+            var discountAmount = price * (discountPercentage / 100);
+            var finalPrice = price - discountAmount;
+
+            // Display the final amount in the third text field
+            document.getElementById("finalPrice").value = finalPrice.toFixed(2);
+        }
 	</script>
 	<?php
 	include "footer.php";
