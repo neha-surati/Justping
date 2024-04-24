@@ -14,7 +14,7 @@ if (isset($_COOKIE["view_id"])) {
 
 if (isset($_COOKIE["edit_id"])) {
     $mode = 'edit';
-    echo "edit id = ".$editId = $_COOKIE["edit_id"];
+    $editId = $_COOKIE["edit_id"];
     $stmt = $obj->con1->prepare("SELECT * FROM `customer_reg` where id=?");
     $stmt->bind_param('i', $editId);
     $stmt->execute();
@@ -39,9 +39,9 @@ if (isset($_REQUEST["save"])) {
     
         try {
             $stmt = $obj->con1->prepare(
-                "INSERT INTO `customer_reg`(`firstname`, `lastname`, `username`, `password`, `email`, `contact`,`status`,`operation`,`type`) VALUES (?,?,?,?,?,?,?,?,?)"
+                "INSERT INTO `customer_reg`(`firstname`, `lastname`, `username`,`password`, `email`, `contact`,`status`,`operation`,`type`) VALUES (?,?,?,?,?,?,?,?,?)"
             );
-            $stmt->bind_param("sssssssss", $firstname, $lastname,  $user_id, $password , $email,  $contact,  $status, $operation, $user_type);
+            $stmt->bind_param("sssssssss", $firstname, $lastname,$user_id, $password , $email,  $contact,  $status, $operation, $user_type);
             $Resp = $stmt->execute();
             if (!$Resp) {
                 throw new Exception(
@@ -71,17 +71,16 @@ if (isset($_REQUEST["update"])) {
     $user_id= $_REQUEST["uid"];
     $password = $_REQUEST["password"];
     $status = isset($_REQUEST["status"])?'Enable':'Disable';
-    $operation = "Added";
+    $operation = "update";
     $user_type="admin";
     $editId = $_COOKIE["edit_id"];
 
     try {
         $stmt = $obj->con1->prepare(
-            "UPDATE  `vendor_reg` SET`name`=?, `lname`=?, `username`=?, `password`=?, `email`=?, `business_name`=?, `city`=?, `area`=?, `address`=?,`contact_person`=?, `contact`=?, `rating`=?,`stats`=?,`added_by`=?,`operation`=?,`user_type`=?,`isopen`=? WHERE `id`=?"
+            "UPDATE   `customer_reg` SET `firstname`=?, `lastname`=?, `username`=?, `password`=?, `email`=?, `contact`=?, `status`=?,`operation`=?,`type`=? WHERE `id`=?"
         );
         // echo  "UPDATE  `vendor_reg` SET`name`= '".$firstname."', `lname`='".$lastname."', `username`=  '".$user_id."', `password`= '".$password."', `email`='".$email."', `business_name`= '".$business_name."', `city`='".$city."', `area`='".$area."', `address`='".$address."',`contact_person`= '".$contact_person."', `contact`= '".$contact."', `rating`='".$rating."',`stats`= '".$status."',`added_by`='".$id."',`operation`='".$operation."',`user_type`='".$user_type."',`isopen`='".$isopen."' WHERE `id`='".$editId."'";
-        // $stmt->bind_param("ssssssiisssdsssssi", $firstname, $lastname,  $user_id, $password , $email,  $business_name, $city,  $area,  $address,  $contact_person ,  $contact, $rating, $status,$id, $operation, $user_type,$isopen,$editId);
-
+        $stmt->bind_param("sssssssssi", $firstname, $lastname,$user_id, $password , $email,  $contact,  $status, $operation, $user_type,$editId);
         $Resp = $stmt->execute();
         if (!$Resp) {
             throw new Exception(
@@ -123,14 +122,14 @@ if (isset($_REQUEST["update"])) {
                         <label for="name">First Name</label>
                         <input id="name" name="name" type="text" class="form-input"
                             placeholder="Enter your first name"
-                            value="<?php echo (isset($mode)) ? $data['name'] : '' ?>" required
+                            value="<?php echo (isset($mode)) ? $data['firstname'] : '' ?>" required
                             <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
                     </div>
                     <div>
                         <label for="lname">Last Name</label>
                         <input id="lname" name="lname" type="text" class="form-input"
                             placeholder="Enter your last name"
-                            value="<?php echo (isset($mode)) ? $data['lname'] : '' ?>" required
+                            value="<?php echo (isset($mode)) ? $data['lastname'] : '' ?>" required
                             <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
                     </div>
                 </div>
@@ -177,7 +176,7 @@ if (isset($_REQUEST["update"])) {
                     <label class="w-12 h-6 relative">
                         <input type="checkbox"
                             class="custom_switch absolute w-full h-full opacity-0 z-10 cursor-pointer peer" id="status"
-                            <?php echo isset($mode) && $data['stats'] == 'Enable' ? 'checked' : '' ?>
+                            <?php echo isset($mode) && $data['status'] == 'Enable' ? 'checked' : '' ?>
                             <?php echo (isset($mode) && $mode == 'view') ? 'Disabled' : '' ?> name="status" required>
                         <span
                             class="bg-[#ebedf2] dark:bg-dark block h-full rounded-full before:absolute before:left-1 before:bg-white dark:before:bg-white-dark dark:peer-checked:before:bg-white before:bottom-1 before:w-4 before:h-4 before:rounded-full peer-checked:before:left-7 peer-checked:bg-primary before:transition-all before:duration-300"></span>
