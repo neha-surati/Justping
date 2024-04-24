@@ -14,7 +14,7 @@ if (isset($_COOKIE["view_id"])) {
 
 if (isset($_COOKIE["edit_id"])) {
     $mode = 'edit';
-    echo "edit id = ".$editId = $_COOKIE["edit_id"];
+    $editId = $_COOKIE["edit_id"];
     $stmt = $obj->con1->prepare("SELECT * FROM `vendor_reg` where id=?");
     $stmt->bind_param('i', $editId);
     $stmt->execute();
@@ -37,7 +37,7 @@ if (isset($_REQUEST["save"])) {
     $percentage= $_REQUEST["percentage"];
     $operation = "Added";
 
- echo "INSERT INTO  `vendor_reg`(`name`,  `password`, `email`, `business_name`, `city`, `area`, `address`,`contact_person`, `contact`, `stats`,`added_by`,`operation`,`percentage`) VALUES ( '".$firstname."',  '".$password."' , '".$email."',  '".$business_name."', '".$city."',  '".$area."',  '".$address."',  '".$contact_person."' ,  '".$contact."', '".$status."', '".$operation."', '".$percentage."')";
+//  echo "INSERT INTO  `vendor_reg`(`name`,  `password`, `email`, `business_name`, `city`, `area`, `address`,`contact_person`, `contact`, `stats`,`operation`,`percentage`) VALUES ( '".$firstname."',  '".$password."' , '".$email."',  '".$business_name."', '".$city."',  '".$area."',  '".$address."',  '".$contact_person."' ,  '".$contact."', '".$status."', '".$operation."', '".$percentage."')";
     
         try {
             $stmt = $obj->con1->prepare(
@@ -57,10 +57,10 @@ if (isset($_REQUEST["save"])) {
 
         if ($Resp) {
             setcookie("msg", "data", time() + 3600, "/");
-            //  header("location:vendor_reg.php");
+              header("location:vendor_reg.php");
         } else {
             setcookie("msg", "fail", time() + 3600, "/");
-            //  header("location:vendor_reg.php");
+             header("location:vendor_reg.php");
         }
   
 }
@@ -85,7 +85,7 @@ if (isset($_REQUEST["update"])) {
             "UPDATE  `vendor_reg` SET`name`=?,`password`=?, `email`=?, `business_name`=?, `city`=?, `area`=?, `address`=?,`contact_person`=?, `contact`=?,`stats`=?,`percentage`=?,`operation`=? WHERE `id`=?"
         );
         //  echo  "UPDATE  `vendor_reg` SET`name`= '".$firstname."',  `password`= '".$password."', `email`='".$email."', `business_name`= '".$business_name."', `city`='".$city."', `area`='".$area."', `address`='".$address."',`contact_person`= '".$contact_person."', `contact`= '".$contact."',`stats`= '".$status."',`operation`='".$operation."',`percentage`='".$percentage."' WHERE `id`='".$editId."'";
-         $stmt->bind_param("ssssssiisssdsssssi", $firstname, $lastname,  $user_id, $password , $email,  $business_name, $city,  $area,  $address,  $contact_person ,  $contact, $rating, $status,$id, $operation, $user_type,$isopen,$editId);
+         $stmt->bind_param("ssssiissssdsi", $firstname, $password , $email,  $business_name, $city,  $area,  $address,  $contact_person ,  $contact, $status,$percentage, $operation,  $editId);
 
         $Resp = $stmt->execute();
         if (!$Resp) {
@@ -100,10 +100,10 @@ if (isset($_REQUEST["update"])) {
 
     if ($Resp) {
         setcookie("msg", "update", time() + 3600, "/");
-        // header("location:vendor_reg.php");
+         header("location:vendor_reg.php");
     } else {
         setcookie("msg", "fail", time() + 3600, "/");
-        // header("location:vendor_reg.php");
+        header("location:vendor_reg.php");
     }
 }
 
