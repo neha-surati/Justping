@@ -66,22 +66,13 @@ if (isset($_REQUEST["save"])) {
 if (isset($_REQUEST["update"])) {
     $firstname = $_REQUEST["name"];
     $lastname = $_REQUEST["lname"];
+    $contact= $_REQUEST["contact"];
+    $email = $_REQUEST["email"];
     $user_id= $_REQUEST["uid"];
     $password = $_REQUEST["password"];
-    $email = $_REQUEST["email"];
-    $business_name = $_REQUEST["business_name"];
-    $city= $_REQUEST["city"];
-    $area = $_REQUEST["area"];
-    $address = $_REQUEST["address"];
-    $contact_person = $_REQUEST["contact_person"];
-    $contact= $_REQUEST["contact"];
-    $rating="0";
     $status = isset($_REQUEST["status"])?'Enable':'Disable';
-    $id = $_SESSION['id'];
-    // $percentage="0";
     $operation = "Added";
     $user_type="admin";
-    $isopen="open";
     $editId = $_COOKIE["edit_id"];
 
     try {

@@ -25,8 +25,6 @@ if (isset($_COOKIE["edit_id"])) {
 
 if (isset($_REQUEST["save"])) {
     $firstname = $_REQUEST["name"];
-    $lastname = $_REQUEST["lname"];
-    $user_id= $_REQUEST["uid"];
     $password = $_REQUEST["password"];
     $email = $_REQUEST["email"];
     $business_name = $_REQUEST["business_name"];
@@ -35,21 +33,17 @@ if (isset($_REQUEST["save"])) {
     $address = $_REQUEST["address"];
     $contact_person = $_REQUEST["contact_person"];
     $contact= $_REQUEST["contact"];
-    $rating="0";
     $status = isset($_REQUEST["status"])?'Enable':'Disable';
-    $id = $_SESSION['id'];
-    // $percentage="0";
+    $percentage= $_REQUEST["percentage"];
     $operation = "Added";
-    $user_type="admin";
-    $isopen="open";
 
-//   echo "INSERT INTO  `vendor_reg`(`name`, `lname`, `username`, `password`, `email`, `business_name`, `city`, `area`, `address`,`contact_person`, `contact`, `rating`,`stats`,`added_by`,`operation`,`user_type`,`isopen`) VALUES ( '".$firstname."', '".$lastname."',  '".$user_id."', '".$password."' , '".$email."',  '".$business_name."', '".$city."',  '".$area."',  '".$address."',  '".$contact_person."' ,  '".$contact."', '".$rating."', '".$status."','".$id."', '".$operation."', '".$user_type."','".$isopen."')";
+ echo "INSERT INTO  `vendor_reg`(`name`,  `password`, `email`, `business_name`, `city`, `area`, `address`,`contact_person`, `contact`, `stats`,`added_by`,`operation`,`percentage`) VALUES ( '".$firstname."',  '".$password."' , '".$email."',  '".$business_name."', '".$city."',  '".$area."',  '".$address."',  '".$contact_person."' ,  '".$contact."', '".$status."', '".$operation."', '".$percentage."')";
     
         try {
             $stmt = $obj->con1->prepare(
-                "INSERT INTO  `vendor_reg`(`name`, `lname`, `username`, `password`, `email`, `business_name`, `city`, `area`, `address`,`contact_person`, `contact`, `rating`,`stats`,`added_by`,`operation`,`user_type`,`isopen`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+                "INSERT INTO  `vendor_reg`(`name`,  `password`, `email`, `business_name`, `city`, `area`, `address`,`contact_person`, `contact`,`stats`,`percentage`,`operation`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)"
             );
-            $stmt->bind_param("ssssssiisssdsssss", $firstname, $lastname,  $user_id, $password , $email,  $business_name, $city,  $area,  $address,  $contact_person ,  $contact, $rating, $status,$id, $operation, $user_type,$isopen);
+            $stmt->bind_param("ssssiissssds", $firstname, $password , $email,  $business_name, $city,  $area,  $address,  $contact_person ,  $contact, $status,$percentage, $operation);
             $Resp = $stmt->execute();
             if (!$Resp) {
                 throw new Exception(
@@ -63,18 +57,16 @@ if (isset($_REQUEST["save"])) {
 
         if ($Resp) {
             setcookie("msg", "data", time() + 3600, "/");
-             header("location:vendor_reg.php");
+            //  header("location:vendor_reg.php");
         } else {
             setcookie("msg", "fail", time() + 3600, "/");
-             header("location:vendor_reg.php");
+            //  header("location:vendor_reg.php");
         }
   
 }
 
 if (isset($_REQUEST["update"])) {
     $firstname = $_REQUEST["name"];
-    $lastname = $_REQUEST["lname"];
-    $user_id= $_REQUEST["uid"];
     $password = $_REQUEST["password"];
     $email = $_REQUEST["email"];
     $business_name = $_REQUEST["business_name"];
@@ -83,21 +75,17 @@ if (isset($_REQUEST["update"])) {
     $address = $_REQUEST["address"];
     $contact_person = $_REQUEST["contact_person"];
     $contact= $_REQUEST["contact"];
-    $rating="0";
     $status = isset($_REQUEST["status"])?'Enable':'Disable';
-    $id = $_SESSION['id'];
-    // $percentage="0";
+    $percentage= $_REQUEST["percentage"];
     $operation = "Added";
-    $user_type="admin";
-    $isopen="open";
     $editId = $_COOKIE["edit_id"];
 
     try {
         $stmt = $obj->con1->prepare(
-            "UPDATE  `vendor_reg` SET`name`=?, `lname`=?, `username`=?, `password`=?, `email`=?, `business_name`=?, `city`=?, `area`=?, `address`=?,`contact_person`=?, `contact`=?, `rating`=?,`stats`=?,`added_by`=?,`operation`=?,`user_type`=?,`isopen`=? WHERE `id`=?"
+            "UPDATE  `vendor_reg` SET`name`=?,`password`=?, `email`=?, `business_name`=?, `city`=?, `area`=?, `address`=?,`contact_person`=?, `contact`=?,`stats`=?,`percentage`=?,`operation`=? WHERE `id`=?"
         );
-        // echo  "UPDATE  `vendor_reg` SET`name`= '".$firstname."', `lname`='".$lastname."', `username`=  '".$user_id."', `password`= '".$password."', `email`='".$email."', `business_name`= '".$business_name."', `city`='".$city."', `area`='".$area."', `address`='".$address."',`contact_person`= '".$contact_person."', `contact`= '".$contact."', `rating`='".$rating."',`stats`= '".$status."',`added_by`='".$id."',`operation`='".$operation."',`user_type`='".$user_type."',`isopen`='".$isopen."' WHERE `id`='".$editId."'";
-        // $stmt->bind_param("ssssssiisssdsssssi", $firstname, $lastname,  $user_id, $password , $email,  $business_name, $city,  $area,  $address,  $contact_person ,  $contact, $rating, $status,$id, $operation, $user_type,$isopen,$editId);
+        //  echo  "UPDATE  `vendor_reg` SET`name`= '".$firstname."',  `password`= '".$password."', `email`='".$email."', `business_name`= '".$business_name."', `city`='".$city."', `area`='".$area."', `address`='".$address."',`contact_person`= '".$contact_person."', `contact`= '".$contact."',`stats`= '".$status."',`operation`='".$operation."',`percentage`='".$percentage."' WHERE `id`='".$editId."'";
+         $stmt->bind_param("ssssssiisssdsssssi", $firstname, $lastname,  $user_id, $password , $email,  $business_name, $city,  $area,  $address,  $contact_person ,  $contact, $rating, $status,$id, $operation, $user_type,$isopen,$editId);
 
         $Resp = $stmt->execute();
         if (!$Resp) {
@@ -112,10 +100,10 @@ if (isset($_REQUEST["update"])) {
 
     if ($Resp) {
         setcookie("msg", "update", time() + 3600, "/");
-        header("location:vendor_reg.php");
+        // header("location:vendor_reg.php");
     } else {
         setcookie("msg", "fail", time() + 3600, "/");
-        header("location:vendor_reg.php");
+        // header("location:vendor_reg.php");
     }
 }
 
@@ -135,27 +123,18 @@ if (isset($_REQUEST["update"])) {
     <div class="panel mt-6">
         <div class="mb-5">
             <form class="space-y-5" method="post">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10">
-                    <div>
-                        <label for="name">First Name</label>
-                        <input id="name" name="name" type="text" class="form-input"
-                            placeholder="Enter your first name"
-                            value="<?php echo (isset($mode)) ? $data['name'] : '' ?>" required
-                            <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
-                    </div>
-                    <div>
-                        <label for="lname">Last Name</label>
-                        <input id="lname" name="lname" type="text" class="form-input"
-                            placeholder="Enter your last name"
-                            value="<?php echo (isset($mode)) ? $data['lname'] : '' ?>" required
-                            <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
-                    </div>
+
+                <div>
+                    <label for="name"> Name</label>
+                    <input id="name" name="name" type="text" class="form-input" placeholder="Enter your first name"
+                        value="<?php echo (isset($mode)) ? $data['name'] : '' ?>" required
+                        <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10">
                     <div>
-                        <label for="gridUID">User Name</label>
-                        <input type="text" placeholder="Enter your Userid" name="uid" id="uid" class="form-input"
-                            value="<?php echo (isset($mode)) ? $data['username'] : '' ?>" required
+                        <label for="email">Email</label>
+                        <input id="email" name="email" type="text" class="form-input" placeholder="Enter your Email"
+                            value="<?php echo (isset($mode)) ? $data['email'] : '' ?>" required
                             <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
                     </div>
                     <div>
@@ -178,10 +157,14 @@ if (isset($_REQUEST["update"])) {
                         </div>
                     </div>
                     <div>
-                        <label for="email">Email</label>
-                        <input id="email" name="email" type="text" class="form-input" placeholder="Enter your Email"
-                            value="<?php echo (isset($mode)) ? $data['email'] : '' ?>" required
-                            <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
+                        <label for="percentage">Percentage</label>
+                        <div>
+                            <input id="percentage" name="percentage" type="number"
+                                placeholder="Enter percentage"
+                                class="form-input ltr:rounded-l-none rtl:rounded-r-none"
+                                value="<?php echo (isset($mode)) ? $data['percentage'] : '' ?>" required
+                                <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
+                        </div>
                     </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10">
@@ -219,11 +202,11 @@ if (isset($_REQUEST["update"])) {
                         </div>
                     </div>
                     <div>
-                    <label for="groupFname">City Name</label>
-                    <select class="form-select text-gray-500" name="city" id="city"
-                    <?php echo isset($mode) && $mode == 'view' ? 'disabled' : ''?> required>
-                        <option value="">Choose City</option>
-                        <?php
+                        <label for="groupFname">City Name</label>
+                        <select class="form-select text-gray-500" name="city" id="city"
+                            <?php echo isset($mode) && $mode == 'view' ? 'disabled' : ''?> required>
+                            <option value="">Choose City</option>
+                            <?php
                             $stmt = $obj->con1->prepare("SELECT * FROM `city` WHERE city_name!='no city'");
                             $stmt->execute();
                             $Resp = $stmt->get_result();
@@ -232,15 +215,14 @@ if (isset($_REQUEST["update"])) {
                             while ($result = mysqli_fetch_array($Resp)) { 
                         ?>
                             <option value="<?php echo $result["id"]; ?>"
-                                <?php echo isset($mode) && $data["city"] == $result["id"] ? "selected" : ""; ?> 
-                            >
+                                <?php echo isset($mode) && $data["city"] == $result["id"] ? "selected" : ""; ?>>
                                 <?php echo $result["city_name"]; ?>
                             </option>
-                        <?php 
+                            <?php 
                             }
                         ?>
-                    </select>
-                </div>
+                        </select>
+                    </div>
                     <div>
                         <label for="area">Area</label>
                         <input id="area" name="area" type="tel" class="form-input" placeholder="Enter Pincode"
