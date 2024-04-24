@@ -327,23 +327,12 @@ if (!isset($_SESSION["userlogin"])) {
                             </a>
                         </li>
                         <li class="menu nav-item">
-                            <a href="testimonial.php"
-                                class="nav-link group <?php echo basename($_SERVER["PHP_SELF"]) == "testimonial.php" ? "active" : "" ?>">
+                            <a href="customer_reg.php"
+                                class="nav-link group <?php echo basename($_SERVER["PHP_SELF"]) == "customer_reg.php" ? "active" : "" ?>">
                                 <div class="flex items-center">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <circle cx="9" cy="6" r="4" stroke="currentColor" stroke-width="1.5"></circle>
-                                        <path opacity="0.5"
-                                            d="M12.5 4.3411C13.0375 3.53275 13.9565 3 15 3C16.6569 3 18 4.34315 18 6C18 7.65685 16.6569 9 15 9C13.9565 9 13.0375 8.46725 12.5 7.6589"
-                                            stroke="currentColor" stroke-width="1.5"></path>
-                                        <ellipse cx="9" cy="17" rx="7" ry="4" stroke="currentColor" stroke-width="1.5">
-                                        </ellipse>
-                                        <path opacity="0.5"
-                                            d="M18 14C19.7542 14.3847 21 15.3589 21 16.5C21 17.5293 19.9863 18.4229 18.5 18.8704"
-                                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
-                                    </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z"/></svg>
                                     <span
-                                        class="text-black ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Testimonial
+                                        class="text-black ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Customer Registration
                                     </span>
                                 </div>
                             </a>
