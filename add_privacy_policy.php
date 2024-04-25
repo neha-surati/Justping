@@ -53,7 +53,7 @@ if (isset($_REQUEST["save"])) {
     $user_id = $_SESSION['id'];
     $operation = "Added";
     try {
-        echo "INSERT INTO `privacy_policy`(`detail`,`type`,`date_time`,`added_by`,`operation`) VALUES ('".$detail."', '".$type."', '".$date_time."', '".$user_id."', '".$operation."')";
+        // echo "INSERT INTO `privacy_policy`(`detail`,`type`,`date_time`,`added_by`,`operation`) VALUES ('".$detail."', '".$type."', '".$date_time."', '".$user_id."', '".$operation."')";
         $stmt = $obj->con1->prepare(
             "INSERT INTO `privacy_policy`(`detail`,`type`,`date_time`,`added_by`,`operation`) VALUES (?,?,?,?,?)"
         );
@@ -71,10 +71,10 @@ if (isset($_REQUEST["save"])) {
 
     if ($Resp) {
         setcookie("msg", "data", time() + 3600, "/");
-        // header("location:privacy_policy.php");
+        header("location:privacy_policy.php");
     } else {
         setcookie("msg", "fail", time() + 3600, "/");
-        // header("location:privacy_policy.php");
+        header("location:privacy_policy.php");
     }
 }
 ?>
@@ -113,13 +113,13 @@ if (isset($_REQUEST["save"])) {
 
                 <div class="relative inline-flex align-middle gap-3 mt-4 ">
                     <button type="submit" name="<?php echo isset($mode) && $mode == 'edit' ? 'update' : 'save' ?>"
-                        id="save" class="btn btn-success <?php echo isset($mode) && $mode == 'view' ? 'hidden' : '' ?>">
+                        id="save" class="btn btn-success <?php echo isset($mode) && $mode == 'view' ? 'hidden' : '' ?>" onclick="return formSubmit()">
                         <?php echo isset($mode) && $mode == 'edit' ? 'Update' : 'Save' ?>
                     </button>
                     <button type="button" class="btn btn-danger"
                         onclick="location.href='privacy_policy.php'">Close</button>
                 </div>
-                <input type="hidden" name="quill_input" id="quill-input">
+                <input type="hidden" name="quill_input" id="quill_input">
             </form>
         </div>
     </div>
@@ -165,17 +165,17 @@ toolbar.querySelector('button.ql-clean').setAttribute('title', 'Clear Formatting
 toolbar.querySelector('[value=ordered]').setAttribute('title', 'Ordered List');
 toolbar.querySelector('[value=bullet]').setAttribute('title', 'Bullet List');
 
-function formSubmit(ele) {
-    let xyz = document.getElementById(ele);
+function formSubmit() {
+    let xyz = document.getElementById("quill_input");
     let editorContent = quill.root.innerHTML;
     xyz.value = editorContent;
     let val = xyz.value.replace(/<[^>]*>/g, '');
 
     if(val.trim() == ''){
         coloredToast("danger", 'Please add something in Detail.');
-        return validateAndDisable();
+        return false;
     } else {
-        return validateAndDisable();
+        return true;
     }
 }
 </script>
