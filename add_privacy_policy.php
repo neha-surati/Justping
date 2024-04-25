@@ -97,9 +97,9 @@ if (isset($_REQUEST["save"])) {
                     <select class="form-select text-white-dark" required id="type" name="type"
                         <?php echo isset($mode) && $mode == 'view' ? 'disabled' : ''?>>
                         <option value="">Choose Type</option>
-                        <option value="vendor" <?php echo isset($mode) && $data['type'] == 'Vendor' ? 'selected' : '' ?>>
+                        <option value="vendor" <?php echo isset($mode) && $data['type'] == 'vendor' ? 'selected' : '' ?>>
                             Vendor</option>
-                        <option value="user" <?php echo isset($mode) && $data['type'] == 'User' ? 'selected' : '' ?>>
+                        <option value="user" <?php echo isset($mode) && $data['type'] == 'user' ? 'selected' : '' ?>>
                             User</option>
                     </select>
                 </div>
