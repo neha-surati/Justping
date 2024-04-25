@@ -4,7 +4,7 @@ include "header.php";
 if (isset($_COOKIE["view_id"])) {
     $mode = 'view';
     $viewId = $_COOKIE["view_id"];
-    $stmt = $obj->con1->prepare("SELECT * FROM `customer_reg`where id=?");
+    $stmt = $obj->con1->prepare("SELECT * FROM `customer_addresses`where id=?");
     $stmt->bind_param('i', $viewId);
     $stmt->execute();
     $Resp = $stmt->get_result();
@@ -15,7 +15,7 @@ if (isset($_COOKIE["view_id"])) {
 if (isset($_COOKIE["edit_id"])) {
     $mode = 'edit';
     $editId = $_COOKIE["edit_id"];
-    $stmt = $obj->con1->prepare("SELECT * FROM `customer_reg` where id=?");
+    $stmt = $obj->con1->prepare("SELECT * FROM `customer_addresses` where id=?");
     $stmt->bind_param('i', $editId);
     $stmt->execute();
     $Resp = $stmt->get_result();
@@ -24,24 +24,23 @@ if (isset($_COOKIE["edit_id"])) {
 }
 
 if (isset($_REQUEST["save"])) {
-    $firstname = $_REQUEST["name"];
-    $lastname = $_REQUEST["lname"];
-    $contact= $_REQUEST["contact"];
-    $email = $_REQUEST["email"];
-    $user_id= $_REQUEST["uid"];
-    $password = $_REQUEST["password"];
-    $status = isset($_REQUEST["status"])?'Enable':'Disable';
-    $operation = "Added";
-    $user_type="admin";
+    $customername = $_REQUEST["name"];
+    $customeradd= $_REQUEST["addresslabel"];
+    $housenumber= $_REQUEST["housenumber"];
+    $address = $_REQUEST["address"];
+    $cityname= $_REQUEST["city"];
+    $area = $_REQUEST["area"];
+    $notes = $_REQUEST["notes"];
+    
   
 
-//  echo "INSERT INTO  `customer_reg`(`name`, `lastname`, `username`, `password`, `email`, `contact`,`status`,`operation`,`type`) VALUES ( '".$firstname."', '".$lastname."',  '".$user_id."', '".$password."' , '".$email."', '".$contact."',  '".$status."', '".$operation."', '".$user_type."')";
+ echo  "INSERT INTO `customer_addresses`(`c_id`, `add_label`, `house_no`,`street`,`city_id`, `area_id`,`notes`)VALUES ( '" .$customername."', '".$customeradd."',  '".$housenumber."', '".$address."' , '".$cityname."', '". $area."',  '".$notes."')";
     
         try {
             $stmt = $obj->con1->prepare(
-                "INSERT INTO `customer_reg`(`firstname`, `lastname`, `username`,`password`, `email`, `contact`,`status`,`operation`,`type`) VALUES (?,?,?,?,?,?,?,?,?)"
+                "INSERT INTO `customer_addresses`(`c_id`, `add_label`, `house_no`,`street`,`city_id`, `area_id`,`notes`) VALUES (?,?,?,?,?,?,?)"
             );
-            $stmt->bind_param("sssssssss", $firstname, $lastname,$user_id, $password , $email,  $contact,  $status, $operation, $user_type);
+            $stmt->bind_param("isssiis", $customername, $customeradd,$housenumber, $address , $cityname,  $area,  $notes );
             $Resp = $stmt->execute();
             if (!$Resp) {
                 throw new Exception(
@@ -55,19 +54,19 @@ if (isset($_REQUEST["save"])) {
 
         if ($Resp) {
             setcookie("msg", "data", time() + 3600, "/");
-              header("location:customer_reg.php");
+            //   header("location:customer_addresses.php");
         } else {
             setcookie("msg", "fail", time() + 3600, "/");
-             header("location:customer_reg.php");
+            //  header("location:customer_addresses.php");
         }
   
 }
 
 if (isset($_REQUEST["update"])) {
-    $firstname = $_REQUEST["name"];
-    $lastname = $_REQUEST["lname"];
-    $contact= $_REQUEST["contact"];
-    $email = $_REQUEST["email"];
+    $customername = $_REQUEST["name"];
+    $addresslabel = $_REQUEST["addresslabel"];
+    $housenumber= $_REQUEST["housenumber"];
+    $address = $_REQUEST["address"];
     $user_id= $_REQUEST["uid"];
     $password = $_REQUEST["password"];
     $status = isset($_REQUEST["status"])?'Enable':'Disable';
@@ -110,78 +109,100 @@ if (isset($_REQUEST["update"])) {
                 <i class="ri-arrow-left-line"></i>
             </a>
         </span>
-        <h1 class="dark:text-white-dar text-2xl font-bold">Registration -
+        <h1 class="dark:text-white-dar text-2xl font-bold">Customer Addresses -
             <?php echo (isset($mode)) ? (($mode == 'view') ? 'View' : 'Edit') : 'Add' ?>
         </h1>
     </div>
     <div class="panel mt-6">
         <div class="mb-5">
             <form class="space-y-5" method="post">
+                <div>
+                    <label for="name">Customer Name</label>
+                    <select class="form-select text-gray-500" name="name" id="name"
+                            <?php echo isset($mode) && $mode == 'view' ? 'disabled' : ''?> required>
+                            <option value="">Choose</option>
+                            <?php
+                            $stmt = $obj->con1->prepare("SELECT * FROM `customer_reg` ");
+                            $stmt->execute();
+                            $Resp = $stmt->get_result();
+                            $stmt->close();
+
+                            while ($result = mysqli_fetch_array($Resp)) { 
+                        ?>
+                            <option value="<?php echo $result["id"]; ?>"
+                                <?php echo isset($mode) && $data["c_id"] == $result["id"] ? "selected" : ""; ?>>
+                                <?php echo $result["firstname"]; ?>
+                            </option>
+                            <?php 
+                            }
+                        ?>
+                        </select>
+                </div>
+
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10">
                     <div>
-                        <label for="name">First Name</label>
-                        <input id="name" name="name" type="text" class="form-input"
-                            placeholder="Enter your first name"
-                            value="<?php echo (isset($mode)) ? $data['firstname'] : '' ?>" required
+                        <label for="addresslabel">Address Label</label>
+                        <input id="addresslabel" name="addresslabel" type="text" class="form-input"
+                            placeholder="Enter your addresslabel"
+                            value="<?php echo (isset($mode)) ? $data['add_label'] : '' ?>" required
                             <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
                     </div>
+
                     <div>
-                        <label for="lname">Last Name</label>
-                        <input id="lname" name="lname" type="text" class="form-input"
-                            placeholder="Enter your last name"
-                            value="<?php echo (isset($mode)) ? $data['lastname'] : '' ?>" required
+                        <label for="housenumber">House Number</label>
+                        <input id="housenumber" name="housenumber" type="number" class="form-input"
+                            placeholder="Enter your House Number"
+                            value="<?php echo (isset($mode)) ? $data['house_no'] : '' ?>" required
                             <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
                     </div>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10">
-                <div>
-                        <label for="phone_no">Phone Number</label>
+                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-10">
+                    <div>
                         <div>
-                            <div class="flex">
-                                <div
-                                    class="bg-[#eee] flex justify-center items-center ltr:rounded-l-md rtl:rounded-r-md px-3 font-semibold border ltr:border-r-0 rtl:border-l-0 border-[#e0e6ed] dark:border-[#17263c] dark:bg-[#1b2e4b]">
-                                    +91</div>
-                                <input id="contact" name="contact" type="text" placeholder="Enter  Phone Number"
-                                    class="form-input ltr:rounded-l-none rtl:rounded-r-none"
-                                    onkeypress="return event.charCode >= 48 && event.charCode <= 57" maxlength="10"
-                                    value="<?php echo (isset($mode)) ? $data['contact'] : '' ?>" required
-                                    <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
-                            </div>
+                            <label for="address">Address </label>
+                            <textarea autocomplete="on" name="address" id="address" class="form-textarea" rows="1"
+                                value="" required
+                                <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?>><?php echo isset($mode) ? $data['street'] : '' ?></textarea>
                         </div>
                     </div>
                     <div>
-                        <label for="email">Email</label>
-                        <input id="email" name="email" type="text" class="form-input" placeholder="Enter your Email"
-                            value="<?php echo (isset($mode)) ? $data['email'] : '' ?>" required
+                        <label for="groupFname">City Name</label>
+                        <select class="form-select text-gray-500" name="city" id="city"
+                            <?php echo isset($mode) && $mode == 'view' ? 'disabled' : ''?> required>
+                            <option value="">Choose City</option>
+                            <?php
+                            $stmt = $obj->con1->prepare("SELECT * FROM `city` WHERE city_name!='no city'");
+                            $stmt->execute();
+                            $Resp = $stmt->get_result();
+                            $stmt->close();
+
+                            while ($result = mysqli_fetch_array($Resp)) { 
+                        ?>
+                            <option value="<?php echo $result["id"]; ?>"
+                                <?php echo isset($mode) && $data["city"] == $result["id"] ? "selected" : ""; ?>>
+                                <?php echo $result["city_name"]; ?>
+                            </option>
+                            <?php 
+                            }
+                        ?>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="area">Area</label>
+                        <input id="area" name="area" type="tel" class="form-input" placeholder="Enter Pincode"
+                            onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                            value="<?php echo (isset($mode)) ? $data['area_id'] : '' ?>" required
                             <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
                     </div>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10">
-                    <div>
-                        <label for="gridUID">User Name</label>
-                        <input type="text" placeholder="Enter your Userid" name="uid" id="uid" class="form-input"
-                            value="<?php echo (isset($mode)) ? $data['username'] : '' ?>" required
-                            <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
-                    </div>
-                    <div>
-                        <label for="gridpass">Password</label>
-                        <input type="password" placeholder="Enter Password" name="password" class="form-input"
-                            pattern=".{8,}" title="Password should be at least 8 characters long"
-                            value="<?php echo (isset($mode)) ? $data['password'] : '' ?>"
-                            <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> required />
-                    </div>
+                <div>
+                    <label for="notes">Notes</label>
+                    <input id="notes" name="notes" type="text" class="form-input" placeholder="Enter Notes"
+                        value="<?php echo (isset($mode)) ? $data['notes'] : '' ?>" required
+                        <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
                 </div>
-                <div class="mb-4">
-                    <label for="custom_switch_checkbox1">Status</label>
-                    <label class="w-12 h-6 relative">
-                        <input type="checkbox"
-                            class="custom_switch absolute w-full h-full opacity-0 z-10 cursor-pointer peer" id="status"
-                            <?php echo isset($mode) && $data['status'] == 'Enable' ? 'checked' : '' ?>
-                            <?php echo (isset($mode) && $mode == 'view') ? 'Disabled' : '' ?> name="status" required>
-                        <span
-                            class="bg-[#ebedf2] dark:bg-dark block h-full rounded-full before:absolute before:left-1 before:bg-white dark:before:bg-white-dark dark:peer-checked:before:bg-white before:bottom-1 before:w-4 before:h-4 before:rounded-full peer-checked:before:left-7 peer-checked:bg-primary before:transition-all before:duration-300"></span>
-                    </label>
-                </div>
+
+
 
 
                 <div class="relative inline-flex align-middle gap-3 mt-4 ">
