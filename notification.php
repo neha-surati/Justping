@@ -5,7 +5,7 @@ include "header.php";
 
 if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
     try {
-        $p_id = $_REQUEST["p_id"];
+        $n_id = $_REQUEST["n_id"];
         $stmt_del = $obj->con1->prepare("DELETE FROM `notification_center` WHERE id=?");
         $stmt_del->bind_param('i', $p_id);
         $Resp = $stmt_del->execute();
@@ -61,11 +61,11 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
             init() {
                 this.datatable = new simpleDatatables.DataTable('#myTable', {
                     data: {
-                        headings: ['Sr.No.', 'Name', 'Details', 'Status', 'Actions'],
+                        headings: ['Sr.No.', 'Type', 'Message', 'Product', 'Date-Time', 'Actions'],
                         data: [
                             <?php
                             $stmt = $obj->con1->prepare(
-                                "SELECT * FROM `product_category` order by id desc;"
+                                "SELECT * FROM `notification_center` order by id desc;"
                             );
                             $stmt->execute();
                             $Resp = $stmt->get_result();
@@ -74,9 +74,10 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
                             ?>
                                 [
                                     <?php echo $i; ?>,
-                                    '<?php echo $row["name"]; ?>',
-                                    '<?php echo $row["details"]; ?>',
-                                    '<span class="badge whitespace-nowrap" :class="{\'badge-outline-success\': \'<?php echo $row["stats"]; ?>\' === \'Enable\', \'badge-outline-danger\': \'<?php echo $row["stats"]; ?>\' === \'Disable\'}"><?php echo $row["stats"]; ?></span>',
+                                    '<?php echo $row["notification_type"]; ?>',
+                                    '<?php echo $row["msg"]; ?>',
+                                    '<?php echo $row["item_id"]; ?>',
+                                    '<?php echo $row["date_time"]; ?>',
                                     getActions(<?php echo $row["id"]; ?>)
                                 ],
                             <?php
@@ -148,7 +149,7 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
             padding: '2em',
         }).then((result) => {
             if (result.isConfirmed) {
-                var loc = "notification.php?flg=del&p_id=" + id;
+                var loc = "notification.php?flg=del&n_id=" + id;
                 window.location = loc;
             }
         });
