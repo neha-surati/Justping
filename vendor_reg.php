@@ -81,7 +81,7 @@ document.addEventListener('alpine:init', () => {
                             <?php echo $i; ?>,
                             '<?php echo $row["name"]; ?>',
                             '<?php echo $row["contact"];?>',
-                            '<?php echo $row["stats"];?>',
+                            '<span class="badge whitespace-nowrap" :class="{\'badge-outline-success\': \'<?php echo $row["stats"]; ?>\' === \'Enable\', \'badge-outline-danger\': \'<?php echo $row["stats"]; ?>\' === \'Disable\'}"><?php echo $row["stats"]; ?></span>',
                             getActions(<?php echo $row["id"];?>,
                                 )
                         ],
