@@ -34,7 +34,7 @@ if (isset($_REQUEST["save"])) {
     
   
 
- echo  "INSERT INTO `customer_addresses`(`c_id`, `add_label`, `house_no`,`street`,`city_id`, `area_id`,`notes`)VALUES ( '" .$customername."', '".$customeradd."',  '".$housenumber."', '".$address."' , '".$cityname."', '". $area."',  '".$notes."')";
+//  echo  "INSERT INTO `customer_addresses`(`c_id`, `add_label`, `house_no`,`street`,`city_id`, `area_id`,`notes`)VALUES ( '" .$customername."', '".$customeradd."',  '".$housenumber."', '".$address."' , '".$cityname."', '". $area."',  '".$notes."')";
     
         try {
             $stmt = $obj->con1->prepare(
@@ -54,32 +54,30 @@ if (isset($_REQUEST["save"])) {
 
         if ($Resp) {
             setcookie("msg", "data", time() + 3600, "/");
-            //   header("location:customer_addresses.php");
+              header("location:customer_addresses.php");
         } else {
             setcookie("msg", "fail", time() + 3600, "/");
-            //  header("location:customer_addresses.php");
+             header("location:customer_addresses.php");
         }
   
 }
 
 if (isset($_REQUEST["update"])) {
     $customername = $_REQUEST["name"];
-    $addresslabel = $_REQUEST["addresslabel"];
+    $customeradd= $_REQUEST["addresslabel"];
     $housenumber= $_REQUEST["housenumber"];
     $address = $_REQUEST["address"];
-    $user_id= $_REQUEST["uid"];
-    $password = $_REQUEST["password"];
-    $status = isset($_REQUEST["status"])?'Enable':'Disable';
-    $operation = "update";
-    $user_type="admin";
+    $cityname= $_REQUEST["city"];
+    $area = $_REQUEST["area"];
+    $notes = $_REQUEST["notes"];
     $editId = $_COOKIE["edit_id"];
 
     try {
         $stmt = $obj->con1->prepare(
-            "UPDATE   `customer_reg` SET `firstname`=?, `lastname`=?, `username`=?, `password`=?, `email`=?, `contact`=?, `status`=?,`operation`=?,`type`=? WHERE `id`=?"
+            "UPDATE   `customer_addresses` SET `c_id`=?, `add_label`=?, `house_no`=?,`street`=?,`city_id`=?, `area_id`=?,`notes`=? WHERE `id`=?"
         );
-        // echo  "UPDATE  `vendor_reg` SET`name`= '".$firstname."', `lname`='".$lastname."', `username`=  '".$user_id."', `password`= '".$password."', `email`='".$email."', `business_name`= '".$business_name."', `city`='".$city."', `area`='".$area."', `address`='".$address."',`contact_person`= '".$contact_person."', `contact`= '".$contact."', `rating`='".$rating."',`stats`= '".$status."',`added_by`='".$id."',`operation`='".$operation."',`user_type`='".$user_type."',`isopen`='".$isopen."' WHERE `id`='".$editId."'";
-        $stmt->bind_param("sssssssssi", $firstname, $lastname,$user_id, $password , $email,  $contact,  $status, $operation, $user_type,$editId);
+       
+        $stmt->bind_param("isssiisi", $customername, $customeradd,$housenumber, $address , $cityname,  $area,  $notes,$editId );
         $Resp = $stmt->execute();
         if (!$Resp) {
             throw new Exception(
@@ -93,10 +91,10 @@ if (isset($_REQUEST["update"])) {
 
     if ($Resp) {
         setcookie("msg", "update", time() + 3600, "/");
-        header("location:customer_reg.php");
+        header("location:customer_addresses.php");
     } else {
         setcookie("msg", "fail", time() + 3600, "/");
-        header("location:customer_reg.php");
+        header("location:customer_addresses.php");
     }
 }
 
@@ -178,7 +176,7 @@ if (isset($_REQUEST["update"])) {
                             while ($result = mysqli_fetch_array($Resp)) { 
                         ?>
                             <option value="<?php echo $result["id"]; ?>"
-                                <?php echo isset($mode) && $data["city"] == $result["id"] ? "selected" : ""; ?>>
+                                <?php echo isset($mode) && $data["city_id"] == $result["id"] ? "selected" : ""; ?>>
                                 <?php echo $result["city_name"]; ?>
                             </option>
                             <?php 
@@ -229,7 +227,7 @@ if (isset($_REQUEST["update"])) {
 function go_back() {
     eraseCookie("edit_id");
     eraseCookie("view_id");
-    window.location = "customer_reg.php";
+    window.location = "customer_addresses.php";
 }
 
 function fillCity(stid) {
@@ -252,10 +250,10 @@ function getAreaList(city_id, area_id = 0) {
 
 </script>
 <?php
-if (isset($mode) && $mode == 'edit') {
+if (isset($mode)) {
     echo "
             <script>
-                const city_id = document.getElementById('city').value;
+                const city_id = ". json_encode($data['city_id']) .";
                 const area_id =" . json_encode($data['area_id']) . ";
                 getAreaList(city_id, area_id);
             </script>
