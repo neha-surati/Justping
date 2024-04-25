@@ -167,8 +167,7 @@ if (isset($_REQUEST["update"])) {
                     </div>
                     <div>
                         <label for="groupFname">City Name</label>
-                        <select class="form-select text-gray-500" name="city" id="city"
-                            <?php echo isset($mode) && $mode == 'view' ? 'disabled' : ''?> required>
+                        <select class="form-select text-gray-500" name="city" id="city" onchange="getAreaList(this.value)" <?php echo isset($mode) && $mode == 'view' ? 'disabled' : ''?> required>
                             <option value="">Choose City</option>
                             <?php
                             $stmt = $obj->con1->prepare("SELECT * FROM `city` WHERE city_name!='no city'");
@@ -189,10 +188,12 @@ if (isset($_REQUEST["update"])) {
                     </div>
                     <div>
                         <label for="area">Area</label>
-                        <input id="area" name="area" type="tel" class="form-input" placeholder="Enter Pincode"
-                            onkeypress="return event.charCode >= 48 && event.charCode <= 57"
-                            value="<?php echo (isset($mode)) ? $data['area_id'] : '' ?>" required
-                            <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
+                        <!-- <input id="area" name="area" type="tel" class="form-input" placeholder="Enter Pincode"
+                            onkeypress="return event.charCode >= 48 && event.charCode <= 57" value="<?php echo (isset($mode)) ? $data['area_id'] : '' ?>" required
+                            <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> /> -->
+                        <select class="form-select text-gray-500" name="area" id="area" <?php echo isset($mode) && $mode == 'view' ? 'disabled' : ''?> required>
+                            <option value="">Choose Area</option>
+                        </select>
                     </div>
                 </div>
                 <div>
@@ -239,18 +240,28 @@ function fillCity(stid) {
         document.getElementById("city").innerHTML = xhttp.responseText;
     }
 }
+
+function getAreaList(city_id, area_id = 0) {
+        const xhttp = new XMLHttpRequest();
+        xhttp.open("GET", `getarea.php?city_id=${city_id}&area_id=${area_id}`);
+        xhttp.send();
+        xhttp.onload = function () {
+            document.getElementById("area").innerHTML = xhttp.responseText;
+        }
+    }
+
 </script>
-<!-- <?php
-        if (isset($mode) && $mode == 'edit') {
-            echo "
+<?php
+if (isset($mode) && $mode == 'edit') {
+    echo "
             <script>
-                const stid = document.getElementById('stateID').value;
-                const ctid =" . json_encode($data['city_id']) . ";
-                loadCities(stid, ctid);
+                const city_id = document.getElementById('city').value;
+                const area_id =" . json_encode($data['area_id']) . ";
+                getAreaList(city_id, area_id);
             </script>
         ";
-        }
-        ?> -->
+}
+?>
 
 <?php
 include "footer.php";
