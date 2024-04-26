@@ -140,13 +140,16 @@ if (isset($_REQUEST["btn_update"])) {
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10">
                     <div x-data="form">
                         <label> Start Date </label>
-                        <input id="basic" x-model="date1" class="form-input" name="start_date" required />
-                        <?php echo isset($mode) && $mode == 'view' ? 'disabled' : '' ?>
+                        <input id="basic" x-model="date1" class="form-input" name="start_date" required 
+						value="<?php echo (isset($mode)) ? $data['start_date'] : '' ?>"
+                     <?php echo isset($mode) && $mode == 'view' ?'disabled'  : '' ?>/>
                     </div>
                     <div x-data="form">
                         <label> End Date </label>
-                        <input id="basic2" x-model="date2" class="form-input" name="end_date" required />
-                        <?php echo isset($mode) && $mode == 'view' ? 'disabled' : '' ?>
+                        <input id="basic2" x-model="date2" class="form-input" name="end_date" required
+						value="<?php echo (isset($mode)) ? $data['end_date'] : '' ?>"
+						 <?php echo isset($mode) && $mode == 'view' ? 'disabled'  : '' ?> />
+                       
                     </div>
                 </div>
                 <div>
@@ -178,7 +181,7 @@ if (isset($_REQUEST["btn_update"])) {
                         <?php echo isset($mode) && $mode == 'edit' ? 'Update' : 'Save' ?>
                     </button>
                     <button type="button" class="btn btn-danger"
-                        onclick="location.href='product_details.php'">Close</button>
+                        onclick="return go_back()">Close</button>
                 </div>
             </form>
         </div>
@@ -189,63 +192,57 @@ if (isset($_REQUEST["btn_update"])) {
         eraseCookie("view_id");
         window.location = "promocode.php";
     }
-    /*function readURL(input, preview) {
-    	if (input.files && input.files[0]) {
-    		var image = input.files.item(0).name;
 
-    		var reader = new FileReader();
-    		var extn = image.split(".");
-
-    		if (extn[1].toLowerCase() == "jpg" || extn[1].toLowerCase() == "jpeg" || extn[1].toLowerCase() == "png" || extn[1].toLowerCase() == "bmp" ) {
-    			reader.onload = function (e) {
-    				$('#' + preview).attr('src', e.target.result);
-    				document.getElementById(preview).style.display = "block";
-    			}
-
-    			reader.readAsDataURL(input.files[0]);
-    			$('#imgdiv').html("");
-    			document.getElementById('save').disabled = false;
-    		}
-    		else if(extn[1].toLowerCase() == "mp4" || extn[1].toLowerCase() == "mkv" || extn[1].toLowerCase() == "mov"|| extn[1].toLowerCase() == "webm")
-    		{
-
-    			reader.onload = function (e) {
-    				//console.log(e.target.result);
-    				$('#PreviewVideo').attr('src', e.target.result);
-    				document.getElementById('PreviewVideo').style.display = "block";
-    			}
-
-    			reader.readAsDataURL(input.files[0]);
-    			$('#imgdiv').html("");
-    			document.getElementById('save').disabled = false;
-
-    		}
-    		else {
-    			$('#imgdiv').html("Please Select Image Only");
-    			document.getElementById('save').disabled = true;
-    		}
-    	}
-    }*/
     </script>
     <script>
+    // document.addEventListener("alpine:init", () => {
+    //     Alpine.data("form", () => ({
+    //         date1: '2022-07-05',
+    //         date2: '2022-07-05',
+    //         init() {
+    //             flatpickr(document.getElementById('basic'), {
+    //                 dateFormat: 'd-m-y',
+    //                 defaultDate: this.date1,
+
+    //             });
+    //             flatpickr(document.getElementById('basic2'), {
+    //                 dateFormat: 'd-m-y',
+    //                 defaultDate: this.date2,
+    //             });
+    //         }
+    //     }));
+    // });
+
+	
     document.addEventListener("alpine:init", () => {
+        let todayDate = new Date();
+        let formattedToday = todayDate.toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+        }).split('/').join('-')
+
         Alpine.data("form", () => ({
-            date1: '2022-07-05',
-            date2: '2022-07-05',
+            date1: '<?php echo isset($mode) ? date("d-m-Y", strtotime($data['start_date'])) : date("d-m-Y") ?>',
+			date2: '<?php echo isset($mode) ? date("d-m-Y", strtotime($data['end_date'])) : date("d-m-Y") ?>',
             init() {
                 flatpickr(document.getElementById('basic'), {
-                    dateFormat: 'Y-m-d',
+                    dateFormat: 'd-m-Y',
+                    minDate: formattedToday,
                     defaultDate: this.date1,
-
+                    minDate: "today",
                 });
-                flatpickr(document.getElementById('basic2'), {
-                    dateFormat: 'Y-m-d',
+				flatpickr(document.getElementById('basic2'), {
+                    dateFormat: 'd-m-Y',
+                    minDate: formattedToday,
                     defaultDate: this.date2,
-
+                    minDate: "today",
                 });
+				
+
             }
         }));
-    });
+	});
     </script>
 
     <?php
