@@ -3,7 +3,7 @@ include "header.php";
 if (isset($_COOKIE['edit_id'])) {
 	$mode = 'edit';
 	$editId = $_COOKIE['edit_id'];
-	$stmt = $obj->con1->prepare("SELECT * FROM `product` where id=?");
+	$stmt = $obj->con1->prepare("SELECT * FROM `promocode` where promo_id=?");
 	$stmt->bind_param('i', $editId);
 	$stmt->execute();
 	$data = $stmt->get_result()->fetch_assoc();
@@ -12,7 +12,7 @@ if (isset($_COOKIE['edit_id'])) {
 if (isset($_COOKIE['view_id'])) {
 	$mode = 'view';
 	$viewId = $_COOKIE['view_id'];
-	$stmt = $obj->con1->prepare("SELECT * FROM `product` where id=?");
+	$stmt = $obj->con1->prepare("SELECT * FROM  `promocode` where promo_id=?");
 	$stmt->bind_param('i', $viewId);
 	$stmt->execute();
 	$data = $stmt->get_result()->fetch_assoc();
@@ -20,35 +20,17 @@ if (isset($_COOKIE['view_id'])) {
 }
 if (isset($_REQUEST["btnsubmit"])) {
 	$name = $_REQUEST["name"];
-	$v_id = $_REQUEST["v_id"];
-	$details = $_REQUEST["details"];
-	$status = isset($_REQUEST["status"]) ? "Enable" : "Disable";
-	$price = $_REQUEST["price"];
+	$promocode= $_REQUEST["promocode"];
 	$discount = $_REQUEST["discount"];
-	$finalPrice = $_REQUEST["finalPrice"];
-	$operation = "Added";
-	$product_img = $_FILES['product_img']['name'];
-	$product_img = str_replace(' ', '_', $product_img);
-	$product_img_path = $_FILES['product_img']['tmp_name'];
-
-	if ($product_img != "") {
-		if (file_exists("images/product_images/" . $product_img)) {
-			$i = 0;
-			$PicFileName = $product_img;
-			$Arr1 = explode('.', $PicFileName);
-
-			$PicFileName = $Arr1[0] . $i . "." . $Arr1[1];
-			while (file_exists("images/product_images/" . $PicFileName)) {
-				$i++;
-				$PicFileName = $Arr1[0] . $i . "." . $Arr1[1];
-			}
-		} else {
-			$PicFileName = $product_img;
-		}
-	}
-	try {
-		$stmt = $obj->con1->prepare("INSERT INTO `product`(`name`, `detail`, `v_id`,`image`, `stats`, `main_price`, `discount_per`, `discount_price`, `operation`) VALUES (?,?,?,?,?,?,?,?,?)");
-		$stmt->bind_param("ssissiiis", $name, $details, $v_id, $PicFileName, $status, $price, $discount, $finalPrice, $operation);
+	$maxdiscount=$_REQUEST["max_discount"];
+	$minamount = $_REQUEST["min_amount"];
+	$startdate=$_REQUEST["start_date"];
+	$enddate=$_REQUEST["end_date"];
+	$info=$_REQUEST["info"];
+	$status = isset($_REQUEST["status"]) ? "Enable" : "Disable";
+		try {
+		$stmt = $obj->con1->prepare("INSERT INTO `promocode`(`name`, `promocode`, `discount`,`max_discount`, `min_amount`, `start_date`,`end_date`,`info`,`status`) VALUES (?,?,?,?,?,?,?,?,?)");
+		$stmt->bind_param("ssdddssss", $name, $promocode, $discount,$maxdiscount, $minamount,$startdate,$enddate, $info, $status);
 		$Resp = $stmt->execute();
 		if (!$Resp) {
 			throw new Exception(
@@ -60,27 +42,29 @@ if (isset($_REQUEST["btnsubmit"])) {
 		setcookie("sql_error", urlencode($e->getMessage()), time() + 3600, "/");
 	}
 	if ($Resp) {
-		move_uploaded_file($product_img_path, "images/product_images/" . $PicFileName);
-		setcookie("msg", "data", time() + 3600, "/");
-		header("location:product_details.php");
-	} else {
-		setcookie("msg", "fail", time() + 3600, "/");
-		header("location:product_details.php");
-	}
+        setcookie("msg", "update", time() + 3600, "/");
+        header("location:promocode.php");
+    } else {
+        setcookie("msg", "fail", time() + 3600, "/");
+        header("location:promocode.php");
+    }
+	
 }
 if (isset($_REQUEST["btn_update"])) {
-	$id = $_COOKIE['edit_id'];
-	$v_id = $_REQUEST["v_id"];
 	$name = $_REQUEST["name"];
-	$details = $_REQUEST["details"];
-	$status = (isset($_REQUEST["status"]) && $_REQUEST["status"] == 'on') ? 'Enable' : 'Disable';
-	$price = $_REQUEST["price"];
+	$promocode= $_REQUEST["promocode"];
 	$discount = $_REQUEST["discount"];
-	$finalPrice = $_REQUEST["finalPrice"];
-	;
+	$maxdiscount=$_REQUEST["max_discount"];
+	$minamount = $_REQUEST["min_amount"];
+	$startdate=$_REQUEST["start_date"];
+	$enddate=$_REQUEST["end_date"];
+	$info=$_REQUEST["info"];
+	$status = isset($_REQUEST["status"]) ? "Enable" : "Disable";
+	$editId = $_COOKIE["edit_id"];
+	
 	try {
-		$stmt = $obj->con1->prepare("UPDATE `product` SET `name`=?, `detail`=?, `v_id`=?, `image`=?,`stats`=?, `main_price`=?, `discount_per`=?, `discount_price`=?,`operation`=? WHERE `id`=?");
-		$stmt->bind_param("ssissiiisi", $name, $details, $v_id, $PicFileName, $status, $price, $discount, $finalPrice, $operation, $id);
+		$stmt = $obj->con1->prepare("UPDATE `promocode` SET `name`=?, `promocode`=?, `discount`=?, `max_discount`=?,`min_amount`=?, `start_date`=?, `end_date`=?, `info`=?,`status`=? WHERE `promo_id`=?");
+		$stmt->bind_param("ssdddssssi", $name, $promocode, $discount,$maxdiscount, $minamount,$startdate,$enddate, $info, $status,$editId);
 		$Resp = $stmt->execute();
 		if (!$Resp) {
 			throw new Exception(
@@ -95,10 +79,10 @@ if (isset($_REQUEST["btn_update"])) {
 	if ($Resp) {
 		setcookie("edit_id", "", time() - 3600, "/");
 		setcookie("msg", "update", time() + 3600, "/");
-		header("location:product_details.php");
+		header("location:promocode.php");
 	} else {
 		setcookie("msg", "fail", time() + 3600, "/");
-		header("location:product_details.php");
+		header("location:promocode.php");
 	}
 }
 ?>
@@ -124,32 +108,52 @@ if (isset($_REQUEST["btn_update"])) {
                             <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
                     </div>
                     <div>
-                        <label for="Promocode">Promocode</label>
-                        <input id="Promocode" name="Promocode" type="text" class="form-input" placeholder="Enter promocode"
-                            value="<?php echo (isset($mode)) ? $data['promocode'] : '' ?>" required
-                            <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
+                        <label for="promocode">Promocode</label>
+                        <input id="promocode" name="promocode" type="text" class="form-input"
+                            placeholder="Enter promocode" value="<?php echo (isset($mode)) ? $data['promocode'] : '' ?>"
+                            required <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
                     </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-10">
                     <div>
-                        <label for="price">Price</label>
-                        <input id="price" name="price" type="text" class="form-input" required
-                            value="<?php echo (isset($mode)) ? $data['main_price'] : '' ?>" placeholder="Enter price"
-                            <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
-                    </div>
-                    <div>
                         <label for="discount">Discount (%)</label>
                         <input id="discount" name="discount" type="text" class="form-input"
-                            placeholder="Enter discount percentage" onchange="calculateFinalPrice();"
-                            value="<?php echo (isset($mode)) ? $data['discount_per'] : '' ?>" required
+                            placeholder="Enter discount percentage"
+                            value="<?php echo (isset($mode)) ? $data['discount'] : '' ?>" required
                             <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
                     </div>
                     <div>
-                        <label for="finalPrice">Final Price</label>
-                        <input id="finalPrice" name="finalPrice" type="text" class="form-input" required
-                            value="<?php echo (isset($mode)) ? $data['discount_price'] : '' ?>"
-                            placeholder="Final price" <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
+                        <label for="max_discount"> Maximum Discount (%)</label>
+                        <input id="max_discount" name="max_discount" type="text" class="form-input" required
+                            value="<?php echo (isset($mode)) ? $data['max_discount'] : '' ?>"
+                            placeholder="Enter Maximun Discount"
+                            <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
                     </div>
+                    <div>
+                        <label for="min_amount"> Minimum Amount</label>
+                        <input id="min_amount" name="min_amount" type="text" class="form-input"
+                            placeholder="Enter Minimum Amount"
+                            value="<?php echo (isset($mode)) ? $data['min_amount'] : '' ?>" required
+                            <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10">
+                    <div x-data="form">
+                        <label> Start Date </label>
+                        <input id="basic" x-model="date1" class="form-input" name="start_date" required />
+                        <?php echo isset($mode) && $mode == 'view' ? 'disabled' : '' ?>
+                    </div>
+                    <div x-data="form">
+                        <label> End Date </label>
+                        <input id="basic2" x-model="date2" class="form-input" name="end_date" required />
+                        <?php echo isset($mode) && $mode == 'view' ? 'disabled' : '' ?>
+                    </div>
+                </div>
+                <div>
+                    <label for="info">Information</label>
+                    <input id="info" name="info" type="text" class="form-input" required
+                        value="<?php echo (isset($mode)) ? $data['info'] : '' ?>" placeholder="Enter information"
+                        <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
                 </div>
 
                 <div class="mb-4">
@@ -157,7 +161,7 @@ if (isset($_REQUEST["btn_update"])) {
                     <label class="w-12 h-6 relative">
                         <input type="checkbox"
                             class="custom_switch absolute w-full h-full opacity-0 z-10 cursor-pointer peer" id="status"
-                            name="status" <?php echo (isset($mode) && $data['stats'] == 'Enable') ? 'checked' : '' ?>
+                            name="status" <?php echo (isset($mode) && $data['status'] == 'Enable') ? 'checked' : '' ?>
                             <?php echo (isset($mode) && $mode == 'view') ? 'disabled' : '' ?>><span
                             class="bg-[#ebedf2] dark:bg-dark block h-full rounded-full before:absolute before:left-1 before:bg-white dark:before:bg-white-dark dark:peer-checked:before:bg-white before:bottom-1 before:w-4 before:h-4 before:rounded-full peer-checked:before:left-7 peer-checked:bg-primary before:transition-all before:duration-300"></span>
                     </label>
@@ -222,10 +226,28 @@ if (isset($_REQUEST["btn_update"])) {
     		}
     	}
     }*/
-  
-
-   
     </script>
+    <script>
+    document.addEventListener("alpine:init", () => {
+        Alpine.data("form", () => ({
+            date1: '2022-07-05',
+            date2: '2022-07-05',
+            init() {
+                flatpickr(document.getElementById('basic'), {
+                    dateFormat: 'Y-m-d',
+                    defaultDate: this.date1,
+
+                });
+                flatpickr(document.getElementById('basic2'), {
+                    dateFormat: 'Y-m-d',
+                    defaultDate: this.date2,
+
+                });
+            }
+        }));
+    });
+    </script>
+
     <?php
 	include "footer.php";
 	?>

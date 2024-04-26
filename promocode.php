@@ -2,7 +2,7 @@
     include "header.php";
 
 	if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
-	$id = $_REQUEST['id'];
+	$id = $_REQUEST['promo_id'];
    
 
     try {
@@ -165,7 +165,7 @@ async function showAlert(id) {
         padding: '2em',
     }).then((result) => {
         if (result.isConfirmed) {
-            var loc = "promocode.php?flg=del&id=" + id ;
+            var loc = "promocode.php?flg=del&promo_id=" + id ;
             window.location = loc;
         }
     });
