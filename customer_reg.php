@@ -77,7 +77,7 @@ document.addEventListener('alpine:init', () => {
                             '<?php echo addslashes ($row["firstname"]); ?>',
                             '<?php echo addslashes ($row["lastname"]); ?>',
                             '<?php echo addslashes($row["contact"]);?>',
-                            '<?php echo addslashes($row["status"]);?>',
+                            '<span class="badge whitespace-nowrap" :class="{\'badge-outline-success\': \'<?php echo $row["status"]; ?>\' === \'Enable\', \'badge-outline-danger\': \'<?php echo $row["status"]; ?>\' === \'Disable\'}"><?php echo $row["status"]; ?></span>',
                             getActions(<?php echo $row["id"];?>,
                                 )
                         ],

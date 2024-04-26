@@ -63,7 +63,7 @@ document.addEventListener('alpine:init', () => {
             this.datatable = new simpleDatatables.DataTable('#myTable', {
                 data: {
                     headings: ['Sr.No.', 'Adress label','House No',
-                        'Street', 'Notes',  'Action'
+                        'Address', 'Notes',  'Action'
                     ],
                     data: [
                         <?php

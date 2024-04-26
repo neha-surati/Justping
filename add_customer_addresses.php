@@ -74,7 +74,7 @@ if (isset($_REQUEST["update"])) {
 
     try {
         $stmt = $obj->con1->prepare(
-            "UPDATE   `customer_addresses` SET `c_id`=?, `add_label`=?, `house_no`=?,`street`=?,`city_id`=?, `area_id`=?,`notes`=? WHERE `id`=?"
+            "UPDATE `customer_addresses` SET `c_id`=?, `add_label`=?, `house_no`=?,`street`=?,`city_id`=?, `area_id`=?,`notes`=? WHERE `id`=?"
         );
        
         $stmt->bind_param("isssiisi", $customername, $customeradd,$housenumber, $address , $cityname,  $area,  $notes,$editId );
@@ -118,7 +118,7 @@ if (isset($_REQUEST["update"])) {
                     <label for="name">Customer Name</label>
                     <select class="form-select text-gray-500" name="name" id="name"
                             <?php echo isset($mode) && $mode == 'view' ? 'disabled' : ''?> required>
-                            <option value="">Choose</option>
+                            <option value="">Choose Customer Name</option>
                             <?php
                             $stmt = $obj->con1->prepare("SELECT * FROM `customer_reg` ");
                             $stmt->execute();
@@ -141,7 +141,7 @@ if (isset($_REQUEST["update"])) {
                     <div>
                         <label for="addresslabel">Address Label</label>
                         <input id="addresslabel" name="addresslabel" type="text" class="form-input"
-                            placeholder="Enter your addresslabel"
+                            placeholder="Enter your address label"
                             value="<?php echo (isset($mode)) ? $data['add_label'] : '' ?>" required
                             <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
                     </div>

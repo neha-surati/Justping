@@ -91,7 +91,7 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
                                                     <video src="images/product_images/<?php echo addslashes($row["image"]); ?>" height="200" width="200" style="display:<?php (in_array($extn, $vd_array)) ? 'block' : 'none' ?>" class="object-cover shadow rounded" controls></video>
                                             <?php } ?>`,
 
-                                    '<span class="badge whitespace-nowrap" :class="{\'badge-outline-success\': \'<?php echo $row["stats"]; ?>\' === \'Enabled\', \'badge-outline-danger\': \'<?php echo $row["stats"]; ?>\' === \'Disabled\'}"><?php echo $row["stats"]; ?></span>',
+                                    '<span class="badge whitespace-nowrap" :class="{\'badge-outline-success\': \'<?php echo $row["stats"]; ?>\' === \'Enable\', \'badge-outline-danger\': \'<?php echo $row["stats"]; ?>\' === \'Disable\'}"><?php echo $row["stats"]; ?></span>',
 
                                     getActions(<?php echo $row["id"]; ?>, '<?php echo addslashes($row["image"]); ?>')
                                 ],

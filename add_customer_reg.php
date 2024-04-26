@@ -110,7 +110,7 @@ if (isset($_REQUEST["update"])) {
                 <i class="ri-arrow-left-line"></i>
             </a>
         </span>
-        <h1 class="dark:text-white-dar text-2xl font-bold">Registration -
+        <h1 class="dark:text-white-dar text-2xl font-bold">Customer Registration -
             <?php echo (isset($mode)) ? (($mode == 'view') ? 'View' : 'Edit') : 'Add' ?>
         </h1>
     </div>
@@ -151,7 +151,7 @@ if (isset($_REQUEST["update"])) {
                     </div>
                     <div>
                         <label for="email">Email</label>
-                        <input id="email" name="email" type="text" class="form-input" placeholder="Enter your Email"
+                        <input id="email" name="email" type="email" class="form-input" placeholder="Enter your Email"
                             value="<?php echo (isset($mode)) ? $data['email'] : '' ?>" required
                             <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
                     </div>
@@ -177,7 +177,7 @@ if (isset($_REQUEST["update"])) {
                         <input type="checkbox"
                             class="custom_switch absolute w-full h-full opacity-0 z-10 cursor-pointer peer" id="status"
                             <?php echo isset($mode) && $data['status'] == 'Enable' ? 'checked' : '' ?>
-                            <?php echo (isset($mode) && $mode == 'view') ? 'Disabled' : '' ?> name="status" required>
+                            <?php echo (isset($mode) && $mode == 'view') ? 'Disabled' : '' ?> name="status">
                         <span
                             class="bg-[#ebedf2] dark:bg-dark block h-full rounded-full before:absolute before:left-1 before:bg-white dark:before:bg-white-dark dark:peer-checked:before:bg-white before:bottom-1 before:w-4 before:h-4 before:rounded-full peer-checked:before:left-7 peer-checked:bg-primary before:transition-all before:duration-300"></span>
                     </label>
@@ -210,27 +210,7 @@ function go_back() {
     window.location = "customer_reg.php";
 }
 
-function fillCity(stid) {
-    const xhttp = new XMLHttpRequest();
-    xhttp.open("GET", "getcities.php?sid=" + stid);
-    xhttp.send();
-    xhttp.onload = function() {
-        document.getElementById("city").innerHTML = xhttp.responseText;
-    }
-}
 </script>
-<!-- <?php
-        if (isset($mode) && $mode == 'edit') {
-            echo "
-            <script>
-                const stid = document.getElementById('stateID').value;
-                const ctid =" . json_encode($data['city_id']) . ";
-                loadCities(stid, ctid);
-            </script>
-        ";
-        }
-        ?> -->
-
 <?php
 include "footer.php";
 ?>

@@ -19,9 +19,6 @@
   }
 
   if ($Resp) {
-    if(file_exists("images/member_image/".$member_img)){
-      unlink("images/member_image/".$member_img);
-  }
   setcookie("msg", "data_del", time() + 3600, "/");
 }
 header("location:faq.php");
@@ -77,7 +74,7 @@ header("location:faq.php");
                                         <?php echo $i; ?>, 
                                         '<?php echo addslashes($row["detail"]); ?>', 
                                         getActions(<?php echo $row["id"];?>)
-                                        ],
+                                    ],
                                     <?php $i++;}
                                     ?>
                                     ],

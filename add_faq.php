@@ -81,8 +81,7 @@ if (isset($_REQUEST["save"])) {
 				<i class="ri-arrow-left-line"></i>
 			</a>
 		</span>
-		<h1 class="dark:text-white-dar text-2xl font-bold">FAQ -
-			<?php echo (isset($mode)) ? (($mode == 'view') ? 'View' : 'Edit') : 'Add' ?>
+		<h1 class="dark:text-white-dar text-2xl font-bold">FAQ - <?php echo (isset($mode)) ? (($mode == 'view') ? 'View' : 'Edit') : 'Add' ?>
 		</h1>
 	</div>
 	<div class="panel mt-6">
@@ -94,12 +93,11 @@ if (isset($_REQUEST["save"])) {
 						<?php echo isset($mode) ? $data['detail'] : '' ?>
 					</div>
 				</div>
-				<div
-					class="relative inline-flex align-middle gap-5 mt-4 <?php echo isset($mode) && $mode == 'view' ? 'hidden' : '' ?>">
+				<div class="relative inline-flex align-middle gap-5 mt-4">
 					<button type="submit" name="<?php echo isset($mode) && $mode == 'edit' ? 'update' : 'save' ?>"
-						id="save" class="btn btn-success"
+						id="save" class="btn btn-success  <?php echo isset($mode) && $mode == 'view' ? 'hidden' : '' ?>"
 						onclick="return formSubmit('detail')"><?php echo isset($mode) && $mode == 'edit' ? 'Update' : 'Save' ?></button>
-					<button type="button" class="btn btn-danger" onclick="location.href='faq.php'">Close</button>
+					<button type="button" class="btn btn-danger" onclick="return go_back()">Close</button>
 				</div>
 				<input type="hidden" name="detail" id="detail">
 			</form>

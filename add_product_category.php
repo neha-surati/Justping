@@ -27,17 +27,15 @@ if (isset($_REQUEST["save"])) {
     $name = $_REQUEST["name"];
     $details = $_REQUEST["details"];
 	$status = (isset($_REQUEST["status"]) && $_REQUEST["status"] == 'on') ? 'Enable' : 'Disable';
-    $added_by = $_SESSION["id"];
     $operation = "Added";
     $sort_order="1";
-    $user_type="admin";
 
 
     try {
         $stmt = $obj->con1->prepare(
-            "INSERT INTO `product_category`(`name`, `details`, `stats`, `added_by`, `operation`,`sort_order`,`user_type`) VALUES (?,?,?,?,?,?,?)"
+            "INSERT INTO `product_category`(`name`, `details`, `stats`, `operation`,`sort_order`) VALUES (?,?,?,?,?)"
         );
-        $stmt->bind_param("sssisis",$name,$details ,$status,$added_by,$operation,$sort_order,$user_type);
+        $stmt->bind_param("ssssi",$name,$details ,$status,$operation,$sort_order);
         $Resp = $stmt->execute();
         if (!$Resp) {
             throw new Exception(
@@ -69,9 +67,9 @@ if (isset($_REQUEST["update"])) {
 
     try {
         $stmt = $obj->con1->prepare(
-            "UPDATE `product_category` SET `name`=?,`details`=?,`stats`=?,`added_by`=?,`operation`=? WHERE `id`=?"
+            "UPDATE `product_category` SET `name`=?,`details`=?,`stats`=?,`operation`=? WHERE `id`=?"
         );
-        $stmt->bind_param("sssisi", $name, $details , $status, $added_by, $operation, $editId);
+        $stmt->bind_param("ssssi", $name, $details , $status, $operation, $editId);
 
         $Resp = $stmt->execute();
         if (!$Resp) {
