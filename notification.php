@@ -10,8 +10,7 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
         $stmt_del->bind_param('i', $p_id);
         $Resp = $stmt_del->execute();
         if (!$Resp) {
-            if (strtok($obj->con1->error, ":") == "Cannot delete or update a parent row"
-            ) {
+            if (strtok($obj->con1->error, ":") == "Cannot delete or update a parent row") {
                 throw new Exception("Category is already in use!");
             }
         }
@@ -32,7 +31,10 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
 </div>
 
 <!-- script -->
-<script>
+<script type="text/javascript">
+     checkCookies();
+          eraseCookie("edit_id");
+          eraseCookie("view_id");
     checkCookies();
 
     function getActions(id) {
