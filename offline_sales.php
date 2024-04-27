@@ -2,10 +2,9 @@
 include "header.php";
 if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
     $product_id = $_REQUEST['product_id'];
-    $product_img = $_REQUEST['product_img'];
 
     try {
-        $stmt_del = $obj->con1->prepare("delete from product where id=?");
+        $stmt_del = $obj->con1->prepare("DELETE FROM `offline_sales` WHERE id=?");
         $stmt_del->bind_param("i", $product_id);
         $Resp = $stmt_del->execute();
         if (!$Resp) {
@@ -17,20 +16,17 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
     }
 
     if ($Resp) {
-        if (file_exists("images/product_images/" . $product_img)) {
-            unlink("images/product_images/" . $product_img);
-        }
         setcookie("msg", "data_del", time() + 3600, "/");
     }
-    header("location:product_details.php");
+    header("location:offline_sales.php");
 }
 ?>
 <div class='p-6 animate__animated' x-data='pagination'>
-    <h1 class="dark:text-white-dar  pb-8 text-3xl font-bold">Product Details</h1>
+    <h1 class="dark:text-white-dar  pb-8 text-3xl font-bold">Offline Sales</h1>
     <div class="panel mt-6 flex items-center  justify-between relative">
 
         <button type="button" class="p-2 btn btn-primary m-1 add-btn" onclick="javascript:add_data()">
-            <i class="ri-add-line mr-1"></i> Add Product</button>
+            <i class="ri-add-line mr-1"></i> Add Sales</button>
 
         <table id="myTable" class="table-hover whitespace-nowrap w-full"></table>
     </div>
@@ -39,7 +35,7 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
 <script type="text/javascript">
     checkCookies();
 
-    function getActions(id, product_img) {
+    function getActions(id) {
         return `<ul class="flex items-center gap-4">
             <li>
             <a href="javascript:viewdata(` + id + `);" class='text-xl' x-tooltip="View">
@@ -64,10 +60,10 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
             init() {
                 this.datatable = new simpleDatatables.DataTable('#myTable', {
                     data: {
-                        headings: ['Sr.No.', 'Name', 'Image', 'Status', 'Action'],
+                        headings: ['Sr.No.', 'Costmer Name', 'Agent Name', 'Commission Amount','Product','Date','Detail','Product Service Provided','Money Charged','Commission Paid','Cost to Company', 'Action'],
                         data: [
                             <?php
-                            $stmt = $obj->con1->prepare("SELECT * FROM `product` ORDER BY `id` DESC");
+                            $stmt = $obj->con1->prepare("SELECT * FROM `offline_sales` ");
                             $stmt->execute();
                             $Resp = $stmt->get_result();
                             $i = 1;
@@ -75,25 +71,19 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
                             ?>[
                                     <?php echo $i; ?>,
 
-                                    '<?php echo addslashes($row["name"]); ?>',
-
-                                    `<?php
-                                        $img_array = array("jpg", "jpeg", "png", "bmp");
-                                        $vd_array = array("mp4", "webm", "ogg", "mkv");
-                                        $extn = strtolower(pathinfo($row["image"], PATHINFO_EXTENSION));
-                                        if (in_array($extn, $img_array)) {
-                                        ?>
-                                                    <img src="images/product_images/<?php echo addslashes($row["image"]); ?>" width="200" height="200" style="display:<?php (in_array($extn, $img_array)) ? 'block' : 'none' ?>" class="object-cover shadow rounded">
-                                                <?php
-                                            }
-                                            if (in_array($extn, $vd_array)) {
-                                                ?>
-                                                    <video src="images/product_images/<?php echo addslashes($row["image"]); ?>" height="200" width="200" style="display:<?php (in_array($extn, $vd_array)) ? 'block' : 'none' ?>" class="object-cover shadow rounded" controls></video>
-                                            <?php } ?>`,
-
+                                    '<?php echo addslashes($row["customer_name"]); ?>',
+                                    '<?php echo addslashes($row["agent_name"]); ?>',
+                                    '<?php echo addslashes($row["commission_amount"]); ?>',
+                                    '<?php echo addslashes($row["product"]); ?>',
+                                    '<?php echo addslashes($row["date"]); ?>',
+                                    '<?php echo addslashes($row["detail"]); ?>',
+                                    '<?php echo addslashes($row["product_service_provided"]); ?>',
+                                    '<?php echo addslashes($row["money_charged"]); ?>',
+                                    '<?php echo addslashes($row["commission_paid"]); ?>',
+                                    '<?php echo addslashes($row["cost_to_company"]); ?>',
                                     '<span class="badge whitespace-nowrap" :class="{\'badge-outline-success\': \'<?php echo $row["stats"]; ?>\' === \'Enable\', \'badge-outline-danger\': \'<?php echo $row["stats"]; ?>\' === \'Disable\'}"><?php echo $row["stats"]; ?></span>',
 
-                                    getActions(<?php echo $row["id"]; ?>, '<?php echo addslashes($row["image"]); ?>')
+                                    getActions(<?php echo $row["id"]; ?>,)
                                 ],
                             <?php $i++;
                             }
@@ -155,17 +145,17 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
     function add_data() {
         eraseCookie("edit_id");
         eraseCookie("view_id");
-        window.location = "add_product.php";
+        window.location = "add_offline_sales.php";
     }
 
     function editdata(id) {
         createCookie("edit_id", id, 1);
-        window.location = "add_product.php";
+        window.location = "add_offline_sales.php";
     }
 
     function viewdata(id) {
         createCookie("view_id", id, 1);
-        window.location = "add_product.php";
+        window.location = "add_offline_sales.php";
     }
 
     async function showAlert(id, product_img) {
@@ -177,7 +167,7 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
             padding: '2em',
         }).then((result) => {
             if (result.isConfirmed) {
-                var loc = "product_details.php?flg=del&product_id=" + id + "&product_img=" + product_img;
+                var loc = "offline_sales.php?flg=del&sr_no=" + id;
                 window.location = loc;
             }
         });

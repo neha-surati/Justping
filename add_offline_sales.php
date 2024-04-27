@@ -19,36 +19,21 @@ if (isset($_COOKIE['view_id'])) {
 	$stmt->close();
 }
 if (isset($_REQUEST["btnsubmit"])) {
-	$name = $_REQUEST["name"];
-	$v_id = $_REQUEST["v_id"];
-	$details = $_REQUEST["details"];
-	$status = isset($_REQUEST["status"]) ? "Enable" : "Disable";
-	$price = $_REQUEST["price"];
-	$discount = $_REQUEST["discount"];
-	$finalPrice = $_REQUEST["finalPrice"];
-	$operation = "Added";
-	$product_img = $_FILES['product_img']['name'];
-	$product_img = str_replace(' ', '_', $product_img);
-	$product_img_path = $_FILES['product_img']['tmp_name'];
+	$customer_name = $_REQUEST["customer_name"];
+    $agent_name=$_REQUEST["agent_name"];
+	$commission_amount = $_REQUEST["commission_amount"];
+    $product = $_REQUEST["product"];
+	$date = $_REQUEST["date"];
+    $detail = $_REQUEST["detail"];
+	$product_service_provided= $_REQUEST["pservice"];
+	$money_charged = $_REQUEST["money_charged"];
+    $commission_paid=$_REQUEST["default_radio"];
+    $cost_to_company=$_REQUEST["cost_to_company"];
 
-	if ($product_img != "") {
-		if (file_exists("images/product_images/" . $product_img)) {
-			$i = 0;
-			$PicFileName = $product_img;
-			$Arr1 = explode('.', $PicFileName);
-
-			$PicFileName = $Arr1[0] . $i . "." . $Arr1[1];
-			while (file_exists("images/product_images/" . $PicFileName)) {
-				$i++;
-				$PicFileName = $Arr1[0] . $i . "." . $Arr1[1];
-			}
-		} else {
-			$PicFileName = $product_img;
-		}
-	}
+    // echo "INSERT INTO `offline_sales`(`customer_name`,`agent_name`, `commission_amount`, `product`,`date`, `detail`, `product_service_provided`, `money_charged`, `commission_paid`,`cost_to_company`) VALUES('".$customer_name."',  '".$agent_name."' , '".$commission_amount."',  '".$product."', '".$date."',  '". $detail."',  '".$product_service_provided."',  '".$money_charged."' ,  '". $commission_paid."', '".$cost_to_company."')";
 	try {
-		$stmt = $obj->con1->prepare("INSERT INTO `product`(`name`, `detail`, `v_id`,`image`, `stats`, `main_price`, `discount_per`, `discount_price`, `operation`) VALUES (?,?,?,?,?,?,?,?,?)");
-		$stmt->bind_param("ssissiiis", $name, $details, $v_id, $PicFileName, $status, $price, $discount, $finalPrice, $operation);
+		$stmt = $obj->con1->prepare("INSERT INTO `offline_sales`(`customer_name`,`agent_name`, `commission_amount`, `product`,`date`, `detail`, `product_service_provided`, `money_charged`, `commission_paid`,`cost_to_company`) VALUES (?,?,?,?,?,?,?,?,?,?)");
+		$stmt->bind_param("ssdssssdsd",$customer_name,$agent_name,$commission_amount,  $product,$date, $detail , $product_service_provided,$money_charged,  $commission_paid,$cost_to_company);
 		$Resp = $stmt->execute();
 		if (!$Resp) {
 			throw new Exception(
@@ -60,53 +45,28 @@ if (isset($_REQUEST["btnsubmit"])) {
 		setcookie("sql_error", urlencode($e->getMessage()), time() + 3600, "/");
 	}
 	if ($Resp) {
-		move_uploaded_file($product_img_path, "images/product_images/" . $PicFileName);
 		setcookie("msg", "data", time() + 3600, "/");
-		header("location:product_details.php");
-	} else {
+		header("location:offline_sales.php");
+	 } else {
 		setcookie("msg", "fail", time() + 3600, "/");
-		header("location:product_details.php");
+		 header("location:offline_sales.php");
 	}
 }
 if (isset($_REQUEST["btn_update"])) {
-	$id = $_COOKIE['edit_id'];
-	$v_id = $_REQUEST["v_id"];
-	$name = $_REQUEST["name"];
-	$details = $_REQUEST["details"];
-	$status = (isset($_REQUEST["status"]) && $_REQUEST["status"] == 'on') ? 'Enable' : 'Disable';
-	$price = $_REQUEST["price"];
-	$discount = $_REQUEST["discount"];
-	$finalPrice = $_REQUEST["finalPrice"];
-	$operation = "Updated";
-	$product_img = $_FILES['product_img']['name'];
-	$product_img = str_replace(' ', '_', $product_img);
-	$product_img_path = $_FILES['product_img']['tmp_name'];
-	$old_img = $_REQUEST['old_img'];
-	if ($product_img != "") {
-		if (file_exists("images/product_images/" . $product_img)) {
-			$i = 0;
-			$PicFileName = $product_img;
-			$Arr1 = explode('.', $PicFileName);
+	$customer_name = $_REQUEST["customer_name"];
+    $agent_name=$_REQUEST["agent_name"];
+	$commission_amount = $_REQUEST["commission_amount"];
+    $product = $_REQUEST["product"];
+	$date = $_REQUEST["date"];
+    $detail = $_REQUEST["detail"];
+	$product_service_provided= $_REQUEST["pservice"];
+	$money_charged = $_REQUEST["money_charged"];
+    $commission_paid=$_REQUEST["default_radio"];
+    $cost_to_company=$_REQUEST["cost_to_company"];
 
-			$PicFileName = $Arr1[0] . $i . "." . $Arr1[1];
-			while (file_exists("images/product_images/" . $PicFileName)) {
-				$i++;
-				$PicFileName = $Arr1[0] . $i . "." . $Arr1[1];
-			}
-		} else {
-			$PicFileName = $product_img;
-		}
-		echo ($old_img);
-		unlink("images/product_images/" . $old_img);
-
-		move_uploaded_file($product_img_path, "images/product_images/" . $PicFileName);
-	} else {
-		$PicFileName = $old_img;
-	}
-	//echo $PicFileName;
 	try {
-		$stmt = $obj->con1->prepare("UPDATE `product` SET `name`=?, `detail`=?, `v_id`=?, `image`=?,`stats`=?, `main_price`=?, `discount_per`=?, `discount_price`=?,`operation`=? WHERE `id`=?");
-		$stmt->bind_param("ssissiiisi", $name, $details, $v_id, $PicFileName, $status, $price, $discount, $finalPrice, $operation, $id);
+		$stmt = $obj->con1->prepare("UPDATE  `offline_sales` SET`customer_name`=?,`agent_name`=?, `commission_amount`=?, `product`=?,`date`=?, `detail`=?, `product_service_provided`=?, `money_charged`=?, `commission_paid`=?,`cost_to_company`=? WHERE `id`=?");
+        $stmt->bind_param("ssdssssdsd",$customer_name,$agent_name,$commission_amount,  $product,$date, $price, $discount,  $detail , $product_service_provided,$money_charged,  $commission_paid,$cost_to_company);
 		$Resp = $stmt->execute();
 		if (!$Resp) {
 			throw new Exception(
@@ -121,239 +81,158 @@ if (isset($_REQUEST["btn_update"])) {
 	if ($Resp) {
 		setcookie("edit_id", "", time() - 3600, "/");
 		setcookie("msg", "update", time() + 3600, "/");
-		header("location:product_details.php");
+		header("location:offline_sales.php");
 	} else {
 		setcookie("msg", "fail", time() + 3600, "/");
-		header("location:product_details.php");
+		header("location:offline_sales.php");
 	}
-}
-function is_image($filename)
-{
-	$allowed_extensions = array('jpg', 'jpeg', 'png', 'bmp');
-	$extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-	return in_array($extension, $allowed_extensions);
 }
 ?>
 <div class='p-6'>
-	<div class="flex gap-6 items-center pb-8">
-		<span class="cursor-pointer">
-			<a href="javascript:go_back()" class="text-3xl text-black dark:text-white">
-				<i class="ri-arrow-left-line"></i>
-			</a>
-		</span>
-		<h1 class="dark:text-white-dar text-2xl font-bold">Product -
-			<?php echo (isset($mode)) ? (($mode == 'view') ? 'View' : 'Edit') : 'Add' ?>
-		</h1>
-	</div>
-	<div class="panel mt-6">
-		<div class="mb-5">
-			<form class="space-y-5" method="post" enctype="multipart/form-data">
-				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10">
-					<div>
-						<label for="name">Name</label>
-						<input id="name" name="name" type="text" class="form-input" required
-							value="<?php echo (isset($mode)) ? $data['name'] : '' ?>" placeholder="Enter name" <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
-					</div>
-					<div>
-						<label for="details">Details</label>
-						<input id="details" name="details" type="text" class="form-input"
-							placeholder="Enter detail"
-							value="<?php echo (isset($mode)) ? $data['detail'] : '' ?>" required <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
-					</div>
-				</div>
-				<div>
-					<label for="groupFname">Vendor Name</label>
-					<select class="form-select text-black" name="v_id" id="v_id" <?php echo isset($mode) && $mode == 'view' ? 'disabled' : '' ?> required>
-						<option value="">Select Vendor</option>
-						<?php
-						$stmt = $obj->con1->prepare("SELECT * FROM `vendor_reg`");
-						$stmt->execute();
-						$Resp = $stmt->get_result();
-						$stmt->close();
+    <div class="flex gap-6 items-center pb-8">
+        <span class="cursor-pointer">
+            <a href="javascript:go_back()" class="text-3xl text-black dark:text-white">
+                <i class="ri-arrow-left-line"></i>
+            </a>
+        </span>
+        <h1 class="dark:text-white-dar text-2xl font-bold">Offline Sales
+            <?php echo (isset($mode)) ? (($mode == 'view') ? 'View' : 'Edit') : 'Add' ?>
+        </h1>
+    </div>
+    <div class="panel ">
+        <div class="mb-5">
+            <form class="space-y-5" method="post" enctype="multipart/form-data">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10">
+                    <div>
+                        <label for="customer_name">Customer Name</label>
+                        <input id="customer_name" name="customer_name" type="text" class="form-input" required
+                            value="<?php echo (isset($mode)) ? $data['customer_name'] : '' ?>" placeholder="Enter name"
+                            <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
+                    </div>
+                    <div>
+                        <label for="agent_name">Agent Name</label>
+                        <input id="agent_name" name="agent_name" type="text" class="form-input"
+                            placeholder="Enter Agent name"
+                            value="<?php echo (isset($mode)) ? $data['agent_name'] : '' ?>" required
+                            <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10">
+                    <div>
+                        <label for="commission_amount">Commission Amount</label>
+                        <input id="commission_amount" name="commission_amount" type="text" class="form-input"
+                            placeholder="Enter commission amount"
+                            value="<?php echo (isset($mode)) ? $data['commission_amount'] : '' ?>" required
+                            <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
+                    </div>
+                    <div>
+                        <label for="product">Product</label>
+                        <input id="product" name="product" type="text" class="form-input" placeholder="Enter product"
+                            value="<?php echo (isset($mode)) ? $data['product'] : '' ?>" required
+                            <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
 
-						while ($result = mysqli_fetch_array($Resp)) {
-							?>
-							<option value="<?php echo $result["id"]; ?>" <?php echo (isset($mode) && $data["v_id"] == $result["id"]) ? "selected" : ""; ?>>
-								<?php echo $result["name"]; ?>
-							</option>
-							<?php
-						}
-						?>
-					</select>
-				</div>
-				<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-10">
-					<div>
-						<label for="price">Price</label>
-						<input id="price" name="price" type="text" class="form-input" required
-							value="<?php echo (isset($mode)) ? $data['main_price'] : '' ?>" placeholder="Enter price" <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
-					</div>
-					<div>
-						<label for="discount">Discount (%)</label>
-						<input id="discount" name="discount" type="text" class="form-input"
-							placeholder="Enter discount percentage" onchange="calculateFinalPrice();"
-							value="<?php echo (isset($mode)) ? $data['discount_per'] : '' ?>" required <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
-					</div>
-					<div>
-						<label for="finalPrice">Final Price</label>
-						<input id="finalPrice" name="finalPrice" type="text" class="form-input" required
-							value="<?php echo (isset($mode)) ? $data['discount_price'] : '' ?>" placeholder="Final price" <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
-					</div>
-				</div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10">
+                    <div x-data="form">
+                        <label> Date </label>
+                        <input id="basic" x-model="date1" class="form-input" name="date" required
+                            value="<?php echo (isset($mode)) ? $data['date'] : '' ?>"
+                            <?php echo isset($mode) && $mode == 'view' ?'disabled'  : '' ?> />
+                    </div>
+                    <div>
+                        <label for="detail">Detail</label>
+                        <input id="detail" name="detail" type="text" class="form-input" placeholder="Enter detail"
+                            value="<?php echo (isset($mode)) ? $data['detail'] : '' ?>" required
+                            <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
 
-				<div class="mb-4">
-					<label for="custom_switch_checkbox1">Status</label>
-					<label class="w-12 h-6 relative">
-						<input type="checkbox"
-							class="custom_switch absolute w-full h-full opacity-0 z-10 cursor-pointer peer" id="status"
-							name="status" <?php echo (isset($mode) && $data['stats'] == 'Enable') ? 'checked' : '' ?>
-							<?php echo (isset($mode) && $mode == 'view') ? 'disabled' : '' ?>><span
-							class="bg-[#ebedf2] dark:bg-dark block h-full rounded-full before:absolute before:left-1 before:bg-white dark:before:bg-white-dark dark:peer-checked:before:bg-white before:bottom-1 before:w-4 before:h-4 before:rounded-full peer-checked:before:left-7 peer-checked:bg-primary before:transition-all before:duration-300"></span>
-					</label>
-				</div>
-				<div <?php echo (isset($mode) && $mode == 'view') ? 'hidden' : '' ?>>
-					<label for="image">Image</label>
-					<input id="product_img" name="product_img" class="demo1" type="file" data_btn_text="Browse"
-						onchange="readURL(this,'PreviewImage')" accept="image/*, video/*"
-						onchange="readURL(this,'PreviewImage')" placeholder="drag and drop file here" />
-				</div>
-				<div>
-					<h4 class="font-bold text-primary mt-2 mb-3"
-						style="display:<?php echo (isset($mode)) ? 'block' : 'none' ?>" id="preview_lable">Preview
-					</h4>
-					<div id="mediaPreviewContainer" style="display:<?php echo (isset($mode)) ? 'block' : 'none' ?>">
-						<img src="<?php echo (isset($mode) && is_image($data["image"])) ? 'images/product_images/' . $data["image"] : '' ?>"
-							name="PreviewMedia" id="PreviewMedia" width="400" height="400"
-							style="display:<?php echo (isset($mode) && is_image($data["image"])) ? 'block' : 'none' ?>"
-							class="object-cover shadow rounded">
-						<!-- <video src = "<?php echo (isset($mode) && !is_image($data["image"])) ? 'images/product_images/' . $data["image"] : '' ?>" name="PreviewVideo" id="PreviewVideo" width="400" height="400" style="display:<?php echo (isset($mode) && !is_image($data["image"])) ? 'block' : 'none' ?>" class="object-cover shadow rounded" controls></video> -->
-						<div id="imgdiv" style="color:red"></div>
-						<input type="hidden" name="old_img" id="old_img"
-							value="<?php echo (isset($mode) && $mode == 'edit') ? $data["image"] : '' ?>" />
-					</div>
-				</div>
-				
-				<!-- <div class="relative inline-flex align-middle gap-3 mt-4 <?php echo isset($mode) && $mode == 'view' ? 'hidden' : '' ?>">
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10">
+                    <div>
+                        <label forpservice="">Product Service Provided</label>
+                        <input id="pservicee" name="pservice" type="text" class="form-input" required
+                            value="<?php echo (isset($mode)) ? $data['product_service_provided'] : '' ?>"
+                            placeholder="Enter product service provided"
+                            <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
+                    </div>
 
-					<button type="submit" name="<?php echo isset($mode) && $mode == 'edit' ? 'btn_update' : 'btnsubmit' ?>" id="save" class="btn btn-success" hidden>Save</button>
-				</div>s -->
-				<div class="relative inline-flex align-middle gap-3 mt-4 ">
-					<button type="submit"
-						name="<?php echo isset($mode) && $mode == 'edit' ? 'btn_update' : 'btnsubmit' ?>" id="save"
-						class="btn btn-success <?php echo isset($mode) && $mode == 'view' ? 'hidden' : '' ?>">
-						<?php echo isset($mode) && $mode == 'edit' ? 'Update' : 'Save' ?>
-					</button>
-					<button type="button" class="btn btn-danger"
-						onclick="location.href='product_details.php'">Close</button>
-				</div>
-			</form>
-		</div>
-	</div>
-	<script type="text/javascript">
-		function go_back() {
-			eraseCookie("edit_id");
-			eraseCookie("view_id");
-			window.location = "product_details.php";
-		}
-		/*function readURL(input, preview) {
-			if (input.files && input.files[0]) {
-				var image = input.files.item(0).name;
+                    <div>
+                        <label for="money_charged">Money Charged</label>
+                        <input id="money_charged" name="money_charged" type="text" class="form-input" required
+                            value="<?php echo (isset($mode)) ? $data['money_charged'] : '' ?>"
+                            placeholder="money charged"
+                            <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10">
+                    <div>
+                        <label for="cost_to_company">Cost To Company</label>
+                        <input id="cost_to_company" name="cost_to_company" type="text" class="form-input" required
+                            value="<?php echo (isset($mode)) ? $data['cost_to_company'] : '' ?>"
+                            placeholder="cost to company"
+                            <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
+                    </div>
+                    <div>
+                        <label for="commission_paid">Commission Paid</label>
+                        <label class="inline-flex mr-3">
+                            <input type="radio" name="default_radio" value="yes" class="form-radio" checked required
+                                <?php echo isset($mode) && $data["commission_paid"] == "enable" ? "checked" : ""; ?>
+                                <?php echo isset($mode) && $mode == 'view' ? 'disabled' : '' ?> />
+                            <span>Yes</span>
+                        </label>
+                        <label class="inline-flex mr-3">
+                            <input type="radio" name="default_radio" value="no" class="form-radio text-danger"
+                                required
+                                <?php echo isset($mode) && $data["commission_paid"] == "disable" ? "checked" : ""; ?>
+                                <?php echo isset($mode) && $mode == 'view' ? 'disabled' : '' ?> />
+                            <span>No</span>
+                        </label>
+                    </div>
 
-				var reader = new FileReader();
-				var extn = image.split(".");
 
-				if (extn[1].toLowerCase() == "jpg" || extn[1].toLowerCase() == "jpeg" || extn[1].toLowerCase() == "png" || extn[1].toLowerCase() == "bmp" ) {
-					reader.onload = function (e) {
-						$('#' + preview).attr('src', e.target.result);
-						document.getElementById(preview).style.display = "block";
-					}
+                </div>
+                <div class="relative inline-flex align-middle gap-3 mt-4 ">
+                    <button type="submit"
+                        name="<?php echo isset($mode) && $mode == 'edit' ? 'btn_update' : 'btnsubmit' ?>" id="save"
+                        class="btn btn-success <?php echo isset($mode) && $mode == 'view' ? 'hidden' : '' ?>">
+                        <?php echo isset($mode) && $mode == 'edit' ? 'Update' : 'Save' ?>
+                    </button>
+                    <button type="button" class="btn btn-danger"
+                        onclick="location.href='product_details.php'">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script type="text/javascript">
+    function go_back() {
+        eraseCookie("edit_id");
+        eraseCookie("view_id");
+        window.location = "product_details.php";
+    }
 
-					reader.readAsDataURL(input.files[0]);
-					$('#imgdiv').html("");
-					document.getElementById('save').disabled = false;
-				}
-				else if(extn[1].toLowerCase() == "mp4" || extn[1].toLowerCase() == "mkv" || extn[1].toLowerCase() == "mov"|| extn[1].toLowerCase() == "webm")
-				{
+    document.addEventListener("alpine:init", () => {
+        let todayDate = new Date();
+        let formattedToday = todayDate.toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+        }).split('/').join('-')
 
-					reader.onload = function (e) {
-						//console.log(e.target.result);
-						$('#PreviewVideo').attr('src', e.target.result);
-						document.getElementById('PreviewVideo').style.display = "block";
-					}
+        Alpine.data("form", () => ({
+            date1: '<?php echo isset($mode) ? date("d-m-Y", strtotime($data['start_date'])) : date("d-m-Y") ?>',
+            init() {
+                flatpickr(document.getElementById('basic'), {
+                    dateFormat: 'd-m-Y',
+                    minDate: formattedToday,
+                    defaultDate: this.date1,
+                    minDate: "today",
+                });
 
-					reader.readAsDataURL(input.files[0]);
-					$('#imgdiv').html("");
-					document.getElementById('save').disabled = false;
-
-				}
-				else {
-					$('#imgdiv').html("Please Select Image Only");
-					document.getElementById('save').disabled = true;
-				}
-			}
-		}*/
-		function readURL(input, preview) {
-			if (input.files && input.files[0]) {
-				var filename = input.files.item(0).name;
-				var extn = filename.split(".").pop().toLowerCase();
-
-				if (["jpg", "jpeg", "png", "bmp"].includes(extn)) {
-					// Handle image preview
-					console.log("image");
-					displayImagePreview(input, preview);
-				} else if (["mp4", "webm", "ogg"].includes(extn)) {
-					// Handle video preview
-					console.log("video");
-					displayVideoPreview(input, preview);
-				} else {
-					// Display error message for unsupported file types
-					$('#imgdiv').html("Unsupported file type. Please select an image or video.");
-					document.getElementById('mediaPreviewContainer').style.display = "none";
-				}
-			}
-		}
-		function displayImagePreview(input, preview) {
-			var reader = new FileReader();
-			reader.onload = function (e) {
-				document.getElementById('mediaPreviewContainer').style.display = "block";
-				$('#PreviewMedia').attr('src', e.target.result);
-				document.getElementById('PreviewMedia').style.display = "block";
-				document.getElementById('preview_lable').style.display = "block";
-				document.getElementById('PreviewVideo').style.display = "none";
-			};
-			reader.readAsDataURL(input.files[0]);
-			$('#imgdiv').html("");
-			document.getElementById('save').disabled = false;
-		}
-		function displayVideoPreview(input, preview) {
-			var reader = new FileReader();
-			reader.onload = function (e) {
-				let file = input.files.item(0);
-				let blobURL = URL.createObjectURL(file);
-				document.getElementById('mediaPreviewContainer').style.display = "block";
-				$('#PreviewVideo').attr('src', blobURL);
-				document.getElementById('PreviewVideo').style.display = "block";
-
-				document.getElementById('preview_lable').style.display = "block";
-				document.getElementById('PreviewMedia').style.display = "none";
-			};
-			reader.readAsDataURL(input.files[0]);
-			$('#imgdiv').html("");
-			document.getElementById('save').disabled = false;
-		}
-
-		function calculateFinalPrice() {
-            // Get the values from the text fields
-            var price = parseFloat(document.getElementById("price").value);
-            var discountPercentage = parseFloat(document.getElementById("discount").value);
-
-            // Calculate the final amount after applying the discount
-            var discountAmount = price * (discountPercentage / 100);
-            var finalPrice = price - discountAmount;
-
-            // Display the final amount in the third text field
-            document.getElementById("finalPrice").value = finalPrice.toFixed(2);
-        }
-	</script>
-	<?php
+            }
+        }));
+    });
+    </script>
+    <?php
 	include "footer.php";
 	?>
