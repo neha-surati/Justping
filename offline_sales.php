@@ -1,5 +1,7 @@
 <?php
 include "header.php";
+setcookie("edit_Id", "", time() - 3600);
+setcookie("view_Id", "", time() - 3600);
 
 if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
     $id = $_REQUEST['sr_no'];
@@ -35,6 +37,8 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
 </div>
 <script type="text/javascript">
 checkCookies();
+eraseCookie("edit_id");
+eraseCookie("view_id");
 
 function getActions(id) {
     return `<ul class="flex items-center gap-4">

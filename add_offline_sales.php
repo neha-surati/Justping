@@ -3,7 +3,7 @@ include "header.php";
 if (isset($_COOKIE['edit_id'])) {
 	$mode = 'edit';
 	$editId = $_COOKIE['edit_id'];
-	$stmt = $obj->con1->prepare("SELECT * FROM `product` where id=?");
+	$stmt = $obj->con1->prepare("SELECT * FROM `offline_sales` where sr_no=?");
 	$stmt->bind_param('i', $editId);
 	$stmt->execute();
 	$data = $stmt->get_result()->fetch_assoc();
@@ -12,7 +12,7 @@ if (isset($_COOKIE['edit_id'])) {
 if (isset($_COOKIE['view_id'])) {
 	$mode = 'view';
 	$viewId = $_COOKIE['view_id'];
-	$stmt = $obj->con1->prepare("SELECT * FROM `product` where id=?");
+	$stmt = $obj->con1->prepare("SELECT * FROM `offline_sales` where sr_no=?");
 	$stmt->bind_param('i', $viewId);
 	$stmt->execute();
 	$data = $stmt->get_result()->fetch_assoc();
@@ -63,10 +63,11 @@ if (isset($_REQUEST["btn_update"])) {
 	$money_charged = $_REQUEST["money_charged"];
     $commission_paid=$_REQUEST["default_radio"];
     $cost_to_company=$_REQUEST["cost_to_company"];
+    $editId = $_COOKIE["edit_id"];
 
 	try {
-		$stmt = $obj->con1->prepare("UPDATE  `offline_sales` SET`customer_name`=?,`agent_name`=?, `commission_amount`=?, `product`=?,`date`=?, `detail`=?, `product_service_provided`=?, `money_charged`=?, `commission_paid`=?,`cost_to_company`=? WHERE `id`=?");
-        $stmt->bind_param("ssdssssdsd",$customer_name,$agent_name,$commission_amount,  $product,$date, $price, $discount,  $detail , $product_service_provided,$money_charged,  $commission_paid,$cost_to_company);
+		$stmt = $obj->con1->prepare("UPDATE  `offline_sales` SET`customer_name`=?,`agent_name`=?, `commission_amount`=?, `product`=?,`date`=?, `detail`=?, `product_service_provided`=?, `money_charged`=?, `commission_paid`=?,`cost_to_company`=? WHERE `sr_no`=?");
+        $stmt->bind_param("ssdssssdsdi",$customer_name,$agent_name,$commission_amount,  $product,$date,  $detail , $product_service_provided,$money_charged,  $commission_paid,$cost_to_company,$editId);
 		$Resp = $stmt->execute();
 		if (!$Resp) {
 			throw new Exception(
