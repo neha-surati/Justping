@@ -78,6 +78,8 @@ if (isset($_REQUEST["save"])) {
                                     <span class="text-black">All</span>
                                 </label>
                             </div>
+
+                            
                             <div>
                                 <label class=" flex items-center cursor-pointer">
                                     <input type="radio" name="to" id="specific_user" class="form-radio"
@@ -216,7 +218,6 @@ function getform() {
         document.getElementById('username_div').removeAttribute("hidden");
         document.getElementById('name').setAttribute("required", true);
     }
-    alert();
 }
 
 // $(document).ready(function() {

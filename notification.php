@@ -67,7 +67,7 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
                         data: [
                             <?php
                             $stmt = $obj->con1->prepare(
-                                "SELECT * FROM `notification_center` order by id desc;"
+                                "SELECT n1.*,p1.name FROM `notification_center`as n1,`product_category`as p1 WHERE n1.item_id=p1.id;"
                             );
                             $stmt->execute();
                             $Resp = $stmt->get_result();
@@ -78,7 +78,7 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
                                     <?php echo $i; ?>,
                                     '<?php echo $row["notification_type"]; ?>',
                                     '<?php echo $row["msg"]; ?>',
-                                    '<?php echo $row["item_id"]; ?>',
+                                    '<?php echo $row["name"]; ?>',
                                     '<?php echo $row["date_time"]; ?>',
                                     getActions(<?php echo $row["id"]; ?>)
                                 ],

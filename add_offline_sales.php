@@ -23,7 +23,7 @@ if (isset($_REQUEST["btnsubmit"])) {
     $agent_name=$_REQUEST["agent_name"];
 	$commission_amount = $_REQUEST["commission_amount"];
     $product = $_REQUEST["product"];
-	$date = $_REQUEST["date"];
+	$date =  date("Y-m-d", strtotime($_REQUEST['date']));
     $detail = $_REQUEST["detail"];
 	$product_service_provided= $_REQUEST["pservice"];
 	$money_charged = $_REQUEST["money_charged"];
@@ -57,7 +57,7 @@ if (isset($_REQUEST["btn_update"])) {
     $agent_name=$_REQUEST["agent_name"];
 	$commission_amount = $_REQUEST["commission_amount"];
     $product = $_REQUEST["product"];
-	$date = $_REQUEST["date"];
+	$date =  date("Y-m-d", strtotime($_REQUEST['date']));
     $detail = $_REQUEST["detail"];
 	$product_service_provided= $_REQUEST["pservice"];
 	$money_charged = $_REQUEST["money_charged"];
@@ -199,7 +199,7 @@ if (isset($_REQUEST["btn_update"])) {
                         <?php echo isset($mode) && $mode == 'edit' ? 'Update' : 'Save' ?>
                     </button>
                     <button type="button" class="btn btn-danger"
-                        onclick="location.href='product_details.php'">Close</button>
+                        onclick="location.href='offline_sales.php'">Close</button>
                 </div>
             </form>
         </div>
@@ -208,7 +208,7 @@ if (isset($_REQUEST["btn_update"])) {
     function go_back() {
         eraseCookie("edit_id");
         eraseCookie("view_id");
-        window.location = "product_details.php";
+        window.location = "offline_sales.php";
     }
 
     document.addEventListener("alpine:init", () => {
