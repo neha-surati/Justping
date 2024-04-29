@@ -54,10 +54,10 @@ if (isset($_REQUEST["save"])) {
 	if ($Resp) {
 		move_uploaded_file($product_img_path, "images/product_images/" . $PicFileName);
 		setcookie("msg", "data", time() + 3600, "/");
-		header("location:notification.php");
+		// header("location:notification.php");
 	} else {
 		setcookie("msg", "fail", time() + 3600, "/");
-		header("location:notification.php");
+		// header("location:notification.php");
 	}
 }
 
@@ -106,7 +106,7 @@ if (isset($_REQUEST["save"])) {
                 <div id="username_div" hidden>
                     <label for="name">User Name</label>
                     <select class="selectize" multiple='multiple'  id="name" name="name[]"
-                    <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?>  required>
+                    <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?>>
                         <option value="">Choose</option>
                         <?php
                         if(isset($mode)){
@@ -185,12 +185,11 @@ if (isset($_REQUEST["save"])) {
                     <div>
                         <label for="message">Message</label>
                         <textarea autocomplete="off" name="message" id="message" class="form-textarea" rows="2" value=""
-                            required
-                            <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?>><?php echo isset($mode) ? $data['msg'] : '' ?></textarea>
+                            required ><?php echo isset($mode) ? $data['msg'] : '' ?></textarea>
                     </div>
 
                     <div class="relative inline-flex align-middle gap-3 mt-4 ">
-                        <button type="submit" name="<?php echo isset($mode) && $mode == 'edit' ? 'update' : 'save' ?>"
+                        <button type="submit" name="save"
                             id="save"
                             class="btn btn-success <?php echo isset($mode) && $mode == 'view' ? 'hidden' : '' ?>"
                             <?php echo isset($mode) ? '' : 'onclick="return checkImage()"' ?>>
