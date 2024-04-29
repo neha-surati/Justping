@@ -129,17 +129,17 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
     function insertdata(id){
         eraseCookie("edit_id");
         eraseCookie("view_id");
-        window.location = "new_notification.php";
+        window.location = "add_notification.php";
     }
 
     function editdata(id){
         createCookie("edit_id",id,1);
-        window.location = "new_notification.php";
+        window.location = "add_notification.php";
     }
 
     function viewdata(id){
         createCookie("view_id",id,1);
-        window.location = "new_notification.php";
+        window.location = "add_notification.php";
     }
 
     async function showAlert(id) {

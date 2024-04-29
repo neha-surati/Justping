@@ -70,7 +70,7 @@ if (isset($_REQUEST["save"])) {
                 <i class="ri-arrow-left-line"></i>
             </a>
         </span>
-        <h1 class="dark:text-white-dar text-2xl font-bold">New Notification -
+        <h1 class="dark:text-white-dar text-2xl font-bold"> Notification -
             <?php echo (isset($mode)) ? (($mode == 'view') ? 'View' : 'Edit') : 'Add' ?>
         </h1>
     </div>
