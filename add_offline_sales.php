@@ -138,8 +138,7 @@ if (isset($_REQUEST["btn_update"])) {
                     <div x-data="form">
                         <label> Date </label>
                         <input id="basic" x-model="date1" class="form-input" name="date" required
-                            value="<?php echo (isset($mode)) ? $data['date'] : '' ?>"
-                            <?php echo isset($mode) && $mode == 'view' ?'disabled'  : '' ?> />
+                        value="" <?php echo isset($mode) && $mode == 'view' ? 'disabled' : '' ?> />
                     </div>
                     <div>
                         <label for="detail">Detail</label>
@@ -211,28 +210,22 @@ if (isset($_REQUEST["btn_update"])) {
         eraseCookie("view_id");
         window.location = "offline_sales.php";
     }
+    </script>
+    <script type="text/javascript">
+document.addEventListener("alpine:init", () => {
+    Alpine.data("form", () => ({
+        date1: '<?php echo isset($mode) && isset($data['date']) ? date("d-m-Y", strtotime($data['date'])) : date("d-m-Y") ?>',
+        init() {
+            flatpickr(document.getElementById('basic'), {
+                dateFormat: 'd-m-Y',
+                defaultDate: this.date1,
+                minDate: 'today',
+            });
+        }
+    }));
+});
 
-    document.addEventListener("alpine:init", () => {
-        let todayDate = new Date();
-        let formattedToday = todayDate.toLocaleDateString('en-GB', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-        }).split('/').join('-')
 
-        Alpine.data("form", () => ({
-            date1: '<?php echo isset($mode) ? date("d-m-Y", strtotime($data['start_date'])) : date("d-m-Y") ?>',
-            init() {
-                flatpickr(document.getElementById('basic'), {
-                    dateFormat: 'd-m-Y',
-                    minDate: formattedToday,
-                    defaultDate: this.date1,
-                    minDate: "today",
-                });
-
-            }
-        }));
-    });
     </script>
     <?php
 	include "footer.php";
