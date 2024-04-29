@@ -3,13 +3,17 @@ include "header.php";
 
 if (isset($_REQUEST["save"])) {
     $to = $_REQUEST["to"];
-    $username = $_REQUEST["name"];
-    echo("UserId $username");
+    
     $product= $_REQUEST["product"];
     $message = $_REQUEST["message"];
 	$product_img = $_FILES['product_img']['name'];
 	$product_img = str_replace(' ', '_', $product_img);
 	$product_img_path = $_FILES['product_img']['tmp_name'];
+
+    if($to=="specific_user"){
+        $username = $_REQUEST["name"];
+        $user_ids= implode(",",$username);
+    }
 
 	if ($product_img != "") {
 		if (file_exists("images/product_images/" . $product_img)) {
@@ -26,10 +30,17 @@ if (isset($_REQUEST["save"])) {
 			$PicFileName = $product_img;
 		}
 	}
-    echo "INSERT INTO `notification_center`(`notification_type`, `user_ids`, `item_id`,`image`, `msg`) VALUES ('".$to."', '". $username."', '".$product."', '". $PicFileName."', '".$message."')";
+    // echo "INSERT INTO `notification_center`(`notification_type`, `user_ids`, `item_id`,`image`, `msg`) VALUES ('".$to."', '". $username."', '".$product."', '". $PicFileName."', '".$message."')";
 	try {
-		$stmt = $obj->con1->prepare("INSERT INTO `notification_center`(`notification_type`, `user_ids`, `item_id`,`image`, `msg`) VALUES (?,?,?,?,?)");
-		$stmt->bind_param("ssiss", $to, $username, $product, $PicFileName, $message);
+        if($to=="specific_user"){
+            $stmt = $obj->con1->prepare("INSERT INTO `notification_center`(`notification_type`, `user_ids`, `item_id`,`image`, `msg`) VALUES (?,?,?,?,?)");
+		    $stmt->bind_param("ssiss", $to, $user_ids, $product, $PicFileName, $message);
+        }
+        else if($to=="all"){
+            $stmt = $obj->con1->prepare("INSERT INTO `notification_center`(`notification_type`, `item_id`,`image`, `msg`) VALUES (?,?,?,?)");
+		    $stmt->bind_param("siss", $to, $product, $PicFileName, $message);
+        }
+		
 		$Resp = $stmt->execute();
 		if (!$Resp) {
 			throw new Exception(
@@ -43,10 +54,10 @@ if (isset($_REQUEST["save"])) {
 	if ($Resp) {
 		move_uploaded_file($product_img_path, "images/product_images/" . $PicFileName);
 		setcookie("msg", "data", time() + 3600, "/");
-		// header("location:notification.php");
+		header("location:notification.php");
 	} else {
 		setcookie("msg", "fail", time() + 3600, "/");
-		// header("location:notification.php");
+		header("location:notification.php");
 	}
 }
 
@@ -65,7 +76,7 @@ if (isset($_REQUEST["save"])) {
     </div>
     <div class="panel mt-6">
         <div class="mb-5">
-            <form class="space-y-5" method="post">
+            <form class="space-y-5" method="post" enctype="multipart/form-data">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10">
                     <div class="col-md-6">
                         <label for="marital_s">To</label>
@@ -74,17 +85,17 @@ if (isset($_REQUEST["save"])) {
                                 <label class="flex items-center cursor-pointer">
                                     <input type="radio" name="to" id="all" class="form-radio" value="all"
                                         onclick="getform()"
-                                        <?php echo (isset($mode) && $data['notification_type'] == "all") ? "checked" : "" ?> />
+                                        <?php echo (isset($mode) && $data['notification_type'] == "all") ? "checked" : "" ?>checked required />
                                     <span class="text-black">All</span>
                                 </label>
                             </div>
 
-                            
+
                             <div>
                                 <label class=" flex items-center cursor-pointer">
                                     <input type="radio" name="to" id="specific_user" class="form-radio"
                                         value="specific_user" onclick="getform()"
-                                        <?php echo (isset($mode) && $data['notification_type'] == "specific_user") ? "checked" : "" ?> />
+                                        <?php echo (isset($mode) && $data['notification_type'] == "specific_user") ? "checked" : "" ?> required />
                                     <span class="text-black">Specific User</span>
                                 </label>
                             </div>
@@ -94,9 +105,30 @@ if (isset($_REQUEST["save"])) {
 
                 <div id="username_div" hidden>
                     <label for="name">User Name</label>
-                    <input id="name" name="name" typnamee="text" class="form-input" placeholder="Enter Name"
-                        value="<?php echo (isset($mode)) ? $data['user_ids'] : '' ?>" required
-                        <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
+                    <select class="selectize" multiple='multiple'  id="name" name="name[]"
+                    <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?>  required>
+                        <option value="">Choose</option>
+                        <?php
+                        if(isset($mode)){
+                            $user_id=$data['user_ids'];
+                            $user_ids_array = explode(",",$user_id);
+                        }
+                            $stmt = $obj->con1->prepare("SELECT CONCAT(firstname, ' ', lastname) AS full_name, customer_reg.*
+                            FROM customer_reg;");
+                            $stmt->execute();
+                            $Resp = $stmt->get_result();
+                            $stmt->close();
+
+                            while ($result = mysqli_fetch_array($Resp)) { 
+                        ?>
+                                <option value="<?php echo $result["id"]; ?>"
+                                    <?php echo isset($mode) && in_array( $result["id"],$user_ids_array) ? "selected" : ""; ?>>
+                                    <?php echo $result["full_name"]; ?>
+                                </option>
+                                <?php 
+                            }
+                        ?>
+                    </select>
                 </div>
 
                 <div id=allform>
@@ -128,7 +160,8 @@ if (isset($_REQUEST["save"])) {
                         <div <?php echo (isset($mode) && $mode == 'view') ? 'hidden' : '' ?>>
                             <label for="image">Image</label>
                             <input id="product_img" name="product_img" class="demo1" type="file" data_btn_text="Browse"
-                                onchange="readURL(this,'PreviewImage')" accept="image/*, video/*" placeholder="drag and drop file here" />
+                                onchange="readURL(this,'PreviewImage')" accept="image/*, video/*"
+                                placeholder="drag and drop file here" />
                         </div>
                         <div>
                             <h4 class="font-bold text-primary mt-2 mb-3"
@@ -157,8 +190,7 @@ if (isset($_REQUEST["save"])) {
                     </div>
 
                     <div class="relative inline-flex align-middle gap-3 mt-4 ">
-                        <button type="submit"
-                            name="<?php echo isset($mode) && $mode == 'edit' ? 'update' : 'save' ?>"
+                        <button type="submit" name="<?php echo isset($mode) && $mode == 'edit' ? 'update' : 'save' ?>"
                             id="save"
                             class="btn btn-success <?php echo isset($mode) && $mode == 'view' ? 'hidden' : '' ?>"
                             <?php echo isset($mode) ? '' : 'onclick="return checkImage()"' ?>>
@@ -174,51 +206,62 @@ if (isset($_REQUEST["save"])) {
 </div>
 
 <script type="text/javascript">
-    function readURL(input, preview) {
-			if (input.files && input.files[0]) {
-				var filename = input.files.item(0).name;
-				var extn = filename.split(".").pop().toLowerCase();
+function readURL(input, preview) {
+    if (input.files && input.files[0]) {
+        var filename = input.files.item(0).name;
+        var extn = filename.split(".").pop().toLowerCase();
 
-				if (["jpg", "jpeg", "png", "bmp"].includes(extn)) {
-					// Handle image preview
-					console.log("image");
-					displayImagePreview(input, preview);
-				} else if (["mp4", "webm", "ogg"].includes(extn)) {
-					// Handle video preview
-					console.log("video");
-					displayVideoPreview(input, preview);
-				} else {
-					// Display error message for unsupported file types
-					$('#imgdiv').html("Unsupported file type. Please select an image or video.");
-					document.getElementById('mediaPreviewContainer').style.display = "none";
-				}
-			}
-		}
-		function displayImagePreview(input, preview) {
-			var reader = new FileReader();
-			reader.onload = function (e) {
-				document.getElementById('mediaPreviewContainer').style.display = "block";
-				$('#PreviewMedia').attr('src', e.target.result);
-				document.getElementById('PreviewMedia').style.display = "block";
-				document.getElementById('preview_lable').style.display = "block";
-				document.getElementById('PreviewVideo').style.display = "none";
-			};
-			reader.readAsDataURL(input.files[0]);
-			$('#imgdiv').html("");
-			document.getElementById('save').disabled = false;
-		}
+        if (["jpg", "jpeg", "png", "bmp"].includes(extn)) {
+            // Handle image preview
+            console.log("image");
+            displayImagePreview(input, preview);
+        } else if (["mp4", "webm", "ogg"].includes(extn)) {
+            // Handle video preview
+            console.log("video");
+            displayVideoPreview(input, preview);
+        } else {
+            // Display error message for unsupported file types
+            $('#imgdiv').html("Unsupported file type. Please select an image or video.");
+            document.getElementById('mediaPreviewContainer').style.display = "none";
+        }
+    }
+}
+
+function displayImagePreview(input, preview) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        document.getElementById('mediaPreviewContainer').style.display = "block";
+        $('#PreviewMedia').attr('src', e.target.result);
+        document.getElementById('PreviewMedia').style.display = "block";
+        document.getElementById('preview_lable').style.display = "block";
+        document.getElementById('PreviewVideo').style.display = "none";
+    };
+    reader.readAsDataURL(input.files[0]);
+    $('#imgdiv').html("");
+    document.getElementById('save').disabled = false;
+}
+
 function getform() {
-  
+
     if (document.getElementById('all').checked) {
-      
+
         document.getElementById('username_div').setAttribute("hidden", true);
         document.getElementById('name').removeAttribute("required");
     } else if (document.getElementById('specific_user').checked) {
-        
+
         document.getElementById('username_div').removeAttribute("hidden");
         document.getElementById('name').setAttribute("required", true);
     }
 }
+
+    document.addEventListener("DOMContentLoaded", function(e) {
+        // default
+        var els = document.querySelectorAll(".selectize");
+        els.forEach(function(select) {
+            NiceSelect.bind(select);
+        });
+    });
+
 
 // $(document).ready(function() {
 //     eraseCookie("edit_id");
