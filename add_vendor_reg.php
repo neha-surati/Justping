@@ -187,7 +187,7 @@ if (isset($_REQUEST["update"])) {
 
                             while ($result = mysqli_fetch_array($Resp)) {
                             ?>
-                                <option value="<?php echo $result["id"]; ?>" <?php echo isset($mode) && $data["city_id"] == $result["id"] ? "selected" : ""; ?>>
+                                <option value="<?php echo $result["id"]; ?>" <?php echo isset($mode) && $data["city"] == $result["id"] ? "selected" : ""; ?>>
                                     <?php echo $result["city_name"]; ?>
                                 </option>
                             <?php
