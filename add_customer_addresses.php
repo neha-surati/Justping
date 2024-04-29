@@ -120,7 +120,8 @@ if (isset($_REQUEST["update"])) {
                             <?php echo isset($mode) && $mode == 'view' ? 'disabled' : ''?> required>
                             <option value="">Choose Customer Name</option>
                             <?php
-                            $stmt = $obj->con1->prepare("SELECT * FROM `customer_reg` ");
+                            $stmt = $obj->con1->prepare("SELECT CONCAT(firstname, ' ', lastname) AS full_name, customer_reg.*
+                            FROM customer_reg;");
                             $stmt->execute();
                             $Resp = $stmt->get_result();
                             $stmt->close();
@@ -129,7 +130,7 @@ if (isset($_REQUEST["update"])) {
                         ?>
                             <option value="<?php echo $result["id"]; ?>"
                                 <?php echo isset($mode) && $data["c_id"] == $result["id"] ? "selected" : ""; ?>>
-                                <?php echo $result["firstname"]; ?>
+                                <?php echo $result["full_name"]; ?>
                             </option>
                             <?php 
                             }
