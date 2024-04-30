@@ -94,10 +94,11 @@ if (isset($_REQUEST["save"])) {
                 <div>
                     <label for="state_name">State Name </label>
                     <input id="state_name" name="state_name" type="text" class="form-input"
-                        onblur="checkCity(this, <?php echo isset($mode) ? $data['id'] : 0 ?>)"
+                        onblur="checkName(this, <?php echo isset($mode) ? $data['id'] : 0 ?>)"
                         value="<?php echo isset($mode) ? $data["state_name"] : ""; ?>" pattern="^\s*\S.*$"
                         <?php echo isset($mode) && $mode == 'view' ? 'readonly' : ''?> required />
                     <p class="mt-3 text-danger text-base font-bold" id="demo"></p>
+                    
                 </div>
 
                 <?php //echo "status=".$data['status']     ?>
@@ -132,42 +133,39 @@ function go_back() {
     eraseCookie("view_id");
     window.location = "state.php";
 }
-
-function localValidate() {
-    let form = document.getElementById('mainForm');
-    let submitButton = document.getElementById('save');
-    let nameEle = document.getElementById('groupFname');
-
-    if (form.checkValidity() && checkName(nameEle, <?php echo isset($mode) ? $data['id'] : 0 ?>)) {
-        setTimeout(() => {
-            submitButton.disabled = true;
-        }, 0);
-        return true;
-    }
-}
-
-function checkCity(c1, id) {
-    let n = c1.value;
-    var state_id = document.getElementById('state_id').value;
-    let cityId = id;
-
-    const obj = new XMLHttpRequest();
-    obj.open("GET", `./ajax/check_city.php?city_name=${n}&state_id=${state_id}&ctid=${cityId}`, false);
-    obj.send();
-
-    if (obj.status == 200) {
-        let x = obj.responseText;
-        if (x >= 1) {
-            c1.value = "";
-            c1.focus();
-            document.getElementById("demo").innerHTML = "Sorry the name alredy exist!";
-            return false;
-        } else {
-            document.getElementById("demo").innerHTML = "";
+function localValidate(){
+        let form = document.getElementById('mainForm');
+        let submitButton = document.getElementById('save');
+        let nameEle = document.getElementById('groupFname');
+        
+        if (form.checkValidity() && checkName(nameEle, <?php echo isset($mode) ? $data['id'] : 0 ?>)) {
+            setTimeout(() => {
+                submitButton.disabled = true;
+            }, 0);
             return true;
         }
     }
-}
+
+    function checkName(c1, id) {
+        let n = c1.value;
+        const obj = new XMLHttpRequest();
+        obj.open("GET", "./ajax/check_state.php?state_name=" + n + "&stid=" + id, false);
+        obj.send();
+        if(obj.status == 200){
+            let x = obj.responseText;
+            console.log(n, id);
+            if (x >= 1) {
+                c1.value = "";
+                c1.focus();
+                document.getElementById("demo").innerHTML = "Sorry the name alredy exist!";
+                return false;
+            }
+            else {
+                document.getElementById("demo").innerHTML = "";
+                return true;
+            }
+        }
+    }
 </script>
 
 
