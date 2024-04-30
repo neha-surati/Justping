@@ -230,8 +230,47 @@ if (isset($_REQUEST["btn_update"])) {
         eraseCookie("view_id");
         window.location = "category.php";
     }
+    
+document.addEventListener('DOMContentLoaded', function() {
+        const submitButton = document.getElementById('save');
+        const form = document.getElementById('mainForm');
 
+        submitButton.addEventListener('click', function() {
+            const c1 = document.getElementById("name");
+            const id = document.getElementById("pid");
+            if (!checkName(c1,id)) {
+                return false;
+            }
+        });
+    });
 
+function checkName(c1,id) {
+    const n = c1.value;
+    const pid = id.value;
+
+    const obj = new XMLHttpRequest();
+    obj.open("GET", "./ajax/check_product.php?name=" + n +"&pid="+pid, false); // synchronous request
+    obj.send();
+
+    if (obj.status == 200) {
+        const x = obj.responseText;
+        if (x >= 1) {
+            c1.value = "";
+            c1.focus();
+            document.getElementById("demo").innerHTML = "Sorry the product already exists!";
+            document.getElementById("demo").classList.remove("hidden");
+            return false;
+        } else {
+            document.getElementById("demo").innerHTML = "";
+            document.getElementById("demo").classList.add("hidden");
+            return true;
+        }
+    } else {
+        // Handle errors
+        return false;
+    }
+}
+   
 </script>
 
 <?php
