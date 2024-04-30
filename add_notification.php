@@ -54,10 +54,10 @@ if (isset($_REQUEST["save"])) {
 	if ($Resp) {
 		move_uploaded_file($product_img_path, "images/product_images/" . $PicFileName);
 		setcookie("msg", "data", time() + 3600, "/");
-		// header("location:notification.php");
+		header("location:notification.php");
 	} else {
 		setcookie("msg", "fail", time() + 3600, "/");
-		// header("location:notification.php");
+		header("location:notification.php");
 	}
 }
 
@@ -85,7 +85,8 @@ if (isset($_REQUEST["save"])) {
                                 <label class="flex items-center cursor-pointer">
                                     <input type="radio" name="to" id="all" class="form-radio" value="all"
                                         onclick="getform()"
-                                        <?php echo (isset($mode) && $data['notification_type'] == "all") ? "checked" : "" ?>checked required />
+                                        <?php echo (isset($mode) && $data['notification_type'] == "all") ? "checked" : "" ?>checked
+                                        required />
                                     <span class="text-black">All</span>
                                 </label>
                             </div>
@@ -95,7 +96,8 @@ if (isset($_REQUEST["save"])) {
                                 <label class=" flex items-center cursor-pointer">
                                     <input type="radio" name="to" id="specific_user" class="form-radio"
                                         value="specific_user" onclick="getform()"
-                                        <?php echo (isset($mode) && $data['notification_type'] == "specific_user") ? "checked" : "" ?> required />
+                                        <?php echo (isset($mode) && $data['notification_type'] == "specific_user") ? "checked" : "" ?>
+                                        required />
                                     <span class="text-black">Specific User</span>
                                 </label>
                             </div>
@@ -105,8 +107,7 @@ if (isset($_REQUEST["save"])) {
 
                 <div id="username_div" hidden>
                     <label for="name">User Name</label>
-                    <select class="selectize" multiple='multiple'  id="name" name="name[]"
-                    <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?>>
+                    <select class="selectize" multiple='multiple' id="name" name="name[]">
                         <option value="">Choose</option>
                         <?php
                         if(isset($mode)){
@@ -121,11 +122,11 @@ if (isset($_REQUEST["save"])) {
 
                             while ($result = mysqli_fetch_array($Resp)) { 
                         ?>
-                                <option value="<?php echo $result["id"]; ?>"
-                                    <?php echo isset($mode) && in_array( $result["id"],$user_ids_array) ? "selected" : ""; ?>>
-                                    <?php echo $result["full_name"]; ?>
-                                </option>
-                                <?php 
+                        <option value="<?php echo $result["id"]; ?>"
+                            <?php echo isset($mode) && in_array( $result["id"],$user_ids_array) ? "selected" : ""; ?>>
+                            <?php echo $result["full_name"]; ?>
+                        </option>
+                        <?php 
                             }
                         ?>
                     </select>
@@ -135,8 +136,7 @@ if (isset($_REQUEST["save"])) {
                     <div class="mb-4">
                         <div>
                             <label for="product">Product</label>
-                            <select class="form-select text-gray-500" name="product" id="product"
-                                <?php echo isset($mode) && $mode == 'view' ? 'disabled' : ''?> required>
+                            <select class="form-select text-gray-500" name="product" id="product" required>
                                 <option value="">Choose</option>
                                 <?php
                             $stmt = $obj->con1->prepare("SELECT * FROM `product_category` ");
@@ -157,7 +157,7 @@ if (isset($_REQUEST["save"])) {
                         </div>
                     </div>
                     <div class="mb-4">
-                        <div <?php echo (isset($mode) && $mode == 'view') ? 'hidden' : '' ?>>
+                        <div>
                             <label for="image">Image</label>
                             <input id="product_img" name="product_img" class="demo1" type="file" data_btn_text="Browse"
                                 onchange="readURL(this,'PreviewImage')" accept="image/*, video/*"
@@ -185,13 +185,12 @@ if (isset($_REQUEST["save"])) {
                     <div>
                         <label for="message">Message</label>
                         <textarea autocomplete="off" name="message" id="message" class="form-textarea" rows="2" value=""
-                            required ><?php echo isset($mode) ? $data['msg'] : '' ?></textarea>
+                            required><?php echo isset($mode) ? $data['msg'] : '' ?></textarea>
                     </div>
 
                     <div class="relative inline-flex align-middle gap-3 mt-4 ">
-                        <button type="submit" name="save"
-                            id="save"
-                            class="btn btn-success <?php echo isset($mode) && $mode == 'view' ? 'hidden' : '' ?>"
+                        <button type="submit" name="save" id="save"
+                            class="btn btn-success"
                             <?php echo isset($mode) ? '' : 'onclick="return checkImage()"' ?>>
                             <?php echo isset($mode) && $mode == 'edit' ? 'Send Message' : 'Send Message' ?>
                         </button>
@@ -214,10 +213,6 @@ function readURL(input, preview) {
             // Handle image preview
             console.log("image");
             displayImagePreview(input, preview);
-        } else if (["mp4", "webm", "ogg"].includes(extn)) {
-            // Handle video preview
-            console.log("video");
-            displayVideoPreview(input, preview);
         } else {
             // Display error message for unsupported file types
             $('#imgdiv').html("Unsupported file type. Please select an image or video.");
@@ -253,13 +248,13 @@ function getform() {
     }
 }
 
-    document.addEventListener("DOMContentLoaded", function(e) {
-        // default
-        var els = document.querySelectorAll(".selectize");
-        els.forEach(function(select) {
-            NiceSelect.bind(select);
-        });
+document.addEventListener("DOMContentLoaded", function(e) {
+    // default
+    var els = document.querySelectorAll(".selectize");
+    els.forEach(function(select) {
+        NiceSelect.bind(select);
     });
+});
 
 
 // $(document).ready(function() {

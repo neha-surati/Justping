@@ -7,7 +7,7 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
     try {
         $n_id = $_REQUEST["n_id"];
         $stmt_del = $obj->con1->prepare("DELETE FROM `notification_center` WHERE id=?");
-        $stmt_del->bind_param('i', $p_id);
+        $stmt_del->bind_param('i', $n_id);
         $Resp = $stmt_del->execute();
         if (!$Resp) {
             if (strtok($obj->con1->error, ":") == "Cannot delete or update a parent row") {
@@ -39,15 +39,7 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
 
     function getActions(id) {
         return `<ul class="flex items-center gap-4">
-        <li>
-            <a href="javascript:viewdata(`+id+`);" class='text-xl' x-tooltip="View">
-                <i class="ri-eye-line text-primary"></i>
-            </a>
-        </li>
-        <li>
-            <a href="javascript:editdata(`+id+`);" class='text-xl' x-tooltip="Edit">
-                <i class="ri-pencil-line text text-success"></i>
-            </a>
+       
         </li>
         <li>
             <a href="javascript:showAlert(`+id+`);" class='text-xl' x-tooltip="Delete">
@@ -132,20 +124,10 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
         window.location = "add_notification.php";
     }
 
-    function editdata(id){
-        createCookie("edit_id",id,1);
-        window.location = "add_notification.php";
-    }
-
-    function viewdata(id){
-        createCookie("view_id",id,1);
-        window.location = "add_notification.php";
-    }
-
     async function showAlert(id) {
         new window.Swal({
             title: 'Are you sure?',
-            text: "You won't be able to revert this!",
+            text: "You want be able to revert this!",
             showCancelButton: true,
             confirmButtonText: 'Delete',
             padding: '2em',
