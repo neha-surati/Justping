@@ -128,7 +128,7 @@ function insertdata(id) {
 async function showAlert(id) {
     new window.Swal({
         title: 'Are you sure?',
-        text: "You want be able to revert this!",
+        text: "You won't be able to revert this!",
         showCancelButton: true,
         confirmButtonText: 'Delete',
         padding: '2em',
