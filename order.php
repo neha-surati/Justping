@@ -110,7 +110,7 @@ if (isset($_REQUEST["update"])) {
                 <i class="ri-arrow-left-line"></i>
             </a>
         </span>
-        <h1 class="dark:text-white-dar text-2xl font-bold">Customer Registration -
+        <h1 class="dark:text-white-dar text-2xl font-bold">Order -
             <?php echo (isset($mode)) ? (($mode == 'view') ? 'View' : 'Edit') : 'Add' ?>
         </h1>
     </div>
