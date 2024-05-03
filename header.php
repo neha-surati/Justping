@@ -9,6 +9,7 @@ if (!isset($_SESSION['type_admin']) && !isset($_SESSION['type_vendor'])) {
     exit;
 }
 
+
 $allowed_pages = array();
 
 if (isset($_SESSION['type_admin']) && $_SESSION['type_admin']) {
@@ -46,12 +47,20 @@ if (isset($_SESSION['type_admin']) && $_SESSION['type_admin']) {
     );
 } elseif (isset($_SESSION['type_vendor']) && $_SESSION['type_vendor']) {
     $allowed_pages = array(
+        "index.php",
         "banner.php",
-        "state.php",
-        "city.php",
-        "area.php",
-        "product_category_details.php",
-        "product_details.php",
+        // "user_profile.php",
+        "call_allocation.php",
+        "complaint_demo.php",
+        "technician.php",
+        "warranty.php",
+        "returned.php",
+        "edit_return.php",
+        "edit_view_warranty.php",
+        "add_call_allocation.php",
+        "add_complaint_demo.php",
+        "add_technician.php",
+        "add_call_history.php"
     );
 }
 
@@ -70,9 +79,9 @@ if (isset($_REQUEST['logout'])) {
         unset($_SESSION['type_vendor']);
         unset($_SESSION['username']);
         unset($_SESSION['name']);
-        unset($_SESSION['scid']);
-        unset($_SESSION['sc_city']);
+        unset($_SESSION['id']);
     }
+    session_destroy();
     header("location:index.php");
     exit;
 }
@@ -566,9 +575,9 @@ if (isset($_REQUEST['logout'])) {
                                 </div>
                             </div>
                             <div>
-                                <h3 class="text-[28px] margin-minus font-bold text-logo session-name">
+                                <h2 class="text-[28px] margin-minus font-bold text-logo session-name">
                                     <?php echo isset($_SESSION['type_vendor']) && $_SESSION['type_vendor'] ? $_SESSION["name"] : 'Admin' ?>
-                                </h3>
+                                </h2>
                             </div>
                             <div class="flex gap-2">
                                 <div class="dropdown" x-data="dropdown" @click.outside="open = false">
@@ -693,7 +702,7 @@ if (isset($_REQUEST['logout'])) {
                                                 </div>
                                             </div>
                                         </li>
-                                        <?php if(!isset($_SESSION['type_center'])){ ?>
+                                        <?php if(!isset($_SESSION['type_vendor'])){ ?>
                                         <li>
                                             <a href="user_profile.php" class="dark:hover:text-white" @click="toggle">
                                                 <svg class="h-4.5 w-4.5 shrink-0 ltr:mr-2 rtl:ml-2" width="18"
@@ -710,7 +719,7 @@ if (isset($_REQUEST['logout'])) {
                                         </li>
                                         <?php } ?>
                                         <li class="border-t border-white-light dark:border-white-light/10">
-                                            <a href="index.php" class="!py-3 text-danger" @click="toggle">
+                                            <a href="logout.php" class="!py-3 text-danger" @click="toggle">
                                                 <svg class="h-4.5 w-4.5 shrink-0 rotate-90 ltr:mr-2 rtl:ml-2" width="18"
                                                     height="18" viewBox="0 0 24 24" fill="none"
                                                     xmlns="http://www.w3.org/2000/svg">

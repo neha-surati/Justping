@@ -21,9 +21,12 @@ if (isset($_REQUEST['save'])) {
         $_SESSION['admin_name'] = $admin_data['name'];
         setcookie("msg", "login", time() + 3600, "/");
         header("location:banner.php");
+        exit;
     } else {
+        echo "in vendor";
+        echo "SELECT * FROM `vendor_reg` WHERE email='".$userName."' AND BINARY password='".$password."'";
         $stmt = $obj->con1->prepare("SELECT * FROM `vendor_reg` WHERE email=? AND BINARY password=?");
-        $stmt->bind_param("ss", $email, $password);
+        $stmt->bind_param("ss", $userName, $password);
         $stmt->execute();
         $Resp = $stmt->get_result();
         $vendor_reg_data = $Resp->fetch_assoc();
