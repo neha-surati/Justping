@@ -54,7 +54,6 @@ if (isset($_SESSION['type_admin']) && $_SESSION['type_admin']) {
     $allowed_pages = array(
         "index.php",
         "banner.php",
-        // "user_profile.php",
         "call_allocation.php",
         "complaint_demo.php",
         "technician.php",
@@ -70,7 +69,7 @@ if (isset($_SESSION['type_admin']) && $_SESSION['type_admin']) {
 }
 
 if (!in_array(basename($_SERVER['PHP_SELF']), $allowed_pages)) {
-    header("location:pages_error_404.php");
+    header("location:page_404_errors.php");
     exit;
 }
 
