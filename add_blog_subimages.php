@@ -7,7 +7,7 @@ $blog_id = isset($_COOKIE['edit_id']) ? $_COOKIE['edit_id'] : $_COOKIE['view_id'
 if (isset($_COOKIE['edit_subimg_id'])) {
     $mode = 'edit';
     $editId = $_COOKIE['edit_subimg_id'];
-    $stmt = $obj->con1->prepare("SELECT * FROM `blog_images` WHERE b_sub_id=?");
+    $stmt = $obj->con1->prepare("SELECT * FROM `blog_subimg` WHERE b_sub_id=?");
     $stmt->bind_param('i', $editId);
     $stmt->execute();
     $data = $stmt->get_result()->fetch_assoc();
@@ -17,7 +17,7 @@ if (isset($_COOKIE['edit_subimg_id'])) {
 if (isset($_COOKIE['view_subimg_id'])) {
     $mode = 'view';
     $viewId = $_COOKIE['view_subimg_id'];
-    $stmt = $obj->con1->prepare("SELECT * FROM `blog_images` WHERE b_sub_id=?");
+    $stmt = $obj->con1->prepare("SELECT * FROM `blog_subimg` WHERE b_sub_id=?");
     $stmt->bind_param('i', $viewId);
     $stmt->execute();
     $data = $stmt->get_result()->fetch_assoc();
@@ -51,7 +51,7 @@ if (isset($_REQUEST["btn_submit"])) {
                 move_uploaded_file($SubImageTemp, "images/blog_image/" . $SubImageName);
             }
 
-            $stmt_image = $obj->con1->prepare("INSERT INTO `blog_images`(`blog_id`, `b_sub_img`) VALUES (?,?)");
+            $stmt_image = $obj->con1->prepare("INSERT INTO `blog_subimg`(`srno`, `b_sub_img`) VALUES (?,?)");
             $stmt_image->bind_param("is", $blog_id, $SubImageName);
             $Resp = $stmt_image->execute();
             $stmt_image->close();
@@ -104,7 +104,7 @@ if (isset($_REQUEST["btn_update"])) {
     }
     
     try {
-        $stmt = $obj->con1->prepare("UPDATE `blog_images` SET `b_sub_img`=? WHERE `b_sub_id`=?");
+        $stmt = $obj->con1->prepare("UPDATE `blog_subimg` SET `b_sub_img`=? WHERE `b_sub_id`=?");
         $stmt->bind_param("si", $PicFileName, $id);
         $Resp = $stmt->execute();
         if (!$Resp) {
@@ -144,6 +144,8 @@ if (isset($_REQUEST["btn_update"])) {
         <div class="mb-5">
             <form class="space-y-5" method="post" enctype="multipart/form-data">
 
+
+                
                 <div <?php echo (isset($mode)) ? 'hidden' : '' ?>>
                     <label for="image">Image</label>
                     <input id="blog_img" class="demo1" type="file" name="blog_img[]" multiple data_btn_text="Browse"

@@ -22,6 +22,7 @@ if (isset($_SESSION['type_admin']) && $_SESSION['type_admin']) {
         "product_details.php",
         "order.php",
         "faq.php",
+        "blog.php",
         "vendor_reg.php",
         "customer_reg.php",
         "customer_addresses.php",
@@ -30,17 +31,21 @@ if (isset($_SESSION['type_admin']) && $_SESSION['type_admin']) {
         "offline_sales.php",
         "privacy_policy.php",
         "add_banner.php",
+        "add_blog.php",
         "add_state.php",
         "add_city.php",
         "add_area.php",
         "add_product_category.php",
         "add_product.php",
         "order_detail.php",
+        "about_us.php",
         "add_faq.php",
         "add_vendor_reg.php",
         "add_customer_reg.php",
         "add_customer_addresses.php",
         "add_promocode.php",
+        "add_about_us.php",
+        "add_blog_subimages.php",
         "add_notoification.php",
         "add_offline_sales",
         "add_privacy_policy.php"
@@ -232,6 +237,21 @@ if (isset($_REQUEST['logout'])) {
                                 </div>
                             </a>
                         </li>
+
+                        <li class="menu nav-item">
+                            <a href="blog.php"
+                                class="nav-link group <?php echo basename($_SERVER["PHP_SELF"]) == "blog.php" ? "active" : "" ?>">
+                                <div class="flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                                        <path
+                                            d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160V416c0 53 43 96 96 96H352c53 0 96-43 96-96V320c0-17.7-14.3-32-32-32s-32 14.3-32 32v96c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H96z" />
+                                    </svg>
+                                    <span
+                                        class="text-black ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Blog</span>
+                                </div>
+                            </a>
+                        </li>
+
                         <li class="menu nav-item">
                             <a href="state.php"
                                 class="nav-link group <?php echo basename($_SERVER["PHP_SELF"]) == "state.php" ? "active" : "" ?>">
@@ -350,10 +370,9 @@ if (isset($_REQUEST['logout'])) {
                             <a href="order.php"
                                 class="nav-link group <?php echo basename($_SERVER["PHP_SELF"]) == "order.php" ? "active" : "" ?>">
                                 <div class="flex items-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                        viewBox="0 0 384 512">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
                                         <path
-                                            d="M192 0c-41.8 0-77.4 26.7-90.5 64H64C28.7 64 0 92.7 0 128V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V128c0-35.3-28.7-64-64-64H282.5C269.4 26.7 233.8 0 192 0zm0 64a32 32 0 1 1 0 64 32 32 0 1 1 0-64zM105.8 229.3c7.9-22.3 29.1-37.3 52.8-37.3h58.3c34.9 0 63.1 28.3 63.1 63.1c0 22.6-12.1 43.5-31.7 54.8L216 328.4c-.2 13-10.9 23.6-24 23.6c-13.3 0-24-10.7-24-24V314.5c0-8.6 4.6-16.5 12.1-20.8l44.3-25.4c4.7-2.7 7.6-7.7 7.6-13.1c0-8.4-6.8-15.1-15.1-15.1H158.6c-3.4 0-6.4 2.1-7.5 5.3l-.4 1.2c-4.4 12.5-18.2 19-30.6 14.6s-19-18.2-14.6-30.6l.4-1.2zM160 416a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z" />
+                                            d="M0 24C0 10.7 10.7 0 24 0H69.5c22 0 41.5 12.8 50.6 32h411c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3H170.7l5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5H488c13.3 0 24 10.7 24 24s-10.7 24-24 24H199.7c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5H24C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z" />
                                     </svg>
                                     <span
                                         class="text-black ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Order
@@ -439,13 +458,28 @@ if (isset($_REQUEST['logout'])) {
                             </a>
                         </li>
 
+                        <li class="menu nav-item">
+                            <a href="about_us.php"
+                                class="nav-link group <?php echo basename($_SERVER["PHP_SELF"]) == "about_us.php" ? "active" : "" ?>">
+                                <div class="flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                                        <path
+                                            d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" />
+                                    </svg>
+                                    <span
+                                        class="text-black ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">About
+                                        Us
+                                    </span>
+                                </div>
+                            </a>
+                        </li>
 
                         <li class="menu nav-item">
                             <a href="notification.php"
                                 class="nav-link group <?php echo basename($_SERVER["PHP_SELF"]) == "notification.php" ? "active" : "" ?>">
                                 <div class="flex items-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                                        <<path
+                                        <path
                                             d="M224 0c-17.7 0-32 14.3-32 32V51.2C119 66 64 130.6 64 208v18.8c0 47-17.3 92.4-48.5 127.6l-7.4 8.3c-8.4 9.4-10.4 22.9-5.3 34.4S19.4 416 32 416H416c12.6 0 24-7.4 29.2-18.9s3.1-25-5.3-34.4l-7.4-8.3C401.3 319.2 384 273.9 384 226.8V208c0-77.4-55-142-128-156.8V32c0-17.7-14.3-32-32-32zm45.3 493.3c12-12 18.7-28.3 18.7-45.3H224 160c0 17 6.7 33.3 18.7 45.3s28.3 18.7 45.3 18.7s33.3-6.7 45.3-18.7z" />
                                     </svg>
                                     <span
