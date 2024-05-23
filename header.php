@@ -709,7 +709,7 @@ if (isset($_REQUEST['logout'])) {
                                     <a href="javascript:;" class="group relative" @click="toggle()">
                                         <span>
                                             <img class="h-9 w-9 rounded-full object-cover saturate-50 group-hover:saturate-100"
-                                                src="./profile.png" alt="image" />
+                                                src="assets/images/user.png" alt="image" />
                                         </span>
                                     </a>
                                     <ul x-cloak x-show="open" x-transition x-transition.duration.300ms
@@ -717,7 +717,7 @@ if (isset($_REQUEST['logout'])) {
                                         <li>
                                             <div class="flex items-center px-4 py-4">
                                                 <div class="flex-none">
-                                                    <img class="h-10 w-10 rounded-md object-cover" src="./profile.png"
+                                                    <img class="h-10 w-10 rounded-md object-cover" src="assets/images/user.png"
                                                         alt="image" />
                                                 </div>
                                                 <div class="truncate ltr:pl-4 rtl:pr-4">
