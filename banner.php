@@ -1,5 +1,6 @@
-<?php include "header.php";
-// by Dev Jariwala
+<?php 
+include "header.php";
+
 if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
     $banner_id = $_REQUEST['banner_id'];
     $banner_img = $_REQUEST['banner_img'];
