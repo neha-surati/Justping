@@ -389,30 +389,37 @@ async function showAlert(id, img) {
 }
 
 var quill1 = new Quill('#editor1', {
+    modules: {
+    toolbar:  [
+          [{ 'font': [] }, { 'size': [] }],
+          [ 'bold', 'italic', 'underline', 'strike' ],
+          [{ 'color': [] }, { 'background': [] }],
+          [{ 'script': 'super' }, { 'script': 'sub' }],
+          [{ 'header': '1' }, { 'header': '2' }, 'blockquote', 'code-block' ],
+          [{ 'list': 'ordered' }, { 'list': 'bullet'}, { 'indent': '-1' }, { 'indent': '+1' }],
+          [ 'direction', { 'align': [] }],
+          [ 'link', 'image', 'video', 'formula' ],
+          [ 'clean' ]
+    ],
+  },
     theme: 'snow',
 });
 var quill2 = new Quill('#editor2', {
+    modules: {
+    toolbar:  [
+          [{ 'font': [] }, { 'size': [] }],
+          [ 'bold', 'italic', 'underline', 'strike' ],
+          [{ 'color': [] }, { 'background': [] }],
+          [{ 'script': 'super' }, { 'script': 'sub' }],
+          [{ 'header': '1' }, { 'header': '2' }, 'blockquote', 'code-block' ],
+          [{ 'list': 'ordered' }, { 'list': 'bullet'}, { 'indent': '-1' }, { 'indent': '+1' }],
+          [ 'direction', { 'align': [] }],
+          [ 'link', 'image', 'video', 'formula' ],
+          [ 'clean' ]
+    ],
+  },
     theme: 'snow',
 });
-var toolbar1 = quill1.container.previousSibling;
-toolbar1.querySelector('.ql-picker').setAttribute('title', 'Font Size');
-toolbar1.querySelector('button.ql-bold').setAttribute('title', 'Bold');
-toolbar1.querySelector('button.ql-italic').setAttribute('title', 'Italic');
-toolbar1.querySelector('button.ql-link').setAttribute('title', 'Link');
-toolbar1.querySelector('button.ql-underline').setAttribute('title', 'Underline');
-toolbar1.querySelector('button.ql-clean').setAttribute('title', 'Clear Formatting');
-toolbar1.querySelector('[value=ordered]').setAttribute('title', 'Ordered List');
-toolbar1.querySelector('[value=bullet]').setAttribute('title', 'Bullet List');
-
-var toolbar2 = quill2.container.previousSibling;
-toolbar2.querySelector('.ql-picker').setAttribute('title', 'Font Size');
-toolbar2.querySelector('button.ql-bold').setAttribute('title', 'Bold');
-toolbar2.querySelector('button.ql-italic').setAttribute('title', 'Italic');
-toolbar2.querySelector('button.ql-link').setAttribute('title', 'Link');
-toolbar2.querySelector('button.ql-underline').setAttribute('title', 'Underline');
-toolbar2.querySelector('button.ql-clean').setAttribute('title', 'Clear Formatting');
-toolbar2.querySelector('[value=ordered]').setAttribute('title', 'Ordered List');
-toolbar2.querySelector('[value=bullet]').setAttribute('title', 'Bullet List');
 
 function setQuillInput() {
     let quillInput1 = document.getElementById("quill-input1");
