@@ -62,18 +62,22 @@ document.addEventListener('alpine:init', () => {
         init() {
             this.datatable = new simpleDatatables.DataTable('#myTable', {
                 data: {
-                    headings: ['Sr.No.', 'Adress label','House No',
+                    headings: ['Sr.No.','Customer Name', 'Adress label','House No',
                         'Address', 'Notes',  'Action'
                     ],
                     data: [
                         <?php
-                                $stmt = $obj->con1->prepare("SELECT * FROM `customer_addresses`");
+                                $stmt = $obj->con1->prepare("SELECT ca1.*, CONCAT(r1.firstname, ' ', r1.lastname) AS full_name 
+                                FROM `customer_addresses` AS ca1
+                                JOIN `customer_reg` AS r1 
+                                ON ca1.c_id = r1.id;");
                                 $stmt->execute();
                                 $Resp = $stmt->get_result();
                                 $i = 1;
                                 while ($row = mysqli_fetch_array($Resp)) { ?>
                                 [
                             <?php echo $i; ?>,
+                            '<?php echo addslashes ($row["full_name"]); ?>',
                             '<?php echo addslashes ($row["add_label"]); ?>',
                             '<?php echo addslashes ($row["house_no"]); ?>',
                             '<?php echo addslashes($row["street"]);?>',

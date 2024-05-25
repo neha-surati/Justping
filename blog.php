@@ -83,7 +83,7 @@ document.addEventListener('alpine:init', () => {
                             ?>[
                             <?php echo $i; ?>,
 
-                            '<?php echo addslashes($row["title"]); ?>',
+                            '<span class="wrap-text"><?php echo addslashes($row["title"]); ?></span>',
 
 
                             `<?php
@@ -101,7 +101,7 @@ document.addEventListener('alpine:init', () => {
                                         <?php } ?>`,
 
 
-                            '<?php echo addslashes($row["short_desc"]); ?>',
+                            '<span class="wrap-text"><?php echo addslashes($row["short_desc"]); ?></span>',
 
                             '<span class="badge whitespace-nowrap" :class="{\'badge-outline-success\': \'<?php echo $row["status"]; ?>\' === \'Enable\', \'badge-outline-danger\': \'<?php echo $row["status"]; ?>\' === \'Disable\'}"><?php echo $row["status"]; ?></span>',
 
@@ -185,8 +185,9 @@ function viewdata(id) {
     createCookie("view_id", id, 1);
     window.location = "add_blog.php";
 }
-function add_subimages(id){
-    createCookie("edit_id",id,1);
+
+function add_subimages(id) {
+    createCookie("edit_id", id, 1);
     window.location = "add_blog_subimages.php";
 }
 

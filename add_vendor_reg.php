@@ -125,7 +125,7 @@ if (isset($_REQUEST["update"])) {
 
                 <div>
                     <label for="name"> Name</label>
-                    <input id="name" name="name" type="text" class="form-input" placeholder="Enter your first name" value="<?php echo (isset($mode)) ? $data['name'] : '' ?>" required <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
+                    <input id="name" name="name" type="text" class="form-input" placeholder="Enter your name" value="<?php echo (isset($mode)) ? $data['name'] : '' ?>" required <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10">
                     <div>
@@ -172,7 +172,7 @@ if (isset($_REQUEST["update"])) {
                     <div>
                         <div>
                             <label for="address">Address </label>
-                            <textarea autocomplete="on" name="address" id="address" class="form-textarea" rows="1" value="" required <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?>><?php echo isset($mode) ? $data['address'] : '' ?></textarea>
+                            <textarea autocomplete="on" name="address" id="address" class="form-textarea" rows="2" value="" required <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?>><?php echo isset($mode) ? $data['address'] : '' ?></textarea>
                         </div>
                     </div>
                     <div>

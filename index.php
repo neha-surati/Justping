@@ -19,6 +19,7 @@ if (isset($_REQUEST['save'])) {
         $_SESSION['type_admin'] = true;
         $_SESSION['admin_username'] = $admin_data['username'];
         $_SESSION['admin_name'] = $admin_data['name'];
+        $_SESSION['id'] = $admin_data['id'];
         setcookie("msg", "login", time() + 3600, "/");
         header("location:banner.php");
         exit;

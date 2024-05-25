@@ -138,7 +138,7 @@ if (isset($_REQUEST["btn_update"])) {
 			<form class="space-y-5" method="post" enctype="multipart/form-data">
                 <div>
 					<label for="description">Description</label>
-					<input id="description" name="description" type="text" class="form-input" required
+					<input id="description" name="description" type="text" class="form-input" placeholder="Enter the description"
 						value="<?php echo (isset($mode)) ? $data['description'] : '' ?>" <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
 				</div>
 				<div <?php echo (isset($mode) && $mode == 'view') ? 'hidden' : '' ?>>

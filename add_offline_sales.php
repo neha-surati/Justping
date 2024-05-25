@@ -122,7 +122,7 @@ if (isset($_REQUEST["btn_update"])) {
                     <div>
                         <label for="commission_amount">Commission Amount</label>
                         <input id="commission_amount" name="commission_amount" type="text" class="form-input"
-                            placeholder="Enter commission amount"
+                            placeholder="Enter commission amount" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 13"
                             value="<?php echo (isset($mode)) ? $data['commission_amount'] : '' ?>" required
                             <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
                     </div>
@@ -161,7 +161,7 @@ if (isset($_REQUEST["btn_update"])) {
                         <label for="money_charged">Money Charged</label>
                         <input id="money_charged" name="money_charged" type="text" class="form-input" required
                             value="<?php echo (isset($mode)) ? $data['money_charged'] : '' ?>"
-                            placeholder="money charged"
+                            placeholder="money charged" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 13"
                             <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
                     </div>
                 </div>
@@ -170,7 +170,7 @@ if (isset($_REQUEST["btn_update"])) {
                         <label for="cost_to_company">Cost To Company</label>
                         <input id="cost_to_company" name="cost_to_company" type="text" class="form-input" required
                             value="<?php echo (isset($mode)) ? $data['cost_to_company'] : '' ?>"
-                            placeholder="cost to company"
+                            placeholder="cost to company" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 13"
                             <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
                     </div>
                     <div>

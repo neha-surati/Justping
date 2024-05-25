@@ -155,11 +155,10 @@ function is_image($filename)
 							value="<?php echo (isset($mode)) ? $data['name'] : '' ?>" placeholder="Enter name" <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
 					</div>
 					<div>
-						<label for="details">Details</label>
-						<input id="details" name="details" type="text" class="form-input"
-							placeholder="Enter detail"
-							value="<?php echo (isset($mode)) ? $data['detail'] : '' ?>" required <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
-					</div>
+                    <label for="details">Details</label>
+                    <textarea autocomplete="on" name="details" id="details" class="form-textarea" rows="2"
+                                value="" required <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?>><?php echo isset($mode) ? $data['details'] : '' ?></textarea>
+                </div>
 				</div>
 				<div>
 					<label for="groupFname">Vendor Name</label>
@@ -184,12 +183,12 @@ function is_image($filename)
 				<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-10">
 					<div>
 						<label for="price">Price</label>
-						<input id="price" name="price" type="text" class="form-input" required
+						<input id="price" name="price" type="text" class="form-input" required  onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 13" onchange="calculateFinalPrice();"
 							value="<?php echo (isset($mode)) ? $data['main_price'] : '' ?>" placeholder="Enter price" <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
 					</div>
 					<div>
 						<label for="discount">Discount (%)</label>
-						<input id="discount" name="discount" type="text" class="form-input"
+						<input id="discount" name="discount" type="text" class="form-input"  onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 13" 
 							placeholder="Enter discount percentage" onchange="calculateFinalPrice();"
 							value="<?php echo (isset($mode)) ? $data['discount_per'] : '' ?>" required <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
 					</div>
@@ -254,43 +253,7 @@ function is_image($filename)
 			eraseCookie("view_id");
 			window.location = "product_details.php";
 		}
-		/*function readURL(input, preview) {
-			if (input.files && input.files[0]) {
-				var image = input.files.item(0).name;
-
-				var reader = new FileReader();
-				var extn = image.split(".");
-
-				if (extn[1].toLowerCase() == "jpg" || extn[1].toLowerCase() == "jpeg" || extn[1].toLowerCase() == "png" || extn[1].toLowerCase() == "bmp" ) {
-					reader.onload = function (e) {
-						$('#' + preview).attr('src', e.target.result);
-						document.getElementById(preview).style.display = "block";
-					}
-
-					reader.readAsDataURL(input.files[0]);
-					$('#imgdiv').html("");
-					document.getElementById('save').disabled = false;
-				}
-				else if(extn[1].toLowerCase() == "mp4" || extn[1].toLowerCase() == "mkv" || extn[1].toLowerCase() == "mov"|| extn[1].toLowerCase() == "webm")
-				{
-
-					reader.onload = function (e) {
-						//console.log(e.target.result);
-						$('#PreviewVideo').attr('src', e.target.result);
-						document.getElementById('PreviewVideo').style.display = "block";
-					}
-
-					reader.readAsDataURL(input.files[0]);
-					$('#imgdiv').html("");
-					document.getElementById('save').disabled = false;
-
-				}
-				else {
-					$('#imgdiv').html("Please Select Image Only");
-					document.getElementById('save').disabled = true;
-				}
-			}
-		}*/
+	
 		function readURL(input, preview) {
 			if (input.files && input.files[0]) {
 				var filename = input.files.item(0).name;
@@ -342,16 +305,20 @@ function is_image($filename)
 		}
 
 		function calculateFinalPrice() {
-            // Get the values from the text fields
-            var price = parseFloat(document.getElementById("price").value);
-            var discountPercentage = parseFloat(document.getElementById("discount").value);
+			if(document.getElementById("price").value!="" && document.getElementById("discount").value!=""){
+				var price = parseFloat(document.getElementById("price").value);
+				var discountPercentage = parseFloat(document.getElementById("discount").value);
+				
+				// Calculate the final amount after applying the discount
+				var discountAmount = price * (discountPercentage / 100);
+				var finalPrice = price - discountAmount;
 
-            // Calculate the final amount after applying the discount
-            var discountAmount = price * (discountPercentage / 100);
-            var finalPrice = price - discountAmount;
-
-            // Display the final amount in the third text field
-            document.getElementById("finalPrice").value = finalPrice.toFixed(2);
+				// Display the final amount in the third text field
+				document.getElementById("finalPrice").value = finalPrice.toFixed(2);
+			}
+			else{ 
+				document.getElementById("finalPrice").value =0;
+			}
         }
 	</script>
 	<?php

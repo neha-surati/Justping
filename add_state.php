@@ -52,7 +52,7 @@ if (isset($_REQUEST["save"])) {
     $user_id = $_SESSION['id'];
     $operation = "Added";
     try {
-        // echo "INSERT INTO `city`(`city_name`,`state_id`,`status`) VALUES ('".$city_name."', '".$state_name."', '".$stats."')";
+        // echo "INSERT INTO `state`(`state_name`,`stats`,`added_by`,`operation`) VALUES ('".$state_name."', '".$status."', '".$user_id."', '".$operation."')";
         $stmt = $obj->con1->prepare(
             "INSERT INTO `state`(`state_name`,`stats`,`added_by`,`operation`) VALUES (?,?,?,?)"
         );
@@ -96,7 +96,8 @@ if (isset($_REQUEST["save"])) {
                     <input id="state_name" name="state_name" type="text" class="form-input"
                         onblur="checkName(this, <?php echo isset($mode) ? $data['id'] : 0 ?>)"
                         value="<?php echo isset($mode) ? $data["state_name"] : ""; ?>" pattern="^\s*\S.*$"
-                        <?php echo isset($mode) && $mode == 'view' ? 'readonly' : ''?> required />
+                        <?php echo isset($mode) && $mode == 'view' ? 'readonly' : ''?> placeholder="Enter state name"
+                        required />
                     <p class="mt-3 text-danger text-base font-bold" id="demo"></p>
                     
                 </div>

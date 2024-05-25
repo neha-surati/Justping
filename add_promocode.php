@@ -140,16 +140,21 @@ if (isset($_REQUEST["btn_update"])) {
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10">
                     <div x-data="form">
                         <label> Start Date </label>
-                        <input id="basic" x-model="date1" class="form-input" name="start_date" required 
-						value="<?php echo (isset($mode)) ? $data['start_date'] : '' ?>"
-                     <?php echo isset($mode) && $mode == 'view' ?'disabled'  : '' ?>/>
+                        <div class="relative">
+                            <input id="basic" x-model="date1" class="form-input" name="start_date" required 
+                            value="<?php echo (isset($mode)) ? $data['start_date'] : '' ?>"
+                            <?php echo isset($mode) && $mode == 'view' ? 'disabled' : '' ?> />
+
+                        </div>
                     </div>
                     <div x-data="form">
                         <label> End Date </label>
-                        <input id="basic2" x-model="date2" class="form-input" name="end_date" required
-						value="<?php echo (isset($mode)) ? $data['end_date'] : '' ?>"
-						 <?php echo isset($mode) && $mode == 'view' ? 'disabled'  : '' ?> />
-                       
+                        <div class="relative">
+                            <input id="basic2" x-model="date2" class="form-input" name="end_date" required 
+                            value="<?php echo (isset($mode)) ? $data['end_date'] : '' ?>"
+                            <?php echo isset($mode) && $mode == 'view' ? 'disabled' : '' ?> />
+                           
+                        </div>
                     </div>
                 </div>
                 <div>
@@ -168,10 +173,6 @@ if (isset($_REQUEST["btn_update"])) {
                             <?php echo (isset($mode) && $mode == 'view') ? 'disabled' : '' ?>><span
                             class="bg-[#ebedf2] dark:bg-dark block h-full rounded-full before:absolute before:left-1 before:bg-white dark:before:bg-white-dark dark:peer-checked:before:bg-white before:bottom-1 before:w-4 before:h-4 before:rounded-full peer-checked:before:left-7 peer-checked:bg-primary before:transition-all before:duration-300"></span>
                     </label>
-                </div>
-
-                <div>
-
                 </div>
 
                 <div class="relative inline-flex align-middle gap-3 mt-4 ">
@@ -195,25 +196,6 @@ if (isset($_REQUEST["btn_update"])) {
 
     </script>
     <script>
-    // document.addEventListener("alpine:init", () => {
-    //     Alpine.data("form", () => ({
-    //         date1: '2022-07-05',
-    //         date2: '2022-07-05',
-    //         init() {
-    //             flatpickr(document.getElementById('basic'), {
-    //                 dateFormat: 'd-m-y',
-    //                 defaultDate: this.date1,
-
-    //             });
-    //             flatpickr(document.getElementById('basic2'), {
-    //                 dateFormat: 'd-m-y',
-    //                 defaultDate: this.date2,
-    //             });
-    //         }
-    //     }));
-    // });
-
-	
     document.addEventListener("alpine:init", () => {
         let todayDate = new Date();
         let formattedToday = todayDate.toLocaleDateString('en-GB', {
@@ -224,27 +206,32 @@ if (isset($_REQUEST["btn_update"])) {
 
         Alpine.data("form", () => ({
             date1: '<?php echo isset($mode) ? date("d-m-Y", strtotime($data['start_date'])) : date("d-m-Y") ?>',
-			date2: '<?php echo isset($mode) ? date("d-m-Y", strtotime($data['end_date'])) : date("d-m-Y") ?>',
+            date2: '<?php echo isset($mode) ? date("d-m-Y", strtotime($data['end_date'])) : date("d-m-Y") ?>',
             init() {
                 flatpickr(document.getElementById('basic'), {
                     dateFormat: 'd-m-Y',
                     minDate: formattedToday,
                     defaultDate: this.date1,
-                    minDate: "today",
+                    onChange: (selectedDates, dateStr, instance) => {
+                        const endDatePicker = document.getElementById('basic2')._flatpickr;
+                        endDatePicker.set('minDate', dateStr);
+                    },
                 });
-				flatpickr(document.getElementById('basic2'), {
+                flatpickr(document.getElementById('basic2'), {
                     dateFormat: 'd-m-Y',
                     minDate: formattedToday,
                     defaultDate: this.date2,
-                    minDate: "today",
+                    onChange: (selectedDates, dateStr, instance) => {
+                        const startDatePicker = document.getElementById('basic')._flatpickr;
+                        startDatePicker.set('maxDate', dateStr);
+                    },
                 });
-				
-
             }
         }));
-	});
+    });
     </script>
 
     <?php
 	include "footer.php";
 	?>
+</div>

@@ -21,18 +21,19 @@ if(isset($_COOKIE['editId'])){
     $Resp = $stmt->get_result();
     $data = $Resp->fetch_assoc();
     $stmt->close();
-    echo $data["city"];
 }
 
 if(isset($_REQUEST['update'])){
     $editId = $_COOKIE['editId'];
     $city_id = $_REQUEST["city_id"];
-    $area_name = $_REQUEST["area_area"];
+    $area_name = $_REQUEST["area_name"];
     $pincode = $_REQUEST["pincode"];
     $status = isset($_REQUEST["status"])?'Enable':'Disable';
     $user_id = $_SESSION['id'];
     $operation = "Updated";
 
+    
+    // echo "UPDATE `area` SET city='".$city_id."', area_name='". $area_name."', pincode='". $pincode."',  stats='".$status."',added_by='".$user_id."', operation='".$operation."' WHERE id='".$editId."'";
     $stmt = $obj->con1->prepare("UPDATE `area` SET city=?, area_name=?, pincode=?, stats=?, added_by=?, operation=? WHERE srno=?");
     $stmt->bind_param("isssisi", $city_id, $area_name, $pincode, $status, $user_id, $operation, $editId );
     $Res = $stmt->execute();

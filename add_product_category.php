@@ -119,12 +119,10 @@ if (isset($_REQUEST["update"])) {
                 </div>
                 <div>
                     <label for="details">Details</label>
-                    <input id="details" name="details" type="text" class="form-input" placeholder="Enter detail"
-                        value="<?php echo (isset($mode)) ? $data['details'] : '' ?>" required
-                        <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
+                    <textarea autocomplete="on" name="details" id="details" class="form-textarea" rows="2"
+                                value="" required <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?>><?php echo isset($mode) ? $data['details'] : '' ?></textarea>
                 </div>
-
-
+                
                 <div class="mb-4">
                     <label for="custom_switch_checkbox1">Status</label>
                     <label class="w-12 h-6 relative">

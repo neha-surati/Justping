@@ -21,13 +21,14 @@ if (isset($_SESSION['type_admin']) && $_SESSION['type_admin']) {
         "product_category_details.php",
         "product_details.php",
         "order.php",
+        "order_detail.php",
         "faq.php",
         "blog.php",
         "vendor_reg.php",
         "customer_reg.php",
         "customer_addresses.php",
         "promocode.php",
-        "notofication.php",
+        "notification.php",
         "offline_sales.php",
         "privacy_policy.php",
         "add_banner.php",
@@ -46,8 +47,8 @@ if (isset($_SESSION['type_admin']) && $_SESSION['type_admin']) {
         "add_promocode.php",
         "add_about_us.php",
         "add_blog_subimages.php",
-        "add_notoification.php",
-        "add_offline_sales",
+        "add_notification.php",
+        "add_offline_sales.php",
         "add_privacy_policy.php"
     );
 } elseif (isset($_SESSION['type_vendor']) && $_SESSION['type_vendor']) {
