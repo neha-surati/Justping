@@ -147,7 +147,7 @@ if (isset($_REQUEST["update"])) {
                     <div>
                         <label for="percentage">Discount Percentage</label>
                         <div>
-                            <input id="percentage" name="percentage" type="number" placeholder="Enter percentage" class="form-input ltr:rounded-l-none rtl:rounded-r-none" value="<?php echo (isset($mode)) ? $data['percentage'] : '' ?>" required <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
+                            <input id="percentage" name="percentage" type="text" placeholder="Enter percentage" class="form-input" value="<?php echo (isset($mode)) ? $data['percentage'] : '' ?>" required <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
                         </div>
                     </div>
                 </div>

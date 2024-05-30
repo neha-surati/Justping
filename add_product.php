@@ -183,13 +183,13 @@ function is_image($filename)
 				<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-10">
 					<div>
 						<label for="price">Price</label>
-						<input id="price" name="price" type="text" class="form-input" required  onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 13" onchange="calculateFinalPrice();"
+						<input id="price" name="price" type="text" class="form-input" required   onkeyup="calculateFinalPrice();"
 							value="<?php echo (isset($mode)) ? $data['main_price'] : '' ?>" placeholder="Enter price" <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
 					</div>
 					<div>
 						<label for="discount">Discount (%)</label>
-						<input id="discount" name="discount" type="text" class="form-input"  onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 13" 
-							placeholder="Enter discount percentage" onchange="calculateFinalPrice();"
+						<input id="discount" name="discount" type="text" class="form-input"  
+							placeholder="Enter discount percentage" onkeyup="calculateFinalPrice();"
 							value="<?php echo (isset($mode)) ? $data['discount_per'] : '' ?>" required <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
 					</div>
 					<div>

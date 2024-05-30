@@ -6,9 +6,8 @@ setcookie("viewId", "", time() - 3600);
 
 if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
     try {
-        $stmt_del = $obj->con1->prepare(
-            "delete from city where id='" . $_REQUEST["id"] . "'"
-        );
+        $stmt_del = $obj->con1->prepare("DELETE FROM city WHERE id = ?");
+        $stmt_del->bind_param("i", $_REQUEST["id"]);
         $Resp = $stmt_del->execute();
         if (!$Resp) {
             if (strtok($obj->con1->error, ":") == "Cannot delete or update a parent row") {
