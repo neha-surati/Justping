@@ -47,6 +47,7 @@ if (isset($_REQUEST["btnsubmit"])) {
 		}
 	}
 	try {
+		// echo "INSERT INTO `product`(`name`,`detail`,`v_id`,`image`,`stats`,`main_price`,`discount_per`,`discount_price`,`operation`,) VALUES ('".$name."', '". $details."', '".$v_id."', '".$PicFileName."', '".$status."', '".$price."', '".$discount."', '".$finalPrice."', '".$operation."',)";
 		$stmt = $obj->con1->prepare("INSERT INTO `product`(`name`, `detail`, `v_id`,`image`, `stats`, `main_price`, `discount_per`, `discount_price`, `operation`) VALUES (?,?,?,?,?,?,?,?,?)");
 		$stmt->bind_param("ssissiiis", $name, $details, $v_id, $PicFileName, $status, $price, $discount, $finalPrice, $operation);
 		$Resp = $stmt->execute();
@@ -133,6 +134,33 @@ function is_image($filename)
 	$extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
 	return in_array($extension, $allowed_extensions);
 }
+if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
+	$product_subimg = $_REQUEST["product_subimg"];
+	try {
+		$stmt_del = $obj->con1->prepare("DELETE FROM `product_image` WHERE image_id='" . $_REQUEST["sub_img_id"] . "'");
+		$Resp = $stmt_del->execute();
+		if (!$Resp) {
+			if (
+				strtok($obj->con1->error, ":") == "Cannot delete or update a parent row"
+			) {
+				throw new Exception("Image is already in use!");
+			}
+		}
+		$stmt_del->close();
+	} catch (\Exception $e) {
+		setcookie("sql_error", urlencode($e->getMessage()), time() + 3600, "/");
+	}
+
+	if ($Resp) {
+		if (file_exists("images/product_images/" . $product_subimg)) {
+			unlink("images/product_images/" . $product_subimg);
+		}
+		setcookie("msg", "data_del", time() + 3600, "/");
+	} else {
+		setcookie("msg", "fail", time() + 3600, "/");
+	}
+	header("location:add_product.php");
+}
 ?>
 <div class='p-6'>
 	<div class="flex gap-6 items-center pb-8">
@@ -157,7 +185,7 @@ function is_image($filename)
 					<div>
                     <label for="details">Details</label>
                     <textarea autocomplete="on" name="details" id="details" class="form-textarea" rows="2"
-                                value="" required <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?>><?php echo isset($mode) ? $data['details'] : '' ?></textarea>
+                                value="" required <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?>><?php echo isset($mode) ? $data['detail'] : '' ?></textarea>
                 </div>
 				</div>
 				<div>
@@ -212,8 +240,7 @@ function is_image($filename)
 				<div <?php echo (isset($mode) && $mode == 'view') ? 'hidden' : '' ?>>
 					<label for="image">Image</label>
 					<input id="product_img" name="product_img" class="demo1" type="file" data_btn_text="Browse"
-						onchange="readURL(this,'PreviewImage')" accept="image/*, video/*"
-						onchange="readURL(this,'PreviewImage')" placeholder="drag and drop file here" />
+						onchange="readURL(this,'PreviewImage')" accept="image/*, video/*" placeholder="drag and drop file here" />
 				</div>
 				<div>
 					<h4 class="font-bold text-primary mt-2 mb-3"
@@ -224,7 +251,7 @@ function is_image($filename)
 							name="PreviewMedia" id="PreviewMedia" width="400" height="400"
 							style="display:<?php echo (isset($mode) && is_image($data["image"])) ? 'block' : 'none' ?>"
 							class="object-cover shadow rounded">
-						<!-- <video src = "<?php echo (isset($mode) && !is_image($data["image"])) ? 'images/product_images/' . $data["image"] : '' ?>" name="PreviewVideo" id="PreviewVideo" width="400" height="400" style="display:<?php echo (isset($mode) && !is_image($data["image"])) ? 'block' : 'none' ?>" class="object-cover shadow rounded" controls></video> -->
+						<video src = "<?php echo (isset($mode) && !is_image($data["image"])) ? 'images/product_images/' . $data["image"] : '' ?>" name="PreviewVideo" id="PreviewVideo" width="400" height="400" style="display:<?php echo (isset($mode) && !is_image($data["image"])) ? 'block' : 'none' ?>" class="object-cover shadow rounded" controls></video>
 						<div id="imgdiv" style="color:red"></div>
 						<input type="hidden" name="old_img" id="old_img"
 							value="<?php echo (isset($mode) && $mode == 'edit') ? $data["image"] : '' ?>" />
@@ -255,6 +282,7 @@ function is_image($filename)
 		}
 	
 		function readURL(input, preview) {
+			console.log("yes");
 			if (input.files && input.files[0]) {
 				var filename = input.files.item(0).name;
 				var extn = filename.split(".").pop().toLowerCase();
@@ -275,6 +303,7 @@ function is_image($filename)
 			}
 		}
 		function displayImagePreview(input, preview) {
+			console.log("image");
 			var reader = new FileReader();
 			reader.onload = function (e) {
 				document.getElementById('mediaPreviewContainer').style.display = "block";
@@ -321,6 +350,210 @@ function is_image($filename)
 			}
         }
 	</script>
-	<?php
-	include "footer.php";
-	?>
+
+<?php if (isset($mode)) { ?>
+	<div class="animate__animated p-6" :class="[$store.app.animation]">
+	<div x-data='pagination'>
+		<h1 class="dark:text-white-dar text-2xl font-bold">Product Images</h1>
+		<div class="panel mt-6 flex items-center  justify-between relative">
+
+			<div class="flex gap-6 items-center pb-8 <?php echo (isset($mode) && $mode == 'view') ? 'hidden' : '' ?>">
+				<button type="button" name="btn_add_img" id="btn_add_img" class="p-2 btn btn-primary m-1 add-btn" onclick="location.href='add_product_subimages.php'">
+				<i class="ri-add-line mr-1"></i> Add product Images</button>
+			</div>
+
+				<table id="myTable" class="table-hover whitespace-nowrap w-full"></table> 
+		</div>
+	</div>
+</div>
+<?php } ?>
+<script type="text/javascript">
+<?php if (isset($mode)) { ?>
+	function getActions(id, product_img) {
+		checkCookies();
+		return `<ul class="flex items-center gap-4">
+		<li>
+			<a href="javascript:viewdata(`+ id + `);" class='text-xl' x-tooltip="View">
+			<i class="ri-eye-line text-primary"></i>
+			</a>
+		</li>
+		<?php if(isset($mode) && $mode == 'edit') { ?>
+		<li>
+			<a href="javascript:editdata(`+ id + `);" class='text-xl' x-tooltip="Edit">
+			<i class="ri-pencil-line text text-success"></i>
+			</a>
+		</li>
+		<li>
+			<a href="javascript:showAlert(`+ id + `,\'` + product_img + `\');" class='text-xl' x-tooltip="Delete">
+			<i class="ri-delete-bin-line text-danger"></i>
+			</a>
+		</li>
+		<?php } ?>
+		</ul>`
+	}
+	document.addEventListener('alpine:init', () => {
+		Alpine.data('pagination', () => ({
+			datatable: null,
+			init() {
+				this.datatable = new simpleDatatables.DataTable('#myTable', {
+					data: {
+						headings: ['Sr.No.', 'Image', 'Action'],
+						data: [
+						<?php
+							$id = ($mode=='edit')?$editId:$viewId;
+							$stmt = $obj->con1->prepare("SELECT * FROM `product_image` WHERE product_id=? order by image_id desc");
+							$stmt->bind_param("i",$id);
+							$stmt->execute();
+							$Resp = $stmt->get_result();
+							$i = 1;
+							while ($row = mysqli_fetch_array($Resp)) { ?>
+								[
+								<?php echo $i; ?>,
+								`<?php 
+                                        $img_array= array("jpg", "jpeg", "png", "bmp");
+                                        $vd_array=array("mp4", "webm", "ogg","mkv");
+                                        $extn = strtolower(pathinfo($row["image"], PATHINFO_EXTENSION));
+                                        if (in_array($extn,$img_array)) {
+                                        ?>
+                                            <img src="images/product_images/<?php echo addslashes($row["image"]);?>" width="200" height="200" style="display:<?php (in_array($extn, $img_array))?'block':'none' ?>" class="object-cover shadow rounded">
+                                        <?php
+                                             } if (in_array($extn,$vd_array )) {
+                                        ?>
+                                            <video src="images/product_images/<?php echo addslashes($row["image"]);?>" height="200" width="200" style="display:<?php (in_array($extn, $vd_array))?'block':'none' ?>" class="object-cover shadow rounded" controls></video>
+                                        <?php } ?>`,
+								getActions(<?php echo $row["image_id"]; ?>, '<?php echo addslashes($row["image"]); ?>')
+								],
+								<?php $i++;
+							}
+						?>
+						],
+					},
+					perPage: 10,
+					perPageSelect: [10, 20, 30, 50, 100],
+					columns: [{
+						select: 0,
+						sort: 'asc',
+					},],
+					firstLast: true,
+					firstText: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M13 19L7 12L13 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path opacity="0.5" d="M16.9998 19L10.9998 12L16.9998 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
+					lastText: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M11 19L17 12L11 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path opacity="0.5" d="M6.99976 19L12.9998 12L6.99976 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
+					prevText: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M15 5L9 12L15 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
+					nextText: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M9 5L15 12L9 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
+					labels: {
+						perPage: '{select}',
+					},
+					layout: {
+						top: '{search}',
+						bottom: "<div class='flex items-center gap-4'>{info}{select}</div>{pager}",
+					},
+				});
+			},
+
+			printTable() {
+				this.datatable.print();
+			},
+
+			formatDate(date) {
+				if (date) {
+					const dt = new Date(date);
+					const month = dt.getMonth() + 1 < 10 ? '0' + (dt.getMonth() + 1) : dt.getMonth() +
+						1;
+					const day = dt.getDate() < 10 ? '0' + dt.getDate() : dt.getDate();
+					return day + '/' + month + '/' + dt.getFullYear();
+				}
+				return '';
+			},
+		}));
+	})
+<?php } ?>
+	function go_back() {
+		eraseCookie("edit_id");
+		eraseCookie("view_id");
+		window.location = "product_details.php";
+	}
+
+	function editdata(id) {
+		createCookie("edit_subimg_id", id, 1);
+		window.location = "add_product_subimages.php";
+	}
+
+	function viewdata(id) {
+		createCookie("view_subimg_id", id, 1);
+		window.location = "add_product_subimages.php";
+	}
+
+	async function showAlert(id, img) {
+		new window.Swal({
+			title: 'Are you sure?',
+			text: "You won't be able to revert this!",
+			showCancelButton: true,
+			confirmButtonText: 'Delete',
+			padding: '2em',
+		}).then((result) => {
+			if (result.isConfirmed) {
+				var loc = "add_product.php?flg=del&sub_img_id=" + id + "&product_subimg=" + img;
+				window.location = loc;
+			}
+		});
+	}
+
+	// var quill1 = new Quill('#editor1', {
+	// 	theme: 'snow',
+	// });
+	// var toolbar1 = quill1.container.previousSibling;
+	// toolbar1.querySelector('.ql-picker').setAttribute('title', 'Font Size');
+	// toolbar1.querySelector('button.ql-bold').setAttribute('title', 'Bold');
+	// toolbar1.querySelector('button.ql-italic').setAttribute('title', 'Italic');
+	// toolbar1.querySelector('button.ql-link').setAttribute('title', 'Link');
+	// toolbar1.querySelector('button.ql-underline').setAttribute('title', 'Underline');
+	// toolbar1.querySelector('button.ql-clean').setAttribute('title', 'Clear Formatting');
+	// toolbar1.querySelector('[value=ordered]').setAttribute('title', 'Ordered List');
+	// toolbar1.querySelector('[value=bullet]').setAttribute('title', 'Bullet List');
+
+	// function setQuillInput() {
+	// 	let quillInput1 = document.getElementById("quill-input1");
+	// 	quillInput1.value = quill1.root.innerHTML;
+
+	// 	let val1 = quillInput1.value.replace(/<[^>]*>/g, '');
+		
+	// 	if (val1.trim() == '') {
+	// 		coloredToast("danger", 'Please add something in Description.');
+	// 		return false;
+	// 	}
+	// 	<?php if(!isset($mode)){ ?>
+    //      else if (<?php echo (!isset($mode))?true:false ?>) {
+    //         return checkImage();
+    //     } 
+    //     <?php } ?> 
+	// 	else {
+	// 		return true;
+	// 	}
+	// }
+
+	// function readURL(input, preview) {
+	// 	if (input.files && input.files[0]) {
+	// 		var filename = input.files.item(0).name;
+
+	// 		var reader = new FileReader();
+	// 		var extn = filename.split(".");
+
+	// 		if (extn[1].toLowerCase() == "jpg" || extn[1].toLowerCase() == "jpeg" || extn[1].toLowerCase() == "png" || extn[1].toLowerCase() == "bmp") {
+	// 			reader.onload = function (e) {
+	// 				$('#' + preview).attr('src', e.target.result);
+	// 				document.getElementById(preview).style.display = "block";
+	// 			};
+
+	// 			reader.readAsDataURL(input.files[0]);
+	// 			$('#imgdiv').html("");
+	// 			document.getElementById('save').disabled = false;
+	// 		}
+	// 		else {
+	// 			$('#imgdiv').html("Please Select Image Only");
+	// 			document.getElementById('save').disabled = true;
+	// 		}
+	// 	}
+	// }
+</script>
+<?php
+include "footer.php";
+?>

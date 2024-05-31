@@ -42,6 +42,11 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
     function getActions(id, product_img) {
         return `<ul class="flex items-center gap-4">
             <li>
+                <a href="javascript:add_subimages(`+id+`);" class='text-xl' x-tooltip="Add">
+                <i class="ri-add-line text text-success"></i>
+                </a>
+            </li>
+            <li>
             <a href="javascript:viewdata(` + id + `);" class='text-xl' x-tooltip="View">
             <i class="ri-eye-line text-primary"></i>
             </a>
@@ -168,6 +173,10 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
         window.location = "add_product.php";
     }
 
+    function add_subimages(id){
+        createCookie("edit_id",id,1);
+        window.location = "add_product_subimages.php";
+    }
     async function showAlert(id, product_img) {
         new window.Swal({
             title: 'Are you sure?',
