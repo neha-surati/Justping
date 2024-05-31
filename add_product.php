@@ -496,63 +496,6 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
 			}
 		});
 	}
-
-	// var quill1 = new Quill('#editor1', {
-	// 	theme: 'snow',
-	// });
-	// var toolbar1 = quill1.container.previousSibling;
-	// toolbar1.querySelector('.ql-picker').setAttribute('title', 'Font Size');
-	// toolbar1.querySelector('button.ql-bold').setAttribute('title', 'Bold');
-	// toolbar1.querySelector('button.ql-italic').setAttribute('title', 'Italic');
-	// toolbar1.querySelector('button.ql-link').setAttribute('title', 'Link');
-	// toolbar1.querySelector('button.ql-underline').setAttribute('title', 'Underline');
-	// toolbar1.querySelector('button.ql-clean').setAttribute('title', 'Clear Formatting');
-	// toolbar1.querySelector('[value=ordered]').setAttribute('title', 'Ordered List');
-	// toolbar1.querySelector('[value=bullet]').setAttribute('title', 'Bullet List');
-
-	// function setQuillInput() {
-	// 	let quillInput1 = document.getElementById("quill-input1");
-	// 	quillInput1.value = quill1.root.innerHTML;
-
-	// 	let val1 = quillInput1.value.replace(/<[^>]*>/g, '');
-		
-	// 	if (val1.trim() == '') {
-	// 		coloredToast("danger", 'Please add something in Description.');
-	// 		return false;
-	// 	}
-	// 	<?php if(!isset($mode)){ ?>
-    //      else if (<?php echo (!isset($mode))?true:false ?>) {
-    //         return checkImage();
-    //     } 
-    //     <?php } ?> 
-	// 	else {
-	// 		return true;
-	// 	}
-	// }
-
-	// function readURL(input, preview) {
-	// 	if (input.files && input.files[0]) {
-	// 		var filename = input.files.item(0).name;
-
-	// 		var reader = new FileReader();
-	// 		var extn = filename.split(".");
-
-	// 		if (extn[1].toLowerCase() == "jpg" || extn[1].toLowerCase() == "jpeg" || extn[1].toLowerCase() == "png" || extn[1].toLowerCase() == "bmp") {
-	// 			reader.onload = function (e) {
-	// 				$('#' + preview).attr('src', e.target.result);
-	// 				document.getElementById(preview).style.display = "block";
-	// 			};
-
-	// 			reader.readAsDataURL(input.files[0]);
-	// 			$('#imgdiv').html("");
-	// 			document.getElementById('save').disabled = false;
-	// 		}
-	// 		else {
-	// 			$('#imgdiv').html("Please Select Image Only");
-	// 			document.getElementById('save').disabled = true;
-	// 		}
-	// 	}
-	// }
 </script>
 <?php
 include "footer.php";
