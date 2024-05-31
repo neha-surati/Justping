@@ -191,7 +191,6 @@ function checkName(c1, id) {
             return true;
         }
     } else {
-        // Handle errors
         return false;
     }
 }
