@@ -47,10 +47,10 @@ if (isset($_REQUEST["save"])) {
 
     if ($Resp) {
         setcookie("msg", "data", time() + 3600, "/");
-header("location:add_blog_category.php");
+        header("location:blog_category.php");
     } else {
         setcookie("msg", "fail", time() + 3600, "/");
-header("location:add_blog_category.php");
+        header("location:blog_category.php");
     }
 }
 
@@ -107,18 +107,18 @@ if (isset($_REQUEST["update"])) {
             <form class="space-y-5" method="post">
 
                 <div>
-                    <label for="title">Title</label>  
+                    <label for="title">Title</label>
                     <input type="hidden" id="srno" name=srno value="<?php echo isset($mode) ? $data['srno'] : '' ?>">
-                    <input id="title" name="title" type="text" class="form-input" 
+                    <input id="title" name="title" type="text" class="form-input"
                         value="<?php echo (isset($mode)) ? $data['title'] : '' ?>" required
                         <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
-                        <p class="mt-3 text-danger text-base font-bold" id="demo"></p>
+                    <p class="mt-3 text-danger text-base font-bold" id="demo"></p>
                 </div>
-                
-                
+
+
                 <div class="mb-4">
                     <label for="custom_switch_checkbox1">Status</label>
-                    <label class="w-12 h-6 relative">   
+                    <label class="w-12 h-6 relative">
                         <input type="checkbox"
                             class="custom_switch absolute w-full h-full opacity-0 z-10 cursor-pointer peer" id="status"
                             name="status" <?php echo (isset($mode) && $data['status'] == 'Enable') ? 'checked' : '' ?>
@@ -128,7 +128,8 @@ if (isset($_REQUEST["update"])) {
                 </div>
                 <div class="relative inline-flex align-middle gap-3 mt-4 ">
                     <button type="submit" name="<?php echo isset($mode) && $mode == 'edit' ? 'update' : 'save' ?>"
-                        id="save" name="save" class="btn btn-success <?php echo isset($mode) && $mode == 'view' ? 'hidden' : '' ?>">
+                        id="save" name="save"
+                        class="btn btn-success <?php echo isset($mode) && $mode == 'view' ? 'hidden' : '' ?>">
                         <?php echo isset($mode) && $mode == 'edit' ? 'Update' : 'Save' ?>
                     </button>
                     <button type="button" class="btn btn-danger" onclick="javascript:go_back()">Close</button>
