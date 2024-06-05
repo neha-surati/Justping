@@ -21,7 +21,9 @@ if (isset($_COOKIE['view_id'])) {
 	$stmt->close();
 }
 if (isset($_REQUEST["btnsubmit"])) {
-	$blog_title = $_REQUEST["blog_title"];
+	$blog_title = $_REQUEST["title"];
+    // $state_name = $_REQUEST["state_id"];
+    $category_name = $_REQUEST["blog_category_id"];
 	$short_desc = $_REQUEST["short_desc"];
 	$description = $_REQUEST["description"];
 	$status = isset($_REQUEST["status"]) ? "Enable" : "Disable";
@@ -47,8 +49,9 @@ if (isset($_REQUEST["btnsubmit"])) {
 	}
 
 	try {
-		$stmt = $obj->con1->prepare("INSERT INTO `blog`(`title`, `short_desc`, `long_desc`, `image`, `status`,`date_time`) VALUES (?,?,?,?,?,?)");
-		$stmt->bind_param("ssssss", $blog_title, $short_desc, $description, $PicFileName, $status, $date_time);
+        // echo "INSERT INTO `blog`(`blog_category_id`,`title`, `short_desc`, `long_desc`, `image`, `status`,`date_time`) VALUES ('".$category_name."', '".$blog_title."', '".$short_desc."', '".$description."',, '".$PicFileName."',, '".$status."',, '".$date_time."',)";
+		$stmt = $obj->con1->prepare("INSERT INTO `blog`(`blog_category_id`,`title`, `short_desc`, `long_desc`, `image`, `status`,`date_time`) VALUES (?,?,?,?,?,?,?)");
+		$stmt->bind_param("issssss",$category_name, $blog_title, $short_desc, $description, $PicFileName, $status, $date_time);
 		$Resp = $stmt->execute();
 		if (!$Resp) {
 			throw new Exception(
@@ -66,12 +69,14 @@ if (isset($_REQUEST["btnsubmit"])) {
 		header("location:blog.php");
 	} else {
 		setcookie("msg", "fail", time() + 3600, "/");
-		header("location:blog.php");
+		 header("location:blog.php");
 	}
 }
 if (isset($_REQUEST["btn_update"])) {
 	$id = $_COOKIE['edit_id'];
-	$blog_title = $_REQUEST["blog_title"];
+	$blog_title = $_REQUEST["title"];
+    // $state_id = $_REQUEST["state_id"];
+    $blog_category_id = $_REQUEST["blog_category_id"];
 	$short_desc = $_REQUEST["short_desc"];
 	$description = $_REQUEST["description"];
 	$status = (isset($_REQUEST["status"]) && $_REQUEST["status"] == 'on') ? 'Enable' : 'Disable';
@@ -103,8 +108,8 @@ if (isset($_REQUEST["btn_update"])) {
 	}
 
 	try {
-		$stmt = $obj->con1->prepare("UPDATE `blog` SET `title`=?,`short_desc`=?,`long_desc`=?,`image`=?,`status`=?,`date_time`=? WHERE `srno`=?");
-		$stmt->bind_param("ssssssi", $blog_title, $short_desc, $description, $PicFileName, $status,$date_time, $id);
+		$stmt = $obj->con1->prepare("UPDATE `blog` SET `blog_category_id`=?,`title`=?,`short_desc`=?,`long_desc`=?,`image`=?,`status`=?,`date_time`=? WHERE `srno`=?");
+		$stmt->bind_param("issssssi", $blog_category_id,$blog_title, $short_desc, $description, $PicFileName, $status,$date_time, $id);
 		$Resp = $stmt->execute();
 		if (!$Resp) {
 			throw new Exception(
@@ -168,9 +173,32 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
     <div class="panel mt-6">
         <div class="mb-5">
             <form class="space-y-5" method="post" enctype="multipart/form-data">
+            <div>
+                    <label for="groupFname">Category Name</label>
+                    <select class="form-select text-gray-500" name="blog_category_id" id="blog_category_id"
+                    <?php echo isset($mode) && $mode == 'view' ? 'disabled' : ''?> required>
+                        <option value="">Choose Category</option>
+                        <?php
+                            $stmt = $obj->con1->prepare("SELECT * FROM `blog_category`");
+                            $stmt->execute();
+                            $Resp = $stmt->get_result();
+                            $stmt->close();
+
+                            while ($result = mysqli_fetch_array($Resp)) { 
+                        ?>
+                            <option value="<?php echo $result["srno"]; ?>"
+                                <?php echo isset($mode) && $data["blog_category_id"] == $result["srno"] ? "selected" : ""; ?> 
+                            >
+                                <?php echo $result["title"]; ?>
+                            </option>
+                        <?php 
+                            }
+                        ?>
+                    </select>
+                </div>
                 <div>
                     <label for="blog_title"> Blog Title</label>
-                    <input id="blog_title" name="blog_title" type="text" class="form-input" required
+                    <input id="title" name="title" type="text" class="form-input" required
                         value="<?php echo (isset($mode)) ? $data['title'] : '' ?>" placeholder="Enter Title"
                         <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
                 </div>
@@ -243,7 +271,7 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
                         <?php echo isset($mode) && $mode == 'edit' ? 'Update' : 'Save' ?>
                     </button>
                     <button type="button" class="btn btn-danger"
-                        onclick="<?php echo (isset($mode)) ? 'javascript:go_back()' : 'window.location.reload()' ?>">Close</button>
+                        onclick="javascript:go_back()">Close</button>
                 </div>
         </div>
         </form>
