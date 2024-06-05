@@ -62,23 +62,31 @@ document.addEventListener('alpine:init', () => {
         init() {
             this.datatable = new simpleDatatables.DataTable('#myTable', {
                 data: {
-                    headings: ['Sr.No.', 'Vendor Sr.No','Vendor_own_invoice_no','Status','Order From',
-                        ' Delivery Address',   'Action'
+                    headings: ['Sr.No.', 'Date Time','Order Id','Customer Name','Contact No.',
+                        'Amount','Payment Mode','Order Type','Order Status','Payment Status','Action'
                     ],
                     data: [
                         <?php
-                                $stmt = $obj->con1->prepare(" SELECT * FROM `ordr`");
+                                $stmt = $obj->con1->prepare("SELECT o1.*, CONCAT(c1.firstname, ' ', c1.lastname) AS fullname, c1.contact FROM `ordr` o1 JOIN `customer_reg` c1 ON o1.customer_id = c1.id;");
                                 $stmt->execute();
                                 $Resp = $stmt->get_result();
                                 $i = 1;
                                 while ($row = mysqli_fetch_array($Resp)) { ?>
                                 [
                             <?php echo $i; ?>,
-                            '<?php echo addslashes ($row["vendor_serial_num"]); ?>',
-                            '<?php echo addslashes ($row["vendor_own_invoice_no"]); ?>',
+                            '<?php 
+                                        $date = date_create($row['date_time']);
+                                        echo date_format($date, "d-m-Y h:i A");
+                                     ?>',
+
+                            '<?php echo addslashes ($row["order_id"]); ?>',
+                            '<?php echo addslashes($row["fullname"]);?>',
+                            '<?php echo addslashes($row["contact"]);?>',
+                            '<?php echo addslashes($row["total_price"]);?>',
+                            '<?php echo addslashes($row["payment_typ"]);?>',
+                            '<?php echo addslashes($row["order_type"]);?>',
                             '<?php echo addslashes($row["stats"]);?>',
-                            '<?php echo addslashes($row["order_from"]);?>',
-                            '<?php echo addslashes($row["delivery_address"]);?>',
+                            '<?php echo addslashes($row["payment_status"]);?>',
                             getActions(<?php echo $row["id"];?>,
                                 )
                         ],
@@ -107,34 +115,34 @@ document.addEventListener('alpine:init', () => {
             });
         },
 
-        // exportTable(eType) {
-        //     var data = {
-        //         type: eType,
-        //         filename: 'table',
-        //         download: true,
-        //     };
+        exportTable(eType) {
+            var data = {
+                type: eType,
+                filename: 'table',
+                download: true,
+            };
 
-        //     if (data.type === 'csv') {
-        //         data.lineDelimiter = '\n';
-        //         data.columnDelimiter = ';';
-        //     }
-        //     this.datatable.export(data);
-        // },
+            if (data.type === 'csv') {
+                data.lineDelimiter = '\n';
+                data.columnDelimiter = ';';
+            }
+            this.datatable.export(data);
+        },
 
-        // printTable() {
-        //     this.datatable.print();
-        // },
+        printTable() {
+            this.datatable.print();
+        },
 
-        // formatDate(date) {
-        //     if (date) {
-        //         const dt = new Date(date);
-        //         const month = dt.getMonth() + 1 < 10 ? '0' + (dt.getMonth() + 1) : dt.getMonth() +
-        //             1;
-        //         const day = dt.getDate() < 10 ? '0' + dt.getDate() : dt.getDate();
-        //         return day + '/' + month + '/' + dt.getFullYear();
-        //     }
-        //     return '';
-        // },
+        formatDate(date) {
+            if (date) {
+                const dt = new Date(date);
+                const month = dt.getMonth() + 1 < 10 ? '0' + (dt.getMonth() + 1) : dt.getMonth() +
+                    1;
+                const day = dt.getDate() < 10 ? '0' + dt.getDate() : dt.getDate();
+                return day + '/' + month + '/' + dt.getFullYear();
+            }
+            return '';
+        },
     }));
 })
 
@@ -151,7 +159,7 @@ function editdata(id) {
 
 function viewdata(id) {
     createCookie("view_id", id, 1);
-    window.location = "order_detail.php";
+    window.location = "invoice.php";
 }
 
 async function showAlert(id) {

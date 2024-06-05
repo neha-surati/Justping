@@ -18,6 +18,7 @@ if (isset($_SESSION['type_admin']) && $_SESSION['type_admin']) {
         "state.php",
         "city.php",
         "area.php",
+        "invoice.php",
         "product_category_details.php",
         "product_details.php",
         "add_product_subimages.php",
