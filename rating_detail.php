@@ -10,6 +10,7 @@ if (isset($_COOKIE["view_id"])) {
     $Resp = $stmt->get_result();
     $data = $Resp->fetch_assoc();
     $stmt->close();
+    // print_r($data);
 }
 
 if (isset($_COOKIE["edit_id"])) {
@@ -21,23 +22,18 @@ if (isset($_COOKIE["edit_id"])) {
     $Resp = $stmt->get_result();
     $data = $Resp->fetch_assoc();
     $stmt->close();
+    // print_r($data);
 }
 
 
 if (isset($_REQUEST["update"])) {
-    $vendor = $_REQUEST["v_id"];
-    $rate = $_REQUEST["rate"];
-    $product= $_REQUEST["p_id"];
-    $review = $_REQUEST["review"];
-    $customer= $_REQUEST["cust_id"];
     $status = isset($_REQUEST["status"])?'Enable':'Disable';
     $operation = "update";
     $editId = $_COOKIE["edit_id"];
 
     try {
-        
-        $stmt = $obj->con1->prepare("UPDATE   `rating` SET `v_id`=?, `rate`=?, `p_id`=?, `review`=?, `cust_id`=?,`stats`=?,`operation`=? WHERE `id`=?" );
-        $stmt->bind_param("idisissi", $vendor, $rate, $product, $review, $customer, $status, $operation, $editId);
+        $stmt = $obj->con1->prepare("UPDATE   `rating` SET `stats`=?,`operation`=? WHERE `id`=?" );
+        $stmt->bind_param("ssi", $status, $operation, $editId);
         $Resp = $stmt->execute();
         if (!$Resp) {
             throw new Exception(
@@ -76,8 +72,8 @@ if (isset($_REQUEST["update"])) {
             <form class="space-y-5" method="post">
                 <div>
                     <label for="groupFname">Vendor</label>
-                    <select class="form-select text-gray-500" name="v_id" id="v_id"
-                        <?php echo isset($mode) && $mode == 'view' ? 'disabled' : ''?> required>
+                    <select class="form-select text-gray-500" name="vendor" id="vendor"
+                    <?php echo isset($mode) && ($mode == 'view' || $mode == 'edit') ? 'readonly' : '' ?>required>
                         <option value="">Choose Vendor</option>
                         <?php
                             $stmt = $obj->con1->prepare("SELECT * FROM `vendor_reg` WHERE name!='no name'");
@@ -87,9 +83,9 @@ if (isset($_REQUEST["update"])) {
 
                             while ($result = mysqli_fetch_array($Resp)) { 
                         ?>
-                        <option value="<?php echo $result["id"]; ?>"
-                            <?php echo isset($mode) && $data["v_id"] == $result["id"] ? "selected" : ""; ?>>
-                            <?php echo $result["name"]; ?>
+                        <option value="<?php echo $result["id"] ?>"
+                            <?php echo isset($mode) && $data["v_id"] == $result["id"] ? "selected" : "" ?>>
+                            <?php echo $result["name"] ?>
                         </option>
                         <?php 
                             }
@@ -100,12 +96,12 @@ if (isset($_REQUEST["update"])) {
                     <label for="rate">Rate</label>
                     <input id="rate" name="rate" type="text" class="form-input" placeholder="5"
                         value="<?php echo (isset($mode)) ? $data['rate'] : '' ?>" required
-                        <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
+                        <?php echo isset($mode) && ($mode == 'view' || $mode == 'edit') ? 'readonly' : '' ?> />
                 </div>
                 <div>
                     <label for="groupFname">Product</label>
-                    <select class="form-select text-gray-500" name="p_id" id="p_id"
-                        <?php echo isset($mode) && $mode == 'view' ? 'disabled' : ''?> required>
+                    <select class="form-select text-gray-500" name="product" id="product"
+                    <?php echo isset($mode) && ($mode == 'view' || $mode == 'edit') ? 'readonly' : '' ?> required>
                         <option value="">Choose Product</option>
                         <?php
                             $stmt = $obj->con1->prepare("SELECT * FROM `product` WHERE name!='no name'");
@@ -128,12 +124,12 @@ if (isset($_REQUEST["update"])) {
                     <label for="review">Review</label>
                     <input id="review" name="review" type="text" class="form-input" placeholder="Enter your Review"
                         value="<?php echo (isset($mode)) ? $data['review'] : '' ?>" required
-                        <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?> />
+                        <?php echo isset($mode) && ($mode == 'view' || $mode == 'edit') ? 'readonly' : '' ?> />
                 </div>
                 <div>
                     <label for="groupFname">Customer</label>
-                    <select class="form-select text-gray-500" name="cust_id" id="cust_id"
-                        <?php echo isset($mode) && $mode == 'view' ? 'disabled' : ''?> required>
+                    <select class="form-select text-gray-500" name="customer" id="customer"
+                    <?php echo isset($mode) && ($mode == 'view' || $mode == 'edit') ? 'disabled' : '' ?> required>
                         <option value="">Choose Customer</option>
                         <?php
                             $stmt = $obj->con1->prepare("SELECT * FROM `customer_reg`");
@@ -175,13 +171,11 @@ if (isset($_REQUEST["update"])) {
                     <button type="button" class="btn btn-danger" onclick="javascript:go_back()">Close</button>
                 </div>
             </form>
+        </div>
     </div>
-</div>
 </div>
 
 <script type="text/javascript">
-
-
 function go_back() {
     eraseCookie("edit_id");
     eraseCookie("view_id");

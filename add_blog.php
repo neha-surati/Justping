@@ -66,10 +66,10 @@ if (isset($_REQUEST["btnsubmit"])) {
 	if ($Resp) {
 		move_uploaded_file($blog_img_path, "images/blog_image/" . $PicFileName);
 		setcookie("msg", "data", time() + 3600, "/");
-		// header("location:blog.php");
+		header("location:blog.php");
 	} else {
 		setcookie("msg", "fail", time() + 3600, "/");
-		//  header("location:blog.php");
+		header("location:blog.php");
 	}
 }
 if (isset($_REQUEST["btn_update"])) {
