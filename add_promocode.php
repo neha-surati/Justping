@@ -42,7 +42,7 @@ if (isset($_REQUEST["btnsubmit"])) {
 		setcookie("sql_error", urlencode($e->getMessage()), time() + 3600, "/");
 	}
 	if ($Resp) {
-        setcookie("msg", "update", time() + 3600, "/");
+        setcookie("msg", "data", time() + 3600, "/");
         header("location:promocode.php");
     } else {
         setcookie("msg", "fail", time() + 3600, "/");

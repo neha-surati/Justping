@@ -83,7 +83,7 @@ if (isset($_REQUEST["update"])) {
     }
 
     if ($Resp) {
-        setcookie("msg", "data", time() + 3600, "/");
+        setcookie("msg", "update", time() + 3600, "/");
         header("location:product_category_details.php");
     } else {
         setcookie("msg", "fail", time() + 3600, "/");

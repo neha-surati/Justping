@@ -68,7 +68,7 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
                         headings: ['Sr.No.', 'Name', 'Image',  'Status', 'Action'],
                         data: [
                             <?php
-                            $stmt = $obj->con1->prepare("SELECT * FROM `banner`");
+                            $stmt = $obj->con1->prepare("SELECT * FROM `banner` ORDER BY `srno` DESC;");
                             $stmt->execute();
                             $Resp = $stmt->get_result();
                             $i = 1;

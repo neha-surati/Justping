@@ -19,6 +19,8 @@ if (isset($_SESSION['type_admin']) && $_SESSION['type_admin']) {
         "city.php",
         "area.php",
         "invoice.php",
+        "rating.php",
+        "rating_detail.php",
         "product_category_details.php",
         "product_details.php",
         "add_product_subimages.php",
@@ -112,6 +114,7 @@ if (isset($_REQUEST['logout'])) {
     <link rel="stylesheet" type="text/css" href="assets/css/quill.snow.css">
     <link rel="stylesheet" type="text/css" media="screen" href="assets/css/style.css" />
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
     <link defer rel="stylesheet" type="text/css" media="screen" href="assets/css/animate.css" />
     <link rel="stylesheet" href="assets/css/flatpickr.min.css">
     <link rel="stylesheet" href="./style-main.css" />
@@ -555,6 +558,21 @@ if (isset($_REQUEST['logout'])) {
                                     <span
                                         class="text-black ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Privacy
                                         Policy</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="menu nav-item">
+                            <a href="rating.php"
+                                class="nav-link group <?php echo basename($_SERVER["PHP_SELF"]) == "rating.php" ? "active" : "" ?>">
+                                <div class="flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+                                        <path
+                                            d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z" />
+                                    </svg>
+                                    <span
+                                        class="text-black ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Rating
+
+                                    </span>
                                 </div>
                             </a>
                         </li>

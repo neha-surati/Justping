@@ -70,7 +70,7 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
                         ],
                         data: [
                             <?php
-                            $stmt = $obj->con1->prepare("SELECT * FROM `blog_category` ");
+                            $stmt = $obj->con1->prepare("SELECT * FROM `blog_category`  ORDER BY `srno` DESC;");
                             $stmt->execute();
                             $Resp = $stmt->get_result();
                             $i = 1;

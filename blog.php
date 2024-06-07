@@ -75,7 +75,8 @@ document.addEventListener('alpine:init', () => {
                     ],
                     data: [
                         <?php
-                            $stmt = $obj->con1->prepare("SELECT * FROM `blog` ");
+                            $stmt = $obj->con1->prepare("SELECT * FROM `blog`
+                            ORDER BY `srno` DESC;");
                             $stmt->execute();
                             $Resp = $stmt->get_result();
                             $i = 1;

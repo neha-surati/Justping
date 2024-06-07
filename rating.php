@@ -6,7 +6,7 @@
    
 
     try {
-        $stmt_del = $obj->con1->prepare("DELETE FROM `ordr` WHERE id=?");
+        $stmt_del = $obj->con1->prepare("DELETE FROM `rating` WHERE id=?");
         $stmt_del->bind_param("i",$id);
         $Resp = $stmt_del->execute();
         if (!$Resp) {
@@ -19,16 +19,16 @@
 
   if ($Resp) {
   setcookie("msg", "data_del", time() + 3600, "/");
-}
-header("location:customer_addresses.php");
+} 
+header("location:rating.php");
 }
 ?>
 <div class='p-6 animate__animated' x-data='pagination'>
-    <h1 class="dark:text-white-dar  pb-8 text-3xl font-bold">Order</h1>
+    <h1 class="dark:text-white-dar  pb-8 text-3xl font-bold">Rating</h1>
     <div class="panel mt-6 flex items-center  justify-between relative">
 
         <!-- <button type="button" class="p-2 btn btn-primary m-1 add-btn" onclick="javascript:insertdata()">
-            <i class="ri-add-line mr-1"></i> Add Order</button> -->
+            <i class="ri-add-line mr-1"></i> Add Customer</button> -->
 
         <table id="myTable" class="table-hover whitespace-nowrap w-full"></table>
     </div>
@@ -45,6 +45,11 @@ function getActions(id) {
             </a>
         </li>
         <li>
+            <a href="javascript:editdata(` + id + `);" class='text-xl' x-tooltip="Edit">
+                <i class="ri-pencil-line text text-success"></i>
+            </a>
+        </li>
+        <li>
             <a href="javascript:showAlert(` + id + `);" class='text-xl' x-tooltip="Delete">
                 <i class="ri-delete-bin-line text-danger"></i>
             </a>
@@ -57,31 +62,29 @@ document.addEventListener('alpine:init', () => {
         init() {
             this.datatable = new simpleDatatables.DataTable('#myTable', {
                 data: {
-                    headings: ['Sr.No.', 'Date Time','Order Id','Customer Name','Contact No.',
-                        'Amount','Payment Mode','Order Type','Order Status','Payment Status','Action'
+                    headings: ['Sr.No.', 'Vendor','Rate',
+                        'Product', 'Review','Customer','Status','Action'
                     ],
                     data: [
                         <?php
-                                $stmt = $obj->con1->prepare("SELECT o1.*, CONCAT(c1.firstname, ' ', c1.lastname) AS fullname, c1.contact FROM `ordr` o1 JOIN `customer_reg` c1 ON o1.customer_id = c1.id;");
+                                $stmt = $obj->con1->prepare("SELECT r1.*, v1.name as vname, CONCAT(c1.firstname, ' ', c1.lastname) as cname, p1.name as pname
+                                FROM `rating` r1
+                                JOIN `vendor_reg` v1 ON r1.v_id = v1.id
+                                JOIN `customer_reg` c1 ON r1.cust_id = c1.id
+                                JOIN `product` p1 ON r1.p_id = p1.id;
+                                ");
                                 $stmt->execute();
                                 $Resp = $stmt->get_result();
                                 $i = 1;
                                 while ($row = mysqli_fetch_array($Resp)) { ?>
                                 [
                             <?php echo $i; ?>,
-                            '<?php 
-                                        $date = date_create($row['date_time']);
-                                        echo date_format($date, "d-m-Y h:i A");
-                                     ?>',
-
-                            '<?php echo addslashes ($row["order_id"]); ?>',
-                            '<?php echo addslashes($row["fullname"]);?>',
-                            '<?php echo addslashes($row["contact"]);?>',
-                            '<?php echo addslashes($row["total_price"]);?>',
-                            '<?php echo addslashes($row["payment_typ"]);?>',
-                            '<?php echo addslashes($row["order_type"]);?>',
-                            '<?php echo addslashes($row["stats"]);?>',
-                            '<?php echo addslashes($row["payment_status"]);?>',
+                            '<?php echo addslashes ($row["vname"]); ?>',
+                            '<?php echo addslashes ($row["rate"]); ?>',
+                            '<?php echo addslashes ($row["pname"]); ?>',
+                            '<?php echo addslashes ($row["review"]); ?>',
+                            '<?php echo addslashes ($row["cname"]); ?>',
+                            '<span class="badge whitespace-nowrap" :class="{\'badge-outline-success\': \'<?php echo $row["stats"]; ?>\' === \'Enable\', \'badge-outline-danger\': \'<?php echo $row["stats"]; ?>\' === \'Disable\'}"><?php echo $row["stats"]; ?></span>',
                             getActions(<?php echo $row["id"];?>,
                                 )
                         ],
@@ -141,11 +144,22 @@ document.addEventListener('alpine:init', () => {
     }));
 })
 
+// function insertdata(id) {
+//     eraseCookie("edit_id");
+//     eraseCookie("view_id");
+//     window.location = "add_customer_reg.php";
+// }
 
+function editdata(id) {
+    eraseCookie("view_id");
+    createCookie("edit_id", id, 1);
+    window.location = "rating_detail.php";
+}
 
 function viewdata(id) {
+    eraseCookie("edit_id");
     createCookie("view_id", id, 1);
-    window.location = "invoice.php";
+    window.location = "rating_detail.php";
 }
 
 async function showAlert(id) {
@@ -157,7 +171,7 @@ async function showAlert(id) {
         padding: '2em',
     }).then((result) => {
         if (result.isConfirmed) {
-            var loc = "ordr.php?flg=del&id=" + id ;
+            var loc = "rating.php?flg=del&id=" + id ;
             window.location = loc;
         }
     });
