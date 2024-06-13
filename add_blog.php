@@ -110,8 +110,9 @@ if (isset($_REQUEST["btn_update"])) {
 	}
 
 	try {
-		$stmt = $obj->con1->prepare("UPDATE `blog` SET `blog_category_id`=?,`title`=?,`short_desc`=?,`long_desc`=?,`image`=?,`status`=?,`publish_status`=?,,`date_time`=? WHERE `srno`=?");
-		$stmt->bind_param("issssssi", $blog_category_id,$blog_title, $short_desc, $description, $PicFileName, $status,$pstatus,$date_time, $id);
+        // echo"UPDATE `blog` SET `blog_category_id`=".$blog_category_id.",`title`=".$blog_title.",`short_desc`=".$short_desc.",`long_desc`=".$description.",`image`=".$PicFileName.",`status`=".$status.",`publish_status`=".$pstatus.",`date_time`=".$date_time." WHERE `srno`=". $id."";
+		$stmt = $obj->con1->prepare("UPDATE `blog` SET `blog_category_id`=?,`title`=?,`short_desc`=?,`long_desc`=?,`image`=?,`status`=?,`publish_status`=?,`date_time`=? WHERE `srno`=?");
+		$stmt->bind_param("isssssssi", $blog_category_id,$blog_title, $short_desc, $description, $PicFileName, $status,$pstatus,$date_time, $id);
 		$Resp = $stmt->execute();
 		if (!$Resp) {
 			throw new Exception(
