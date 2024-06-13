@@ -71,7 +71,7 @@ document.addEventListener('alpine:init', () => {
             this.datatable = new simpleDatatables.DataTable('#myTable', {
                 data: {
                     headings: ['Sr.No.', 'Title', 'Image', 'Description', 'Status',
-                        'Date-Time', 'Action'
+                    'Publish Status','Date-Time', 'Action'
                     ],
                     data: [
                         <?php
@@ -105,6 +105,8 @@ document.addEventListener('alpine:init', () => {
                             '<span class="wrap-text"><?php echo addslashes($row["short_desc"]); ?></span>',
 
                             '<span class="badge whitespace-nowrap" :class="{\'badge-outline-success\': \'<?php echo $row["status"]; ?>\' === \'Enable\', \'badge-outline-danger\': \'<?php echo $row["status"]; ?>\' === \'Disable\'}"><?php echo $row["status"]; ?></span>',
+
+                            '<span class="badge whitespace-nowrap" :class="{\'badge-outline-secondary\': \'<?php echo $row["publish_status"]; ?>\' === \'Publish\', \'badge-outline-warning\': \'<?php echo $row["publish_status"]; ?>\' === \'Pending\'}"><?php echo $row["publish_status"]; ?></span>',
 
                             '<?php 
                                         $date = date_create($row['date_time']);

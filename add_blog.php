@@ -27,6 +27,7 @@ if (isset($_REQUEST["btnsubmit"])) {
 	$short_desc = $_REQUEST["short_desc"];
 	$description = $_REQUEST["description"];
 	$status = isset($_REQUEST["status"]) ? "Enable" : "Disable";
+    $pstatus = isset($_REQUEST["pstatus"]) ? "Publish" : "Pending";
 	$date_time = date("Y-m-d H:i:s");
 	$blog_img = $_FILES['blog_img']['name'];
 	$blog_img = str_replace(' ', '_', $blog_img);
@@ -50,8 +51,8 @@ if (isset($_REQUEST["btnsubmit"])) {
 
 	try {
         // echo "INSERT INTO `blog`(`blog_category_id`,`title`, `short_desc`, `long_desc`, `image`, `status`,`date_time`) VALUES ('".$category_name."', '".$blog_title."', '".$short_desc."', '".$description."',, '".$PicFileName."',, '".$status."',, '".$date_time."',)";
-		$stmt = $obj->con1->prepare("INSERT INTO `blog`(`blog_category_id`,`title`, `short_desc`, `long_desc`, `image`, `status`,`date_time`) VALUES (?,?,?,?,?,?,?)");
-		$stmt->bind_param("issssss",$category_name, $blog_title, $short_desc, $description, $PicFileName, $status, $date_time);
+		$stmt = $obj->con1->prepare("INSERT INTO `blog`(`blog_category_id`,`title`, `short_desc`, `long_desc`, `image`, `status`,`publish_status`,`date_time`) VALUES (?,?,?,?,?,?,?,?)");
+		$stmt->bind_param("isssssss",$category_name, $blog_title, $short_desc, $description, $PicFileName, $status,$pstatus, $date_time);
 		$Resp = $stmt->execute();
 		if (!$Resp) {
 			throw new Exception(
@@ -80,6 +81,7 @@ if (isset($_REQUEST["btn_update"])) {
 	$short_desc = $_REQUEST["short_desc"];
 	$description = $_REQUEST["description"];
 	$status = (isset($_REQUEST["status"]) && $_REQUEST["status"] == 'on') ? 'Enable' : 'Disable';
+    $pstatus = (isset($_REQUEST["pstatus"]) && $_REQUEST["pstatus"] == 'on') ? 'Publish' : 'Pending';
 	$date_time = date("Y-m-d H:i:s");
 	$blog_img = $_FILES['blog_img']['name'];
 	$blog_img = str_replace(' ', '_', $blog_img);
@@ -108,8 +110,8 @@ if (isset($_REQUEST["btn_update"])) {
 	}
 
 	try {
-		$stmt = $obj->con1->prepare("UPDATE `blog` SET `blog_category_id`=?,`title`=?,`short_desc`=?,`long_desc`=?,`image`=?,`status`=?,`date_time`=? WHERE `srno`=?");
-		$stmt->bind_param("issssssi", $blog_category_id,$blog_title, $short_desc, $description, $PicFileName, $status,$date_time, $id);
+		$stmt = $obj->con1->prepare("UPDATE `blog` SET `blog_category_id`=?,`title`=?,`short_desc`=?,`long_desc`=?,`image`=?,`status`=?,`publish_status`=?,,`date_time`=? WHERE `srno`=?");
+		$stmt->bind_param("issssssi", $blog_category_id,$blog_title, $short_desc, $description, $PicFileName, $status,$pstatus,$date_time, $id);
 		$Resp = $stmt->execute();
 		if (!$Resp) {
 			throw new Exception(
@@ -241,7 +243,16 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
                             class="bg-[#ebedf2] dark:bg-dark block h-full rounded-full before:absolute before:left-1 before:bg-white dark:before:bg-white-dark dark:peer-checked:before:bg-white before:bottom-1 before:w-4 before:h-4 before:rounded-full peer-checked:before:left-7 peer-checked:bg-primary before:transition-all before:duration-300"></span>
                     </label>
                 </div>
-
+                <div class="mb-4">
+                    <label for="custom_switch_checkbox1">Publish Status</label>
+                    <label class="w-12 h-6 relative">
+                        <input type="checkbox"
+                            class="custom_switch absolute w-full h-full opacity-0 z-10 cursor-pointer peer" id="pstatus"
+                            name="pstatus" <?php echo (isset($mode) && $data['publish_status'] == 'Publish') ? 'checked' : '' ?>
+                            <?php echo (isset($mode) && $mode == 'view') ? 'Disabled' : '' ?>><span
+                            class="bg-[#ebedf2] dark:bg-dark block h-full rounded-full before:absolute before:left-1 before:bg-white dark:before:bg-white-dark dark:peer-checked:before:bg-white before:bottom-1 before:w-4 before:h-4 before:rounded-full peer-checked:before:left-7 peer-checked:bg-primary before:transition-all before:duration-300"></span>
+                    </label>
+                </div>
               
                 <div <?php echo (isset($mode) && $mode == 'view') ? 'hidden' : '' ?>>
                     <label for="image">Image</label>

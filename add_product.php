@@ -21,8 +21,10 @@ if (isset($_COOKIE['view_id'])) {
 if (isset($_REQUEST["btnsubmit"])) {
 	$name = $_REQUEST["name"];
 	$v_id = $_REQUEST["v_id"];
+	$c_id = $_REQUEST["c_id"];
 	$details = $_REQUEST["details"];
 	$status = isset($_REQUEST["status"]) ? "Enable" : "Disable";
+	$pstatus = isset($_REQUEST["pstatus"]) ? "Publish" : "Pending";
 	$price = $_REQUEST["price"];
 	$discount = $_REQUEST["discount"];
 	$finalPrice = $_REQUEST["finalPrice"];
@@ -48,8 +50,8 @@ if (isset($_REQUEST["btnsubmit"])) {
 	}
 	try {
 		// echo "INSERT INTO `product`(`name`,`detail`,`v_id`,`image`,`stats`,`main_price`,`discount_per`,`discount_price`,`operation`,) VALUES ('".$name."', '". $details."', '".$v_id."', '".$PicFileName."', '".$status."', '".$price."', '".$discount."', '".$finalPrice."', '".$operation."',)";
-		$stmt = $obj->con1->prepare("INSERT INTO `product`(`name`, `detail`, `v_id`,`image`, `stats`, `main_price`, `discount_per`, `discount_price`, `operation`) VALUES (?,?,?,?,?,?,?,?,?)");
-		$stmt->bind_param("ssissiiis", $name, $details, $v_id, $PicFileName, $status, $price, $discount, $finalPrice, $operation);
+		$stmt = $obj->con1->prepare("INSERT INTO `product`(`name`, `detail`, `v_id`,`c_id`,`image`, `stats`,`publish_status`, `main_price`, `discount_per`, `discount_price`, `operation`) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
+		$stmt->bind_param("ssiisssiiis", $name, $details, $v_id,$c_id, $PicFileName, $status,$pstatus, $price, $discount, $finalPrice, $operation);
 		$Resp = $stmt->execute();
 		if (!$Resp) {
 			throw new Exception(
@@ -72,9 +74,11 @@ if (isset($_REQUEST["btnsubmit"])) {
 if (isset($_REQUEST["btn_update"])) {
 	$id = $_COOKIE['edit_id'];
 	$v_id = $_REQUEST["v_id"];
+	$c_id = $_REQUEST["c_id"];
 	$name = $_REQUEST["name"];
 	$details = $_REQUEST["details"];
 	$status = (isset($_REQUEST["status"]) && $_REQUEST["status"] == 'on') ? 'Enable' : 'Disable';
+	$pstatus = (isset($_REQUEST["pstatus"]) && $_REQUEST["pstatus"] == 'on') ? 'Publish' : 'Pending';
 	$price = $_REQUEST["price"];
 	$discount = $_REQUEST["discount"];
 	$finalPrice = $_REQUEST["finalPrice"];
@@ -106,8 +110,10 @@ if (isset($_REQUEST["btn_update"])) {
 	}
 	//echo $PicFileName;
 	try {
-		$stmt = $obj->con1->prepare("UPDATE `product` SET `name`=?, `detail`=?, `v_id`=?, `image`=?,`stats`=?, `main_price`=?, `discount_per`=?, `discount_price`=?,`operation`=? WHERE `id`=?");
-		$stmt->bind_param("ssissiiisi", $name, $details, $v_id, $PicFileName, $status, $price, $discount, $finalPrice, $operation, $id);
+	// echo "UPDATE `product` SET `name`= '".$name."', `detail`='".$details."', `v_id`= '".$v_id."', `c_id`= '".$c_id."', `image`='". $PicFileName."', `stats`= '". $status."', publish_status`='".$pstatus."', `main_price`='".$price."', `discount_per`='".$discount."',`discount_price`= '".$finalPrice."',`operation`='".$operation."' WHERE `id`='".$id."'";
+		
+		$stmt = $obj->con1->prepare("UPDATE `product` SET `name`=?, `detail`=?, `v_id`=?,`c_id`=?, `image`=?,`stats`=?,`publish_status`=?, `main_price`=?, `discount_per`=?, `discount_price`=?,`operation`=? WHERE `id`=?");
+		$stmt->bind_param("ssiisssiiisi", $name, $details, $v_id, $c_id, $PicFileName, $status,$pstatus, $price, $discount, $finalPrice, $operation, $id);
 		$Resp = $stmt->execute();
 		if (!$Resp) {
 			throw new Exception(
@@ -186,8 +192,9 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
                     <label for="details">Details</label>
                     <textarea autocomplete="on" name="details" id="details" class="form-textarea" rows="2"
                                 value="" required <?php echo isset($mode) && $mode == 'view' ? 'readonly' : '' ?>><?php echo isset($mode) ? $data['detail'] : '' ?></textarea>
-                </div>
+                	</div>
 				</div>
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10">
 				<div>
 					<label for="groupFname">Vendor Name</label>
 					<select class="form-select text-black" name="v_id" id="v_id" <?php echo isset($mode) && $mode == 'view' ? 'disabled' : '' ?> required>
@@ -207,6 +214,27 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
 						}
 						?>
 					</select>
+				</div>
+				<div>
+					<label for="groupFname">Category</label>
+					<select class="form-select text-black" name="c_id" id="c_id" <?php echo isset($mode) && $mode == 'view' ? 'disabled' : '' ?> required>
+						<option value="">Select Category</option>
+						<?php
+						$stmt = $obj->con1->prepare("SELECT * FROM `product_category`");
+						$stmt->execute();
+						$Resp = $stmt->get_result();
+						$stmt->close();
+
+						while ($result = mysqli_fetch_array($Resp)) {
+							?>
+							<option value="<?php echo $result["id"]; ?>" <?php echo (isset($mode) && $data["c_id"] == $result["id"]) ? "selected" : ""; ?>>
+								<?php echo $result["name"]; ?>
+							</option>
+							<?php
+						}
+						?>
+					</select>
+				</div>
 				</div>
 				<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-10">
 					<div>
@@ -237,6 +265,16 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
 							class="bg-[#ebedf2] dark:bg-dark block h-full rounded-full before:absolute before:left-1 before:bg-white dark:before:bg-white-dark dark:peer-checked:before:bg-white before:bottom-1 before:w-4 before:h-4 before:rounded-full peer-checked:before:left-7 peer-checked:bg-primary before:transition-all before:duration-300"></span>
 					</label>
 				</div>
+				<div class="mb-4">
+                    <label for="custom_switch_checkbox1">Publish Status</label>
+                    <label class="w-12 h-6 relative">
+                        <input type="checkbox"
+                            class="custom_switch absolute w-full h-full opacity-0 z-10 cursor-pointer peer" id="pstatus"
+                            name="pstatus" <?php echo (isset($mode) && $data['publish_status'] == 'Publish') ? 'checked' : '' ?>
+                            <?php echo (isset($mode) && $mode == 'view') ? 'Disabled' : '' ?>><span
+                            class="bg-[#ebedf2] dark:bg-dark block h-full rounded-full before:absolute before:left-1 before:bg-white dark:before:bg-white-dark dark:peer-checked:before:bg-white before:bottom-1 before:w-4 before:h-4 before:rounded-full peer-checked:before:left-7 peer-checked:bg-primary before:transition-all before:duration-300"></span>
+                    </label>
+                </div>
 				<div <?php echo (isset($mode) && $mode == 'view') ? 'hidden' : '' ?>>
 					<label for="image">Image</label>
 					<input id="product_img" name="product_img" class="demo1" type="file" data_btn_text="Browse"

@@ -69,7 +69,7 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
             init() {
                 this.datatable = new simpleDatatables.DataTable('#myTable', {
                     data: {
-                        headings: ['Sr.No.', 'Name', 'Image', 'Status', 'Action'],
+                        headings: ['Sr.No.', 'Name', 'Image', 'Status','Publish Stauts', 'Action'],
                         data: [
                             <?php
                             $stmt = $obj->con1->prepare("SELECT * FROM `product` ORDER BY `id` DESC");
@@ -97,6 +97,9 @@ if (isset($_REQUEST["flg"]) && $_REQUEST["flg"] == "del") {
                                             <?php } ?>`,
 
                                     '<span class="badge whitespace-nowrap" :class="{\'badge-outline-success\': \'<?php echo $row["stats"]; ?>\' === \'Enable\', \'badge-outline-danger\': \'<?php echo $row["stats"]; ?>\' === \'Disable\'}"><?php echo $row["stats"]; ?></span>',
+                                    
+
+                                    '<span class="badge whitespace-nowrap" :class="{\'badge-outline-secondary\': \'<?php echo $row["publish_status"]; ?>\' === \'Publish\', \'badge-outline-warning\': \'<?php echo $row["publish_status"]; ?>\' === \'Pending\'}"><?php echo $row["publish_status"]; ?></span>',
 
                                     getActions(<?php echo $row["id"]; ?>, '<?php echo addslashes($row["image"]); ?>')
                                 ],
